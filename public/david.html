@@ -34,6 +34,15 @@ kbd{font:700 13px Barlow;background:#2b3447;border-radius:5px;padding:2px 7px;bo
 #touch button{width:66px;height:66px;border-radius:50%;border:2px solid rgba(255,255,255,.35);background:rgba(20,26,38,.65);color:#fff;font:800 16px "Barlow Condensed"}
 #touch #tShoot{width:84px;height:84px;background:rgba(255,181,71,.55);font-size:20px}
 @media (pointer:coarse){#touch{display:flex}}
+.menu2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0;text-align:left}.menu2>div{background:#11161f;border-radius:10px;padding:10px;font-size:13px}.menu2 h4{margin:0 0 6px;font:800 15px "Barlow Condensed";text-transform:uppercase;color:var(--hi);letter-spacing:.05em}
+.chl div{display:flex;justify-content:space-between;gap:6px;margin:3px 0;color:var(--ink)}.chl em{color:var(--good);font-style:normal;white-space:nowrap}
+.mlb div{display:flex;justify-content:space-between;margin:2px 0;color:var(--ink)}.mlb span{color:var(--mute)}
+.bucks{font:800 20px "Barlow Condensed";color:#ffd34d}
+.shop{text-align:left;margin:8px 0}.shop .row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:#11161f;border-radius:10px;padding:9px 12px;margin:6px 0}.shop .row b{font:800 17px "Barlow Condensed";text-transform:uppercase}.shop .row small{display:block;color:var(--mute);font-size:12px}
+.shop .row .btn{margin:0;padding:8px 12px;font-size:15px}.shop .row .btn[disabled]{opacity:.4;cursor:default}
+.pips i{display:inline-block;width:10px;height:10px;border-radius:3px;background:#2b3447;margin-right:3px}.pips i.on{background:var(--hi)}
+.bands{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.bands button{width:64px;padding:6px 0 4px;border-radius:10px;border:2px solid #2b3447;background:#11161f;color:var(--ink);font:600 11px Barlow;cursor:pointer}.bands button.sel{border-color:var(--hi)}.bands button i{display:block;height:10px;border-radius:4px;margin:0 8px 4px}
+@media (max-width:600px){.menu2{grid-template-columns:1fr}}
 a.back{position:absolute;left:12px;bottom:10px;z-index:6;color:var(--mute);font:600 13px Barlow;text-decoration:none}
 @media (max-width:600px){.stats{grid-template-columns:1fr 1fr}.card h1{font-size:42px}.career{grid-template-columns:1fr 1fr}}
 </style>
@@ -47,14 +56,17 @@ a.back{position:absolute;left:12px;bottom:10px;z-index:6;color:var(--mute);font:
   <p style="letter-spacing:.2em;font-size:12px;color:var(--hi)">ENDLESS · EVERYONE IS AGAINST DAVID</p>
   <h1>David at <span>Hoops</span></h1>
   <p>Score as many buckets as you can while the whole crew trolls you. Every quarter gets worse. It never ends. How long can David keep his dignity?</p>
-  <div class="cast">
-    <span><b>Ethan</b> steals your ball</span><span><b>Aleksei</b> fires sarcasm</span>
-    <span><b>James</b> plants fake balls</span><span><b>Caleb</b> "DAVID LOOK!"</span>
-    <span><b>Frank &amp; Kalel</b> banana lines</span><span><b>Lil Daniel</b> flips your controls</span>
-    <span><b>Jose</b> guards every shot</span><span><b>Coach Brent</b> "FREEZE!"</span>
-  </div>
   <div class="career" id="career"></div>
-  <button class="btn" id="bPlay">Play</button><button class="btn" id="bDaily">Daily run</button><button class="btn alt" id="bHow">How to play</button>
+  <div class="menu2"><div><h4>Challenges <span class="bucks" id="mBucks" style="float:right;font-size:15px"></span></h4><div class="chl" id="mCh"></div></div><div><h4>Team leaderboard</h4><div class="mlb" id="mLb"><span>Loading…</span></div></div></div>
+  <button class="btn" id="bPlay">Play</button><button class="btn" id="bDaily">Daily run</button><button class="btn alt" id="bShop">🪙 Locker</button><button class="btn alt" id="bHow">How to play</button>
+</div></div>
+
+<div class="screen" id="sShop" hidden><div class="card">
+  <h2>David's Locker</h2><p>Spend Hoop Bucks on upgrades that stay forever. You earn them from every run and every challenge. (Daily Run is a fair fight, so upgrades are off there.)</p>
+  <p class="bucks" id="shopBucks"></p>
+  <div class="shop" id="shopList"></div>
+  <h3>Headbands</h3><div class="bands" id="bandList"></div>
+  <button class="btn" id="bShopBack">Back</button>
 </div></div>
 
 <div class="screen" id="sHow" hidden><div class="card">
@@ -64,12 +76,20 @@ a.back{position:absolute;left:12px;bottom:10px;z-index:6;color:var(--mute);font:
     <kbd>Run over a ball</kbd><span>Pick it up</span>
     <kbd>Hold E, release</kbd><span>Shoot. Let go when the marker is in the green. Behind the arc = 3.</span>
     <kbd>Space</kbd><span>Jump over bananas and sarcasm</span>
+    <kbd>E next to the rim</kbd><span>DUNK. Posterizes any troll nearby. Jose might block it.</span>
     <kbd>Q</kbd><span>Clap Back: stun everyone near you (earned every 3 makes in a row)</span>
-    <kbd>1 / 2 / 3</kbd><span>Pick a perk between quarters (or click)</span>
+    <kbd>1 / 2 / 3 / 4</kbd><span>Pick a perk between quarters (or click). R rerolls if you have one.</span>
     <kbd>Esc / P</kbd><span>Pause</span>
     <kbd>Phone</kbd><span>Drag to move, hold SHOOT, tap JUMP / CLAP BACK</span>
   </div>
   <p>Getting trolled raises <b style="color:var(--bad)">Frustration</b>. Making shots lowers it. At 100 David rage-quits. Streaks build your combo multiplier. Gold balls are worth triple. Watch out: James's fake balls look gold too.</p>
+  <p><b style="color:#ffb547">🔥 On Fire:</b> 5 makes in a row and David catches fire: huge green zone, double points, trolls bounce off him. Getting trolled puts the fire out. <b style="color:#ffb547">Hot hoop</b> = 2× points, it moves around. Every quarter after Q1 has a random <b>twist</b>.</p>
+  <div class="cast">
+    <span><b>Ethan</b> steals your ball</span><span><b>Aleksei</b> fires sarcasm</span>
+    <span><b>James</b> plants fake balls</span><span><b>Caleb</b> "DAVID LOOK!"</span>
+    <span><b>Frank &amp; Kalel</b> banana lines</span><span><b>Lil Daniel</b> flips your controls</span>
+    <span><b>Jose</b> guards every shot</span><span><b>Coach Brent</b> "FREEZE!"</span>
+  </div>
   <button class="btn" id="bHowBack">Got it</button>
 </div></div>
 
@@ -82,6 +102,7 @@ a.back{position:absolute;left:12px;bottom:10px;z-index:6;color:var(--mute);font:
   <h2 id="endTitle">David rage-quit</h2>
   <p id="endMsg"></p>
   <div class="stats" id="endStats"></div>
+  <p class="bucks" id="endBucks"></p><div class="chl" id="endCh" style="max-width:400px;margin:0 auto"></div>
   <h3>Who trolled David the most</h3><div class="bars" id="endBars"></div>
   <h3>Coach Brent's judgment</h3><p id="endJudge" style="color:var(--ink)"></p>
   <div class="lb" id="endLb"><input id="lbName" maxlength="16" placeholder="Name for the team leaderboard"><button class="btn" id="bPost" style="margin:0">Post</button></div>
@@ -177,7 +198,61 @@ const PERKS = [
   { id: 'heal', name: 'Deep Breath', icon: '😮‍💨', desc: '-40 frustration right now', stack: 99 },
   { id: 'gold', name: 'Gold Rush', icon: '⭐', desc: 'Gold balls show up way more', stack: 2 },
   { id: 'eye', name: 'Trust Issues', icon: '🕵️', desc: 'James\'s fake balls are marked', stack: 1 },
+  { id: 'bank', name: 'Bank Shot', icon: '🪟', desc: '25% of misses bank in anyway', stack: 2, rare: 1 },
+  { id: 'splash', name: 'Splash Zone', icon: '💦', desc: 'Threes are worth 4', stack: 1, rare: 1 },
+  { id: 'recycle', name: 'Recycler', icon: '♻️', desc: '30% of makes bounce right back to you', stack: 2, rare: 2 },
+  { id: 'heat', name: 'Heat Check', icon: '🌶️', desc: 'Catch fire after 4 in a row, burn 3s longer', stack: 1, rare: 2 },
+  { id: 'poster', name: 'Posterizer', icon: '🖼️', desc: 'Dunks stun everyone close and pay double', stack: 1, rare: 1 },
 ];
+['magnet', 'hands', 'ice'].forEach((id) => (PERKS.find((p) => p.id === id).rare = 1));
+const RARITY = [['COMMON', '#9aa3b2'], ['RARE', '#3d7bff'], ['EPIC', '#c06bff']];
+// every quarter after Q1 gets a random rule change
+const TWISTS = [
+  { id: 'moon', name: 'MOON BALL', desc: 'Bigger green, floaty shots.' },
+  { id: 'gold', name: 'GOLD RUSH', desc: 'Way more gold balls.' },
+  { id: 'dark', name: 'LIGHTS OUT', desc: 'Lil Daniel found the light switch.' },
+  { id: 'swarm', name: 'ETHAN SWARM', desc: 'Ethan brought his little cousins.' },
+  { id: 'double', name: 'DOUBLE OR NOTHING', desc: 'Points x2, trolls hurt more.' },
+  { id: 'storm', name: 'BALL STORM', desc: 'Balls are raining from the stands.' },
+  { id: 'tiny', name: 'TINY RIMS', desc: 'Smaller green, points x2.5.' },
+  { id: 'turbo', name: 'TURBO', desc: 'Everybody moves 30% faster.' },
+  { id: 'banana', name: 'BANANA REPUBLIC', desc: 'Frank & Kalel went to Costco.' },
+  { id: 'hype', name: 'HYPE QUARTER', desc: 'Makes calm David down twice as much.' },
+];
+const TW = (id) => S.twist && S.twist.id === id;
+// permanent upgrades bought with Hoop Bucks
+const UPG = [
+  { id: 'skin', name: 'Thicker Skin', desc: 'Trolls hurt 6% less, every run', max: 5, cost: [60, 120, 200, 300, 450] },
+  { id: 'clap', name: 'Pre-Game Hype', desc: 'Start each run with a Clap Back', max: 2, cost: [120, 280] },
+  { id: 'reroll', name: 'Rerolls', desc: '+1 perk reroll per run (R)', max: 3, cost: [100, 220, 380] },
+  { id: 'fire', name: 'Hype Man', desc: 'On Fire lasts 1.5s longer', max: 3, cost: [120, 240, 400] },
+  { id: 'luck', name: 'Lucky Shoes', desc: 'Gold balls show up more', max: 3, cost: [90, 180, 300] },
+  { id: 'warm', name: 'Warm-Up', desc: 'Start each run with a free random perk', max: 2, cost: [220, 500] },
+  { id: 'card', name: 'Extra Card', desc: 'See 4 perks instead of 3', max: 1, cost: [450] },
+  { id: 'wind', name: 'Second Wind', desc: 'Once per run, shake off a rage-quit', max: 1, cost: [600] },
+];
+const BANDS = [['red', 'Red', '#ff5a3c', 0], ['blue', 'Blue', '#3d7bff', 50], ['white', 'White', '#f3f1ea', 60], ['green', 'Green', '#3fcf7a', 80], ['black', 'Black', '#202430', 120], ['purple', 'Purple', '#a46bff', 150], ['gold', 'Gold', '#ffd34d', 250], ['rainbow', 'Rainbow', 'rainbow', 600]];
+const CH = [
+  { id: 'q', t: (g) => `Reach ${otLabel(g)}`, m: (r) => r.q, goals: [3, 4, 5, 6, 7, 9, 11] },
+  { id: 'score', t: (g) => `Score ${g.toLocaleString()} in a run`, m: (r) => r.score, goals: [3000, 8000, 15000, 30000, 60000, 120000] },
+  { id: 'threes', t: (g) => `Make ${g} threes in a run`, m: (r) => r.threes, goals: [3, 8, 15, 25, 40] },
+  { id: 'dunks', t: (g) => `Throw down ${g} dunks in a run`, m: (r) => r.dunks, goals: [3, 8, 15, 25, 40] },
+  { id: 'fire', t: (g) => `Catch fire ${g} time${g > 1 ? 's' : ''} in a run`, m: (r) => r.fires, goals: [1, 2, 4, 6, 9] },
+  { id: 'streak', t: (g) => `Hit a ${g}-make streak`, m: (r) => r.bestCombo, goals: [5, 8, 12, 16, 22] },
+  { id: 'claps', t: (g) => `Clap Back ${g} trolls in a run`, m: (r) => r.stunned, goals: [3, 6, 10, 16, 25] },
+  { id: 'posters', t: (g) => `Posterize ${g} trolls in a run`, m: (r) => r.posters, goals: [2, 5, 10, 18, 30] },
+  { id: 'golds', t: (g) => `Make ${g} gold balls in a run`, m: (r) => r.golds, goals: [1, 3, 6, 10, 15] },
+];
+let META = Object.assign({ bucks: 0, up: {}, band: 'red', bands: ['red'], ch: [], tiers: {} }, store.get('dah-meta', {}));
+const saveMeta = () => store.set('dah-meta', META);
+const U = (id) => (S && S.daily ? 0 : META.up[id] || 0);
+const chGoal = (id) => { const c = CH.find((x) => x.id === id), t = META.tiers[id] || 0; return c.goals[Math.min(t, c.goals.length - 1)] * (t >= c.goals.length ? t - c.goals.length + 2 : 1); };
+const chReward = (id) => 40 + (META.tiers[id] || 0) * 35;
+function fillCh() { META.ch = (META.ch || []).filter((id) => CH.some((c) => c.id === id)); while (META.ch.length < 3) { const pool = CH.filter((c) => !META.ch.includes(c.id)); META.ch.push(pool[Math.floor(Math.random() * pool.length)].id); } saveMeta(); }
+fillCh();
+let TOP = [], TOPD = [];
+const API = 'https://scenic-hills-hoops.vercel.app/api/scores';
+const loadTop = (game) => fetch(`${API}?game=${game}`).then((r) => r.json()).then((j) => j.top || []).catch(() => []);
 const MISSIONS = [
   { id: 'threes', text: 'Make 3 threes', goal: 3, reward: 400 },
   { id: 'swish', text: 'Hit 2 swishes', goal: 2, reward: 350 },
@@ -186,6 +261,10 @@ const MISSIONS = [
   { id: 'ethan', text: 'Tag Ethan to get your ball back', goal: 1, reward: 300 },
   { id: 'clapn', text: 'Clap Back on 3 trolls at once', goal: 3, reward: 450 },
   { id: 'gold', text: 'Make a gold ball', goal: 1, reward: 350 },
+  { id: 'poster', text: 'Posterize a troll (dunk on him)', goal: 1, reward: 350 },
+  { id: 'hot', text: 'Score 3 on the hot hoop', goal: 3, reward: 400 },
+  { id: 'fire', text: 'Catch fire', goal: 1, reward: 450 },
+  { id: 'dunk', text: 'Throw down 3 dunks', goal: 3, reward: 300 },
 ];
 
 // =================== state ===================
@@ -199,6 +278,7 @@ function newRun(daily) {
     enemies: [], balls: [], hazards: [], shots: [], projectiles: [], floaters: [], confetti: [],
     fx: { reverse: 0, slow: 0, freeze: 0, look: 0, lookAt: null, inv: 0 }, perks: {}, offers: null, mission: null,
     makes: 0, threes: 0, swishes: 0, attempts: 0, trolledTotal: 0, trolledBy: {}, caption: null, zoom: 0, shake: 0, bubble: null, ballT: 1, lava: null, lavaT: 30, cleanT: 0, coachTalk: 0,
+    dunks: 0, posters: 0, fires: 0, golds: 0, stunned: 0, fire: 0, hot: 1, hotT: 12, hoopFlash: [0, 0, 0, 0], twist: null, rerolls: 0, revive: false, hitstop: 0, disp: 0, toast: null, chT: 0, chDone: [], trail: [],
   };
 }
 const P = (id) => S.perks[id] || 0;
@@ -211,7 +291,8 @@ addEventListener('keydown', (e) => {
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault();
   if (!S) return;
   if ((e.code === 'Escape' || e.code === 'KeyP') && (S.mode === 'play' || S.mode === 'paused')) return pause(S.mode === 'play');
-  if (S.mode === 'perk' && /^Digit[1-3]$/.test(e.code)) return choosePerk(+e.code.slice(5) - 1);
+  if ((S.mode === 'perk' || S.mode === 'warm') && /^Digit[1-4]$/.test(e.code)) return choosePerk(+e.code.slice(5) - 1);
+  if (S.mode === 'perk' && e.code === 'KeyR') return reroll();
   if (S.mode !== 'play' || e.repeat) return;
   if (e.code === 'KeyE' || e.code === 'Enter') startCharge();
   if (e.code === 'Space') jump();
@@ -219,11 +300,13 @@ addEventListener('keydown', (e) => {
 });
 addEventListener('keyup', (e) => { keys[e.code] = false; if (S && S.mode === 'play' && (e.code === 'KeyE' || e.code === 'Enter')) releaseShot(); });
 const cam = { x: 0, y: 0, z: 1 };
-let touchTarget = null, perkRects = [];
+let touchTarget = null, perkRects = [], rerollRect = null;
+document.addEventListener('visibilitychange', () => { if (document.hidden && S && S.mode === 'play') pause(true); });
 const toView = (cx, cy) => { const r = cv.getBoundingClientRect(); const ox = (r.width - VW * scale) / 2, oy = (r.height - VH * scale) / 2; const vx = (cx - r.left - ox) / scale, vy = (cy - r.top - oy) / scale; return { vx, vy, x: vx / cam.z + cam.x, y: vy / cam.z + cam.y }; };
 cv.addEventListener('pointerdown', (e) => {
   audio(); if (!S) return; const p = toView(e.clientX, e.clientY);
-  if (S.mode === 'perk') { const k = perkRects.findIndex((r) => p.vx > r.x && p.vx < r.x + r.w && p.vy > r.y && p.vy < r.y + r.h); if (k >= 0) choosePerk(k); return; }
+  if (S.mode === 'perk' && rerollRect && p.vx > rerollRect.x && p.vx < rerollRect.x + rerollRect.w && p.vy > rerollRect.y && p.vy < rerollRect.y + rerollRect.h) return reroll();
+  if (S.mode === 'perk' || S.mode === 'warm') { const k = perkRects.findIndex((r) => p.vx > r.x && p.vx < r.x + r.w && p.vy > r.y && p.vy < r.y + r.h); if (k >= 0) choosePerk(k); return; }
   if (S.mode !== 'play') return;
   touchTarget = p; cv.setPointerCapture(e.pointerId);
 });
@@ -241,21 +324,44 @@ function burst(x, y, n, colors) { for (let i = 0; i < n; i++) S.confetti.push({ 
 const otLabel = (q) => (q <= 4 ? `Q${q}` : `OT${q - 4}`);
 // David got trolled: frustration up, combo gone, caption, maybe Coach saves you
 function trolled(by, what, amt) {
-  if (S.fx.inv > 0 || S.mode !== 'play') return false;
-  const dmg = amt * Math.pow(0.75, P('skin')) * (S.q <= 2 ? 0.7 : 1) * (1 + Math.max(0, S.q - 3) * 0.07); // gentle start, nasty overtime
+  if (S.fx.inv > 0 || S.mode !== 'play' || S.d.dunk) return false;
+  const dmg = amt * Math.pow(0.75, P('skin')) * (1 - U('skin') * 0.06) * (S.q <= 2 ? 0.7 : 1) * (1 + Math.max(0, S.q - 3) * 0.07) * (TW('double') ? 1.4 : 1) * (S.fire > 0 ? 0.5 : 1); // gentle start, nasty overtime
+  if (S.fire > 0) { S.fire = 0; float('🧯 FIRE PUT OUT', S.d.x, S.d.y - 90, '#9ad7ff', 18); }
+  S.shake = Math.max(S.shake, 0.5);
   S.frus = clamp(S.frus + dmg, 0, 100); S.trolledTotal++; S.trolledBy[by] = (S.trolledBy[by] || 0) + 1;
   if (S.combo >= 3) float(`COMBO LOST (${S.combo})`, S.d.x, S.d.y - 70, '#ff6363');
   S.combo = 0; S.cleanT = 0; S.fx.inv = 0.9; S.d.react = 'oof'; S.d.reactT = 0.9; S.zoom = 0.6;
   SFX.trolled(); caption(`🤡 ${CAST[by].name.toUpperCase()}: ${what}`);
   const e = S.enemies.find((x) => x.id === by); if (e) { e.celebrate = 1.5; if (by === 'ethan') SFX.ethan(); }
-  if (S.frus >= 100) { rageQuit(); return true; }
+  if (S.frus >= 100) {
+    if (S.revive) { S.revive = false; S.frus = 45; S.fx.inv = 2.5; S.enemies.forEach((x) => (x.stun = 3)); SFX.perk(); S.shake = 1; caption('😤 SECOND WIND. DAVID IS NOT DONE.', true); burst(S.d.x, S.d.y - 20, 40); return true; }
+    rageQuit(); return true;
+  }
   if (by !== 'brent' && S.coachTalk <= 0 && RNG() < 0.12 + P('pet') * 0.15) { // Coach Brent catches it
     S.coachTalk = 3; setTimeout(() => { if (!S || S.mode !== 'play') return; const t = S.enemies.find((x) => x.id === by); if (t) { t.stun = 4; } SFX.whistle(); say('Coach Brent', `${CAST[by].name.toUpperCase()}! LAPS!`); S.frus = Math.max(0, S.frus - 8); }, 600);
   }
   return true;
 }
 function missionProgress(id, n = 1, set = false) { const m = S.mission; if (!m || m.done || m.id !== id) return; m.p = set ? Math.max(m.p, n) : m.p + n; if (m.p >= m.goal) { m.done = true; addPoints(m.reward, S.d.x, S.d.y - 90, '🎯 MISSION '); S.frus = Math.max(0, S.frus - 15); SFX.perk(); caption('🎯 MISSION COMPLETE', true); } }
-function addPoints(n, x, y, prefix = '+') { n = Math.round(n); S.score += n; float(prefix + n, x, y, '#ffd34d', 22); }
+function addPoints(n, x, y, prefix = '+') { n = Math.round(n); S.score += n; float(prefix + n.toLocaleString(), x, y, '#ffd34d', 22); }
+function toast(text) { S.toast = { text, t: 3.2 }; SFX.coin(); }
+// challenges pay out live, so closing the tab doesn't lose them
+function checkChallenges() {
+  const r = S;
+  for (const id of META.ch.slice()) {
+    const c = CH.find((x) => x.id === id), g = chGoal(id);
+    if (c.m(r) >= g) {
+      const pay = chReward(id); META.bucks += pay; META.tiers[id] = (META.tiers[id] || 0) + 1; S.bucksCh = (S.bucksCh || 0) + pay;
+      S.chDone.push(`${c.t(g)} · +${pay} 🪙`); toast(`✅ CHALLENGE: ${c.t(g)} · +${pay} 🪙`);
+      META.ch = META.ch.filter((x) => x !== id); const pool = CH.filter((x) => !META.ch.includes(x.id) && x.id !== id); META.ch.push(pool[Math.floor(Math.random() * pool.length)].id); saveMeta();
+    }
+  }
+}
+function catchFire() {
+  if (S.fire > 0) { S.fire = Math.min(14, S.fire + 2); return; }
+  S.fire = 8 + U('fire') * 1.5 + P('heat') * 3; S.fires++; missionProgress('fire');
+  SFX.perk(); tone(180, 0.6, 'sawtooth', 0.06, 500); caption('🔥 DAVID IS ON FIRE 🔥', true); S.shake = 0.8; burst(S.d.x, S.d.y - 30, 40, ['#ff5a3c', '#ffb547', '#ffd34d']);
+}
 
 // =================== spawning ===================
 function spawnEnemy(id) {
@@ -265,10 +371,13 @@ function spawnEnemy(id) {
   S.enemies.push(e); float(`${e.name} joined the trolling`, e.x, e.y - 60, '#ff8a5c');
 }
 function spawnBall() {
-  if (S.balls.length >= 3 + Math.floor(S.q / 3)) return;
-  let x, y; do { x = rand(140, MAPW - 140); y = rand(250, 820); } while (dist({ x, y }, S.d) < 160);
-  const gold = RNG() < 0.1 + P('gold') * 0.1;
-  S.balls.push({ x, y, gold, t: 0 });
+  const cap = TW('storm') ? 15 : Math.min(10, 6 + Math.floor(S.q / 2));
+  if (S.balls.filter((b) => !b.fake).length >= cap) return;
+  let x, y, n = 0; do { x = rand(140, MAPW - 140); y = rand(250, 820); } while (dist({ x, y }, S.d) < 120 && ++n < 20);
+  const gold = RNG() < 0.1 + P('gold') * 0.1 + U('luck') * 0.04 + (TW('gold') ? 0.35 : 0);
+  const b = { x, y, gold, t: 0 };
+  if (RNG() < 0.6) b.air = { sx: clamp(x + rand(-250, 250), 80, MAPW - 80), sy: 150, k: 0 }; // tossed in from the stands
+  S.balls.push(b);
 }
 function startQuarter() {
   const q = S.q; S.qT = 0;
@@ -277,29 +386,46 @@ function startQuarter() {
     if (q % 3 === 0 && S.enemies.filter((e) => e.id === 'ethan').length < 3) spawnEnemy('ethan');
   }
   const m = pick(MISSIONS); S.mission = { ...m, p: 0, done: false };
-  caption(`${otLabel(q)} · ${q > 4 ? 'OVERTIME. IT NEVER ENDS.' : ['', 'TIP-OFF', 'IT GETS WORSE', 'THE DUO ARRIVES', 'EVERYONE IS HERE'][q]}`, true);
+  S.twist = q >= 2 ? pick(TWISTS.filter((t) => (t.id !== 'banana' || q >= 3) && (!S.lastTwist || t.id !== S.lastTwist))) : null;
+  if (S.twist) {
+    S.lastTwist = S.twist.id;
+    if (S.twist.id === 'swarm') for (let i = 0; i < 3; i++) { spawnEnemy('ethan'); const e = S.enemies[S.enemies.length - 1]; e.temp = true; e.name = pick(['Ethan Jr', 'Mini Ethan', 'Ethan 2', 'Lil Ethan']); }
+    if (S.twist.id === 'storm') for (let i = 0; i < 6; i++) spawnBall();
+    setTimeout(() => { if (S && S.mode === 'play' && S.twist) say('⚡ TWIST', S.twist.desc); }, 900);
+  }
+  caption(`${otLabel(q)} · ${S.twist ? '⚡ ' + S.twist.name : 'TIP-OFF'}`, true);
   SFX.whistle();
 }
 function endQuarter() {
   SFX.buzzer(); S.frus = Math.max(0, S.frus - 12); addPoints(150 * S.q, S.d.x, S.d.y - 60, `${otLabel(S.q)} SURVIVED +`);
-  S.mode = 'perk';
-  const avail = PERKS.filter((p) => P(p.id) < p.stack);
-  const offers = []; while (offers.length < 3 && avail.length) offers.push(avail.splice(Math.floor(RNG() * avail.length), 1)[0]);
+  S.enemies = S.enemies.filter((e) => { if (e.temp && e.carry) S.balls.push({ x: e.x, y: e.y, gold: false, t: 0 }); return !e.temp; });
+  S.mode = 'perk'; S.d.charge = null; rollPerks();
+}
+function rollPerks() {
+  // rarer perks show up less often
+  const avail = PERKS.filter((p) => P(p.id) < p.stack), w = (p) => [6, 3, 1.5][p.rare || 0];
+  const offers = [], n = 3 + U('card');
+  while (offers.length < n && avail.length) { let tot = avail.reduce((a, p) => a + w(p), 0), r = RNG() * tot, i = 0; while (i < avail.length - 1 && (r -= w(avail[i])) > 0) i++; offers.push(avail.splice(i, 1)[0]); }
   S.offers = offers;
 }
+function reroll() { if (S.mode !== 'perk' || S.rerolls <= 0) return; S.rerolls--; SFX.pick(); rollPerks(); }
 function choosePerk(k) {
   const p = S.offers && S.offers[k]; if (!p) return;
   S.perks[p.id] = P(p.id) + 1; if (p.id === 'heal') S.frus = Math.max(0, S.frus - 40);
+  if (S.mode === 'warm') { S.mode = 'play'; S.offers = null; return; }
   SFX.perk(); S.offers = null; S.mode = 'play'; S.q++; startQuarter();
 }
 
 // =================== actions ===================
 function jump() { if (S.d.z <= 0 && !(S.fx.freeze > 0 && !P('ice'))) { S.d.vz = 340; SFX.jump(); } }
 function nearestHoop() { let best = null, bd = 1e9; for (const h of HOOPS) { const dd = dist(h, S.d); if (dd < bd) { bd = dd; best = h; } } return { h: best, d: bd }; }
-function startCharge() { if (S.d.balls <= 0 || S.d.charge) return; const { d } = nearestHoop(); if (d > SHOOT_RANGE) { float('Too far! Get closer to a hoop', S.d.x, S.d.y - 60, '#ff8a5c', 15); return; } S.d.charge = { t: 0 }; }
+function startCharge() { if (S.d.balls <= 0 || S.d.charge || S.d.dunk) return; const { h, d } = nearestHoop();
+  if (d < 95 && S.d.z <= 0) return dunk(h); if (d > SHOOT_RANGE) { float('Too far! Get closer to a hoop', S.d.x, S.d.y - 60, '#ff8a5c', 15); return; } S.d.charge = { t: 0 }; }
 function shotZone() { // green zone size depends on distance, Jose's defense and Deep Range
   const { d } = nearestHoop(); const jose = S.enemies.find((e) => e.id === 'jose' && !e.stun && dist(e, S.d) < 110);
-  let z = 0.26 - Math.max(0, d - 120) / 900 + P('range') * 0.04; if (jose) z *= 0.55; return { z: clamp(z, 0.07, 0.4), jose: !!jose };
+  let z = 0.26 - Math.max(0, d - 120) / 900 + P('range') * 0.04; if (jose) z *= 0.55;
+  if (TW('moon')) z *= 1.5; if (TW('tiny')) z *= 0.65; if (S.fire > 0) z *= 1.7;
+  return { z: clamp(z, 0.07, 0.55), jose: !!jose };
 }
 function meterValue(t) { const k = (t * 1.25) % 2; return k < 1 ? k : 2 - k; } // 0 -> 1 -> 0 ping-pong
 function releaseShot() {
@@ -308,8 +434,29 @@ function releaseShot() {
   const kind = off < z / 4 ? 'swish' : off < z / 2 ? 'make' : 'miss';
   const gold = S.d.gold > 0; if (gold) S.d.gold--; S.d.balls--; S.attempts++;
   S.shots.push({ sx: S.d.x, sy: S.d.y - 30, h, k: 0, kind, dir: v - target, three: d > ARC, gold });
+  if (kind === 'swish') { S.hitstop = 0.18; float('PERFECT', S.d.x, S.d.y - 80, '#7fd0ff', 16); }
+}
+function dunk(h) {
+  const d = S.d, jose = S.enemies.find((e) => e.id === 'jose' && !e.stun && dist(e, h) < 95);
+  const gold = d.gold > 0; if (gold) d.gold--; d.balls--; S.attempts++;
+  d.dunk = { t: 0, h, sx: d.x, sy: d.y, gold, blocked: !!jose && S.fire <= 0 && RNG() < 0.6 };
+  SFX.jump(); d.face = h.x > d.x ? 1 : -1;
+}
+function finishDunk() {
+  const k = S.d.dunk; S.d.dunk = null; S.d.z = 0; S.fx.inv = Math.max(S.fx.inv, 0.5);
+  if (k.blocked) {
+    S.combo = 0; S.shake = 0.6; SFX.clank(); caption('🚫 BLOCKED BY JOSE. "NOT IN MY HOUSE."'); const j = S.enemies.find((e) => e.id === 'jose'); if (j) j.celebrate = 1.5;
+    S.balls.push({ x: clamp(k.h.x + k.h.dir * rand(80, 180), 80, MAPW - 80), y: k.h.y + rand(-140, 140), gold: false, t: 0 }); return;
+  }
+  const r = P('poster') ? 220 : 130; let n = 0;
+  for (const e of S.enemies) if (!e.coach && !e.stun && dist(e, k.h) < r) { e.stun = P('poster') ? 4 : 2.5; e.celebrate = 0; n++; if (e.carry) { e.carry = 0; S.balls.push({ x: e.x, y: e.y, gold: false, t: 0 }); } }
+  S.dunks++; missionProgress('dunk'); S.shake = 1; S.hitstop = 0.22; noise(0.3, 0.12, 300); tone(90, 0.3, 'square', 0.08, -40);
+  burst(k.h.x, k.h.y, 26);
+  if (n) { S.posters += n; missionProgress('poster', n); addPoints(n * (P('poster') ? 120 : 60), k.h.x, k.h.y - 80, `🖼️ POSTERIZED ×${n} +`); caption(n > 1 ? `🖼️ DAVID POSTERIZED ${n} TROLLS` : '🖼️ POSTERIZED!', true); }
+  resolveShot({ h: k.h, kind: 'dunk', three: false, gold: k.gold });
 }
 function resolveShot(s) {
+  if (s.kind === 'miss' && P('bank') && RNG() < 0.25 * P('bank')) { s.kind = 'make'; float('BANK!', s.h.x, s.h.y - 90, '#7fd0ff', 20); }
   if (s.kind === 'miss') {
     SFX.clank(); S.combo = 0; float(pick(['BRICK', 'CLANK', 'AIRBALL', 'off the rim']), s.h.x, s.h.y - 30, '#ff6363');
     const laugh = S.enemies.filter((e) => dist(e, S.d) < 400); if (laugh.length) { SFX.laugh(); laugh.forEach((e) => (e.celebrate = 1)); }
@@ -317,45 +464,56 @@ function resolveShot(s) {
     return;
   }
   S.combo++; S.bestCombo = Math.max(S.bestCombo, S.combo); S.makes++;
-  const mult = 1 + Math.min(S.combo - 1, 16) * 0.25;
-  let pts = (s.three ? 3 : 2) * 20 * mult * (1 + P('swag') * 0.25) * (s.gold ? 3 : 1) * (s.kind === 'swish' ? 1.5 : 1);
-  addPoints(pts, s.h.x, s.h.y - 40);
+  const mult = 1 + Math.min(S.combo - 1, 16) * 0.25, hi = HOOPS.indexOf(s.h), hot = hi === S.hot;
+  let pts = (s.three ? 3 + P('splash') : 2) * 20 * mult * (1 + P('swag') * 0.25) * (s.gold ? 3 : 1) * (s.kind === 'swish' ? 1.5 : s.kind === 'dunk' ? 0.8 : 1) * (hot ? 2 : 1) * (S.fire > 0 ? 2 : 1) * (TW('double') ? 2 : 1) * (TW('tiny') ? 2.5 : 1);
+  addPoints(pts, s.h.x, s.h.y - 40); S.hoopFlash[hi] = 1;
+  if (hot) { missionProgress('hot'); float('🔥 HOT HOOP 2×', s.h.x, s.h.y - 110, '#ff8a5c', 18); moveHot(); }
+  if (s.gold) S.golds++;
   s.kind === 'swish' ? SFX.swish() : SFX.make(); if (S.combo >= 3) SFX.combo(S.combo);
-  S.frus = Math.max(0, S.frus - (s.kind === 'swish' ? 11 : 7));
+  S.frus = Math.max(0, S.frus - (s.kind === 'swish' ? 11 : s.kind === 'dunk' ? 5 : 7) * (TW('hype') ? 2 : 1));
+  if (P('recycle') && RNG() < 0.3 * P('recycle') && S.d.balls < 1 + P('hands')) { S.d.balls++; float('♻️ BALL BACK', S.d.x, S.d.y - 60, '#3fcf7a', 15); }
+  if (S.combo >= (P('heat') ? 4 : 5)) catchFire();
+  const ann = { 3: 'HEATING UP', 8: 'UNSTOPPABLE', 12: 'UNGUARDABLE', 16: 'DAVID MODE', 20: 'HALL OF FAME', 25: 'IS THIS EVEN DAVID?' }[S.combo];
+  if (ann) setTimeout(() => S && caption(`📢 ${ann}`, true), 350);
   if (s.three) { S.threes++; missionProgress('threes'); }
   if (s.kind === 'swish') { S.swishes++; missionProgress('swish'); }
   if (s.gold) { missionProgress('gold'); burst(s.h.x, s.h.y, 30, ['#ffd34d', '#fff2b0']); }
   missionProgress('streak', S.combo, true);
   if (S.combo % 3 === 0) { S.claps = Math.min(3, S.claps + 1); float('📣 CLAP BACK READY (Q)', S.d.x, S.d.y - 90, '#3fcf7a', 16); }
-  const label = s.kind === 'swish' ? (s.three ? 'SPLASH!' : 'SWISH!') : s.three ? 'THREE!' : 'BUCKET';
+  const label = s.kind === 'dunk' ? pick(['SLAM!', 'JAM!', 'BOOM!', 'FACIAL!']) : s.kind === 'swish' ? (s.three ? 'SPLASH!' : 'SWISH!') : s.three ? 'THREE!' : 'BUCKET';
   if (S.combo >= 5) caption(`${label}  ×${mult.toFixed(2)} COMBO`); else float(label, s.h.x, s.h.y - 70, '#3fcf7a', 22);
 }
 function clapBack() {
   if (S.claps <= 0) return; S.claps--; SFX.clap(); S.zoom = 0.8;
   const r = 230 + P('clap') * 80, dur = 3.5 + P('clap') * 1.5; let n = 0;
-  for (const e of S.enemies) if (dist(e, S.d) < r) { e.stun = dur; n++; e.celebrate = 0; if (e.carry) { e.carry = 0; S.d.balls = Math.min(S.d.balls + 1, 1 + P('hands')); } }
+  for (const e of S.enemies) if (dist(e, S.d) < r) { e.stun = dur; n++; S.stunned++; e.celebrate = 0; if (e.carry) { e.carry = 0; S.d.balls = Math.min(S.d.balls + 1, 1 + P('hands')); } }
   burst(S.d.x, S.d.y - 20, 30); caption(n ? `📣 DAVID CLAPPED BACK · ${n} TROLL${n > 1 ? 'S' : ''} STUNNED` : '📣 DAVID CLAPPED BACK AT NOBODY', true);
   missionProgress('clapn', n, true); addPoints(n * 60, S.d.x, S.d.y - 60, 'CLAP BACK +');
   S.projectiles = S.projectiles.filter((p) => dist(p, S.d) > r);
 }
+function moveHot() { let n; do { n = Math.floor(RNG() * 4); } while (n === S.hot); S.hot = n; S.hotT = 12; }
 function rageQuit() { S.mode = 'over'; SFX.sad(); caption('💢 DAVID RAGE-QUIT', true); S.zoom = 1.4; setTimeout(endScreen, 1500); }
 
 // =================== enemy AI (each one trolls differently) ===================
 function moveToward(e, tx, ty, sp, dt) { const dx = tx - e.x, dy = ty - e.y, d = Math.hypot(dx, dy); if (d < 2) return d; const nx = e.x + dx / d * sp * dt, ny = e.y + dy / d * sp * dt; if (!solid(nx, e.y, 10)) e.x = nx; if (!solid(e.x, ny, 10)) e.y = ny; e.walk += dt * sp / 18; if (Math.abs(dx) > 1) e.face = dx > 0 ? 1 : -1; return d; }
 function updateEnemies(dt) {
-  const d = S.d, haste = 1 + (S.q - 1) * 0.07;
+  const d = S.d, haste = (1 + (S.q - 1) * 0.07) * (TW('turbo') ? 1.3 : 1);
   for (const e of S.enemies) {
     e.celebrate = Math.max(0, e.celebrate - dt);
     if (e.stun > 0) { e.stun -= dt; continue; }
     e.cd -= dt; const dd = dist(e, d);
+    if (S.fire > 0 && !e.coach && dd < 38) { // on fire: trolls bounce off David
+      const a = Math.atan2(e.y - d.y, e.x - d.x); e.x = clamp(e.x + Math.cos(a) * 60, 60, MAPW - 60); e.y = clamp(e.y + Math.sin(a) * 60, 210, 860); e.stun = 1.6;
+      if (e.carry) { e.carry = 0; d.balls = Math.min(d.balls + 1, 1 + P('hands')); } float('🔥 TOO HOT', e.x, e.y - 40, '#ff8a5c', 14); continue;
+    }
     if (e.id === 'ethan') {
       if (e.carry) { // running away with your ball, laughing
         const ang = Math.atan2(e.y - d.y, e.x - d.x) + Math.sin(S.t * 3 + e.x) * 0.7;
-        moveToward(e, clamp(e.x + Math.cos(ang) * 100, 70, MAPW - 70), clamp(e.y + Math.sin(ang) * 100, 220, 850), 200 * haste, dt);
-        if (dd < 28) { e.carry = 0; e.stun = 2.5; d.balls = Math.min(d.balls + 1, 1 + P('hands')); addPoints(80, e.x, e.y - 40, 'GOT IT BACK +'); missionProgress('ethan'); say('Ethan', pick(['NOOO.', 'I\'m telling Coach!', 'That was a test.'])); }
-        e.dropT = (e.dropT || 0) + dt; if (e.dropT > 8) { e.carry = 0; S.balls.push({ x: e.x, y: e.y, gold: false, t: 0 }); }
-      } else if (d.balls > 0) { if (moveToward(e, d.x, d.y, 205 * haste, dt) < 24 && S.fx.inv <= 0) { d.balls--; if (d.gold > d.balls) d.gold = d.balls; e.carry = 1; e.dropT = 0; d.charge = null; trolled('ethan', pick(['STOLE YOUR BALL', 'BALL? GONE.', 'HAHAHAHA']), 9); } }
-      else { if (e.cd <= 0) { e.tx = d.x + rand(-200, 200); e.ty = d.y + rand(-150, 150); e.cd = rand(1, 2.5); } moveToward(e, clamp(e.tx, 70, MAPW - 70), clamp(e.ty, 220, 850), 150 * haste, dt); if (dd < 22 && S.fx.inv <= 0) trolled('ethan', 'BOOP. GOT YOU.', 5); }
+        moveToward(e, clamp(e.x + Math.cos(ang) * 100, 70, MAPW - 70), clamp(e.y + Math.sin(ang) * 100, 220, 850), 135 * haste * (e.temp ? 0.85 : 1), dt);
+        if (dd < 42) { e.carry = 0; e.stun = 2.5; e.cd = 2; d.balls = Math.min(d.balls + 1, 1 + P('hands')); addPoints(80, e.x, e.y - 40, 'GOT IT BACK +'); missionProgress('ethan'); say('Ethan', pick(['NOOO.', 'I\'m telling Coach!', 'That was a test.'])); }
+        e.dropT = (e.dropT || 0) + dt; if (e.dropT > 6) { e.cd = 3; e.carry = 0; S.balls.push({ x: e.x, y: e.y, gold: false, t: 0 }); }
+      } else if (d.balls > 0 && e.cd <= 0 && !d.dunk) { if (moveToward(e, d.x, d.y, 132 * haste * (e.temp ? 0.8 : 1), dt) < 22 && S.fx.inv <= 0) { d.balls--; if (d.gold > d.balls) d.gold = d.balls; e.carry = 1; e.dropT = 0; d.charge = null; trolled('ethan', pick(['STOLE YOUR BALL', 'BALL? GONE.', 'HAHAHAHA']), 9); } }
+      else { if (e.cd <= 0) { e.tx = d.x + rand(-200, 200); e.ty = d.y + rand(-150, 150); e.cd = rand(1, 2.5); } moveToward(e, clamp(e.tx, 70, MAPW - 70), clamp(e.ty, 220, 850), 105 * haste, dt); if (dd < 20 && S.fx.inv <= 0 && d.balls === 0) { trolled('ethan', 'BOOP. GOT YOU.', 5); e.cd = 3; } }
     } else if (e.id === 'aleksei') { // keeps his distance and fires sarcasm
       const want = 260, ang = Math.atan2(e.y - d.y, e.x - d.x); moveToward(e, clamp(d.x + Math.cos(ang) * want, 70, MAPW - 70), clamp(d.y + Math.sin(ang) * want, 220, 850), 110 * haste, dt);
       if (e.cd <= 0) { const a = Math.atan2(d.y - e.y, d.x - e.x), sp = 230 * haste; S.projectiles.push({ x: e.x, y: e.y - 20, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, by: 'aleksei', t: 4, text: pick(['WOW', 'INCREDIBLE', 'GREAT JOB', 'SO GOOD', '👏']) }); e.cd = rand(2.6, 3.6) / haste; }
@@ -376,7 +534,7 @@ function updateEnemies(dt) {
       moveToward(e, e.tx, e.ty, 190 * haste, dt);
       if (dd < 26 && S.fx.inv <= 0) { if (!P('ice')) S.fx.reverse = 4; trolled('daniel', P('ice') ? 'TRIED TO CURSE YOU (NOPE)' : 'REVERSED YOUR CONTROLS', 7); }
     } else if (e.id === 'jose') { // guards you when you have the ball, pokes it loose
-      if (d.balls > 0) { const h = nearestHoop().h, gx = d.x + (h.x - d.x) * 0.25, gy = d.y + (h.y - d.y) * 0.25; moveToward(e, gx, gy, 165 * haste, dt); }
+      if (d.balls > 0) { const nh = nearestHoop(), h = nh.h, rim = nh.d < 230, gx = rim ? h.x + (d.x - h.x) * 0.25 : d.x + (h.x - d.x) * 0.25, gy = rim ? h.y + (d.y - h.y) * 0.25 : d.y + (h.y - d.y) * 0.25; moveToward(e, gx, gy, 165 * haste, dt); } // protects the rim when David drives
       else moveToward(e, d.x + 120, d.y, 90 * haste, dt);
       if (dd < 24 && d.balls > 0 && e.cd <= 0 && S.fx.inv <= 0) { d.balls--; d.charge = null; S.balls.push({ x: clamp(d.x + rand(-120, 120), 80, MAPW - 80), y: clamp(d.y + rand(-90, 90), 240, 840), gold: false, t: 0 }); e.cd = 3; trolled('jose', pick(['POKED IT LOOSE', 'NOT IN MY HOUSE', 'TOO SMALL']), 8); }
       if (d.charge && dd < 110 && RNG() < dt * 0.6) say('Jose', pick(CAST.jose.quips));
@@ -395,17 +553,26 @@ function update(dt) {
   for (const f of S.floaters) f.t += dt; S.floaters = S.floaters.filter((f) => f.t < 1.4);
   if (S.caption) { S.caption.t -= dt; if (S.caption.t <= 0) S.caption = null; }
   if (S.zoom > 0) S.zoom = Math.max(0, S.zoom - dt);
+  S.shake = Math.max(0, S.shake - dt * 2.5); S.disp += (S.score - S.disp) * Math.min(1, dt * 8); if (Math.abs(S.score - S.disp) < 1) S.disp = S.score;
+  if (S.toast) { S.toast.t -= dt; if (S.toast.t <= 0) S.toast = null; }
+  for (let i = 0; i < 4; i++) S.hoopFlash[i] = Math.max(0, S.hoopFlash[i] - dt * 2);
   if (S.mode !== 'play') return;
+  if (S.fire > 0) { S.fire -= dt; if (S.fire <= 0) { S.fire = 0; float('fire went out', S.d.x, S.d.y - 70, '#9aa3b2', 14); } S.trail.push({ x: S.d.x + rand(-8, 8), y: S.d.y - S.d.z + rand(-10, 20), t: 0.5 }); }
+  for (const t of S.trail) t.t -= dt; S.trail = S.trail.filter((t) => t.t > 0);
+  S.hotT -= dt; if (S.hotT <= 0) moveHot();
+  S.chT -= dt; if (S.chT <= 0) { S.chT = 0.5; checkChallenges(); }
+  if (TW('banana') && RNG() < dt * 1.2) S.hazards.push({ type: 'banana', x: rand(140, MAPW - 140), y: rand(250, 830), t: 12, by: pick(['frank', 'kalel']) });
   const d = S.d; S.t += dt; S.qT += dt; S.cleanT += dt; S.coachTalk -= dt;
   if (S.bubble) { S.bubble.t -= dt; if (S.bubble.t <= 0) S.bubble = null; }
   for (const k of ['reverse', 'slow', 'look', 'inv']) if (S.fx[k] > 0) S.fx[k] = Math.max(0, S.fx[k] - dt);
   if (d.reactT > 0) d.reactT -= dt; else d.react = null;
   missionProgress('clean', S.cleanT, true);
   // balls
-  S.ballT -= dt; if (S.ballT <= 0) { spawnBall(); S.ballT = rand(1.2, 2.2); }
+  S.ballT -= dt; if (S.ballT <= 0) { spawnBall(); S.ballT = TW('storm') ? rand(0.15, 0.3) : rand(0.45, 0.85); }
   const cap = 1 + P('hands');
   for (const b of S.balls) {
     b.t += dt;
+    if (b.air) { b.air.k += dt / 0.8; if (b.air.k >= 1) { b.air = null; tone(200, 0.05, 'triangle', 0.03); } continue; }
     if (P('magnet') && !b.fake && d.balls < cap && dist(b, d) < 260) { const a = Math.atan2(d.y - b.y, d.x - b.x); b.x += Math.cos(a) * 320 * dt; b.y += Math.sin(a) * 320 * dt; }
     if (dist(b, d) < 26 && d.z < 20 && (d.balls < cap || b.fake)) {
       b.got = true;
@@ -415,7 +582,7 @@ function update(dt) {
   }
   S.balls = S.balls.filter((b) => !b.got && b.t < 22);
   // shots in the air
-  for (const s of S.shots) { s.k += dt / 0.75; if (s.k >= 1 && !s.done) { s.done = true; resolveShot(s); } } S.shots = S.shots.filter((s) => s.k < 1.35);
+  for (const s of S.shots) { s.k += dt / (TW('moon') ? 1.15 : 0.75); if (s.k >= 1 && !s.done) { s.done = true; resolveShot(s); } } S.shots = S.shots.filter((s) => s.k < 1.35);
   if (d.charge) d.charge.t += dt;
   // projectiles (sarcasm)
   for (const p of S.projectiles) { p.x += p.vx * dt; p.y += p.vy * dt; p.t -= dt; if (!p.hit && dist(p, d) < 22 && d.z < 16) { p.hit = true; S.fx.slow = 1.2; trolled(p.by, `"${p.text}"`, 7); } }
@@ -431,12 +598,18 @@ function update(dt) {
   }
   updateEnemies(dt);
   // movement
+  if (d.dunk) { // flying to the rim
+    const k = d.dunk; k.t += dt / 0.38; const e = Math.min(1, k.t);
+    d.x = k.sx + (k.h.x + k.h.dir * 22 - k.sx) * e; d.y = k.sy + (k.h.y + 14 - k.sy) * e; d.z = Math.sin(e * Math.PI * 0.85) * 80; d.face = k.h.dir > 0 ? -1 : 1;
+    if (k.t >= 1) finishDunk();
+    if (S.qT >= S.qLen) endQuarter(); return;
+  }
   const frozen = S.fx.freeze > 0 && !P('ice') && S.fx.freeze > 1.4;
   let ix = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0), iy = (keys.KeyS || keys.ArrowDown ? 1 : 0) - (keys.KeyW || keys.ArrowUp ? 1 : 0);
   if (touchTarget) { const tx = touchTarget.x - d.x, ty = touchTarget.y - d.y, tl = Math.hypot(tx, ty); if (tl > 12) { ix = tx / tl; iy = ty / tl; } }
   if (S.fx.reverse) { ix = -ix; iy = -iy; }
   const len = Math.hypot(ix, iy), run = keys.ShiftLeft || keys.ShiftRight || (touchTarget && Math.hypot(touchTarget.x - d.x, touchTarget.y - d.y) > 170);
-  let sp = (run ? 270 : 175) * (1 + P('legs') * 0.12) * (S.fx.slow ? 0.5 : 1) * (d.react === 'slip' ? 0.25 : 1) * (d.charge ? 0.45 : 1);
+  let sp = (run ? 270 : 175) * (1 + P('legs') * 0.12) * (TW('turbo') ? 1.3 : 1) * (S.fire > 0 ? 1.15 : 1) * (S.fx.slow ? 0.5 : 1) * (d.react === 'slip' ? 0.25 : 1) * (d.charge ? 0.45 : 1);
   if (len > 0 && !frozen) {
     const vx = ix / len * sp, vy = iy / len * sp;
     if (!solid(d.x + vx * dt, d.y)) d.x += vx * dt; if (!solid(d.x, d.y + vy * dt)) d.y += vy * dt;
@@ -478,6 +651,7 @@ function drawPerson(n, now) {
 }
 function drawDavid(now) {
   const d = S.d, x = d.x, y = d.y - d.z, w = d.moving ? Math.sin(d.walk) : 0, bob = d.moving ? Math.abs(Math.sin(d.walk)) * 2 : Math.sin(now * 2.2) * 1.2;
+  if (S.fire > 0) { for (let i = 0; i < 6; i++) { const a = now * 7 + i, fl = 10 + Math.abs(Math.sin(now * 13 + i * 2)) * 16; c.fillStyle = i % 2 ? 'rgba(255,90,40,.55)' : 'rgba(255,200,60,.6)'; c.beginPath(); c.ellipse(x + Math.cos(a) * 12, y - 10 - fl / 2, 6, fl, 0, 0, 6.3); c.fill(); } }
   c.fillStyle = 'rgba(0,0,0,.28)'; c.beginPath(); c.ellipse(d.x, d.y + 20, Math.max(6, 15 - d.z / 12), Math.max(2, 6 - d.z / 30), 0, 0, 6.3); c.fill();
   if (S.fx.inv > 0 && Math.floor(now * 20) % 2) c.globalAlpha = 0.5;
   c.save(); c.translate(x, y - bob);
@@ -488,15 +662,15 @@ function drawDavid(now) {
   c.fillStyle = '#163f80'; c.fillRect(-11, -2, 22, 9); c.fillStyle = '#1f5fbf'; c.beginPath(); c.roundRect(-12, -18, 24, 20, 6); c.fill();
   c.fillStyle = '#fff'; c.font = '800 11px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText('15', 0, -4);
   c.strokeStyle = '#a8724c'; c.lineWidth = 5; c.lineCap = 'round'; c.beginPath();
-  if (d.charge) { c.moveTo(-10, -14); c.lineTo(-4, -34); c.moveTo(10, -14); c.lineTo(4, -34); }
+  if (d.charge || d.dunk) { c.moveTo(-10, -14); c.lineTo(-4, -34); c.moveTo(10, -14); c.lineTo(4, -34); }
   else if (d.react === 'oof') { c.moveTo(-11, -14); c.lineTo(-6, -30); c.moveTo(11, -14); c.lineTo(6, -30); }
   else { c.moveTo(-12, -14); c.lineTo(-15 - w * 3, 2); c.moveTo(12, -14); c.lineTo(15 + w * 3, 2); }
   c.stroke();
-  if (d.charge) { c.fillStyle = d.gold ? '#ffd34d' : '#e07a2e'; c.beginPath(); c.arc(0, -40, 7, 0, 6.3); c.fill(); }
+  if (d.charge || d.dunk) { c.fillStyle = (d.dunk ? d.dunk.gold : d.gold) ? '#ffd34d' : '#e07a2e'; c.beginPath(); c.arc(0, -40, 7, 0, 6.3); c.fill(); }
   else for (let i = 0; i < d.balls; i++) { c.fillStyle = i < d.gold ? '#ffd34d' : '#e07a2e'; c.beginPath(); c.arc((16 + i * 6) * d.face, 6 + Math.abs(Math.sin(now * 8 + i)) * 6, 7, 0, 6.3); c.fill(); }
   c.fillStyle = S.frus > 75 ? '#c0603c' : '#a8724c'; c.beginPath(); c.arc(0, -28, 11, 0, 6.3); c.fill();
   c.fillStyle = '#1b1410'; for (let i = -9; i <= 9; i += 4.5) { c.beginPath(); c.arc(i, -37 + Math.abs(i) * 0.25, 4.6, 0, 6.3); c.fill(); }
-  c.fillStyle = '#ff5a3c'; c.fillRect(-11.5, -35, 23, 4);
+  const band = (BANDS.find((b) => b[0] === META.band) || BANDS[0])[2]; c.fillStyle = band === 'rainbow' ? `hsl(${(now * 160) % 360},90%,60%)` : band; c.fillRect(-11.5, -35, 23, 4);
   const f = d.face; c.fillStyle = '#111';
   if (d.react) { c.font = '9px sans-serif'; c.fillText('x', -4 + f * 2, -25); c.fillText('x', 4 + f * 2, -25); } else { c.fillRect(-4 + f * 2, -29, 2.4, 3); c.fillRect(3 + f * 2, -29, 2.4, 3); }
   c.strokeStyle = '#111'; c.lineWidth = 1.4; c.beginPath(); if (S.combo >= 3 && !d.react) c.arc(f * 2, -23, 4, 0.1, Math.PI - 0.1); else if (d.react || S.frus > 60) c.arc(f * 2, -18, 3, Math.PI + 0.3, -0.3); else { c.moveTo(-2 + f * 2, -21); c.lineTo(3 + f * 2, -21); } c.stroke();
@@ -532,7 +706,7 @@ function draw() {
   const st = S || { d: { x: 900, y: 500 }, zoom: 0 };
   const z = 1 + Math.min(1, st.zoom || 0) * 0.3; cam.z = z; const vw = VW / z, vh = VH / z;
   cam.x += (clamp(st.d.x - vw / 2, 0, MAPW - vw) - cam.x) * 0.15; cam.y += (clamp(st.d.y - vh / 2, 0, MAPH - vh) - cam.y) * 0.15;
-  const shake = S && (S.fx.look > 0 || S.fx.freeze > 1.4) ? 3 : 0;
+  const shake = S ? (S.fx.look > 0 || S.fx.freeze > 1.4 ? 3 : 0) + S.shake * 9 : 0;
   c.save(); c.beginPath(); c.rect(0, 0, VW, VH); c.clip(); c.scale(z, z); c.translate(-Math.round(cam.x) + Math.sin(now * 55) * shake, -Math.round(cam.y) + Math.cos(now * 47) * shake);
   c.fillStyle = '#2b3140'; c.fillRect(0, 0, MAPW, MAPH);
   COURTS.forEach(court);
@@ -541,11 +715,16 @@ function draw() {
   const loud = S && (S.combo >= 3 || S.mode !== 'play');
   for (const p of crowd) { const j = loud ? Math.abs(Math.sin(now * 8 + p.p)) * 6 : Math.abs(Math.sin(now * 1.5 + p.p)) * 1.5; c.fillStyle = p.c; c.fillRect(p.x - 7, p.y - j, 14, 12); c.fillStyle = p.s; c.beginPath(); c.arc(p.x, p.y - 7 - j, 6, 0, 6.3); c.fill(); }
   [300, 900, 1500].forEach((bx, i) => { c.fillStyle = ['#ff5a3c', '#1f5fbf', '#ffb547'][i]; c.fillRect(bx - 110, 4, 220, 46); c.fillStyle = '#fff'; c.font = '800 34px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText('HOOPS', bx, 40); });
-  HOOPS.forEach((h) => { c.fillStyle = '#ddd'; c.fillRect(h.x - 4 - h.dir * 6, h.y - 36, 8, 72); c.strokeStyle = '#ff5a3c'; c.lineWidth = 3; c.beginPath(); c.arc(h.x + h.dir * 10, h.y, 11, 0, 6.3); c.stroke(); });
+  HOOPS.forEach((h, i) => {
+    if (S && i === S.hot) { const r = 26 + Math.sin(now * 6) * 4; c.fillStyle = 'rgba(255,120,40,.22)'; c.beginPath(); c.arc(h.x + h.dir * 10, h.y, r + 14, 0, 6.3); c.fill(); c.fillStyle = '#ff8a5c'; c.font = '800 18px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText('🔥 2×', h.x + h.dir * 10, h.y - 44); }
+    if (S && S.hoopFlash[i] > 0) { c.strokeStyle = `rgba(255,255,255,${S.hoopFlash[i]})`; c.lineWidth = 4; c.beginPath(); c.arc(h.x + h.dir * 10, h.y, 11 + (1 - S.hoopFlash[i]) * 40, 0, 6.3); c.stroke(); }
+    c.fillStyle = '#ddd'; c.fillRect(h.x - 4 - h.dir * 6, h.y - 36, 8, 72); c.strokeStyle = '#ff5a3c'; c.lineWidth = 3; c.beginPath(); c.arc(h.x + h.dir * 10, h.y, 11, 0, 6.3); c.stroke(); });
   if (S && S.d.balls > 0 && S.mode === 'play') { const { h, d } = nearestHoop(); c.strokeStyle = d <= SHOOT_RANGE ? 'rgba(63,207,122,.5)' : 'rgba(255,255,255,.15)'; c.lineWidth = 2; c.setLineDash([6, 8]); c.beginPath(); c.arc(h.x, h.y, SHOOT_RANGE, 0, 6.3); c.stroke(); c.setLineDash([]); }
   if (S) {
     for (const h of S.hazards) if (h.type === 'banana') { c.font = '20px sans-serif'; c.textAlign = 'center'; c.fillText('🍌', h.x, h.y + 7); }
-    for (const b of S.balls) { const bob = Math.abs(Math.sin(now * 4 + b.x)) * (b.fake ? 6 : 3); c.fillStyle = 'rgba(0,0,0,.25)'; c.beginPath(); c.ellipse(b.x, b.y + 10, 9, 3, 0, 0, 6.3); c.fill(); if (b.gold) { c.fillStyle = `rgba(255,211,77,${0.3 + 0.2 * Math.sin(now * 6)})`; c.beginPath(); c.arc(b.x, b.y - bob, 16, 0, 6.3); c.fill(); } c.fillStyle = b.gold ? '#ffd34d' : '#e07a2e'; c.beginPath(); c.arc(b.x, b.y - bob, 9, 0, 6.3); c.fill(); c.strokeStyle = 'rgba(0,0,0,.35)'; c.lineWidth = 1; c.beginPath(); c.moveTo(b.x - 9, b.y - bob); c.lineTo(b.x + 9, b.y - bob); c.stroke(); if (b.fake && P('eye')) { c.font = '800 11px "Barlow Condensed", sans-serif'; c.fillStyle = '#ff6363'; c.textAlign = 'center'; c.fillText('FAKE', b.x, b.y - 20); } }
+    for (const t of S.trail) { c.fillStyle = `rgba(255,${120 + Math.round(t.t * 200)},40,${t.t * 1.4})`; c.beginPath(); c.arc(t.x, t.y, 4 + t.t * 10, 0, 6.3); c.fill(); }
+    for (const b of S.balls) if (b.air) { const k = b.air.k, bx = b.air.sx + (b.x - b.air.sx) * k, by = b.air.sy + (b.y - b.air.sy) * k - Math.sin(k * Math.PI) * 140; c.fillStyle = 'rgba(0,0,0,.2)'; c.beginPath(); c.ellipse(b.x, b.y + 10, 9 * k, 3 * k, 0, 0, 6.3); c.fill(); c.fillStyle = b.gold ? '#ffd34d' : '#e07a2e'; c.beginPath(); c.arc(bx, by, 9, 0, 6.3); c.fill(); }
+    for (const b of S.balls) { if (b.air) continue; const bob = Math.abs(Math.sin(now * 4 + b.x)) * (b.fake ? 6 : 3); c.fillStyle = 'rgba(0,0,0,.25)'; c.beginPath(); c.ellipse(b.x, b.y + 10, 9, 3, 0, 0, 6.3); c.fill(); if (b.gold) { c.fillStyle = `rgba(255,211,77,${0.3 + 0.2 * Math.sin(now * 6)})`; c.beginPath(); c.arc(b.x, b.y - bob, 16, 0, 6.3); c.fill(); } c.fillStyle = b.gold ? '#ffd34d' : '#e07a2e'; c.beginPath(); c.arc(b.x, b.y - bob, 9, 0, 6.3); c.fill(); c.strokeStyle = 'rgba(0,0,0,.35)'; c.lineWidth = 1; c.beginPath(); c.moveTo(b.x - 9, b.y - bob); c.lineTo(b.x + 9, b.y - bob); c.stroke(); if (b.fake && P('eye')) { c.font = '800 11px "Barlow Condensed", sans-serif'; c.fillStyle = '#ff6363'; c.textAlign = 'center'; c.fillText('FAKE', b.x, b.y - 20); } }
     const ents = S.enemies.map((e) => ({ y: e.y, f: () => drawPerson(e, now) })); ents.push({ y: S.d.y, f: () => drawDavid(now) }); ents.sort((a, b) => a.y - b.y).forEach((e) => e.f());
     for (const p of S.projectiles) { c.font = '800 13px "Barlow Condensed", sans-serif'; const tw = c.measureText(p.text).width + 12; c.fillStyle = 'rgba(122,60,255,.92)'; c.beginPath(); c.roundRect(p.x - tw / 2, p.y - 11, tw, 20, 9); c.fill(); c.fillStyle = '#fff'; c.textAlign = 'center'; c.fillText(p.text, p.x, p.y + 4); }
     for (const s of S.shots) { const k = Math.min(1, s.k), ex = s.h.x + s.h.dir * 10 + (s.kind === 'miss' ? s.dir * 60 : 0); let bx = s.sx + (ex - s.sx) * k, by = s.sy + (s.h.y - s.sy) * k - Math.sin(k * Math.PI) * 120; if (s.k > 1) { const k2 = s.k - 1; if (s.kind === 'miss') { bx = ex + s.h.dir * 80 * k2; by = s.h.y - 30 * Math.sin(k2 * 8) + 60 * k2; } else by = s.h.y + 50 * k2; } c.fillStyle = s.gold ? '#ffd34d' : '#e07a2e'; c.beginPath(); c.arc(bx, by, 9, 0, 6.3); c.fill(); }
@@ -553,14 +732,24 @@ function draw() {
     for (const p of S.confetti) { c.save(); c.translate(p.x, p.y); c.rotate(p.r); c.fillStyle = p.c; c.fillRect(-4, -2, 8, 4); c.restore(); }
   }
   c.restore();
+  if (S && TW('dark') && S.mode !== 'over') { const sx = (S.d.x - cam.x) * cam.z, sy = (S.d.y - cam.y) * cam.z, g = c.createRadialGradient(sx, sy, 90, sx, sy, 270); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.93)'); c.fillStyle = g; c.fillRect(0, 0, VW, VH); }
+  if (S && S.fire > 0) { c.fillStyle = `rgba(255,90,30,${0.06 + 0.04 * Math.sin(now * 8)})`; c.fillRect(0, 0, VW, VH); }
   if (S) hud(now);
 }
 function panel(x, y, w, h, a = 0.85) { c.fillStyle = `rgba(16,20,28,${a})`; c.beginPath(); c.roundRect(x, y, w, h, 10); c.fill(); c.strokeStyle = 'rgba(255,255,255,.08)'; c.lineWidth = 1; c.stroke(); }
 function hud(now) {
   // score / quarter / clock
   panel(VW / 2 - 140, 8, 280, 56);
-  c.textAlign = 'center'; c.fillStyle = '#fff'; c.font = '800 30px "Barlow Condensed", sans-serif'; c.fillText(S.score.toLocaleString(), VW / 2, 40);
+  c.textAlign = 'center'; c.fillStyle = '#fff'; c.font = '800 30px "Barlow Condensed", sans-serif'; c.fillText(Math.round(S.disp).toLocaleString(), VW / 2, 40);
   c.font = '700 12px Barlow'; c.fillStyle = '#9aa3b2'; const left = Math.max(0, Math.ceil(S.qLen - S.qT)); c.fillText(`${otLabel(S.q)} · 0:${String(left).padStart(2, '0')}${S.daily ? ' · DAILY RUN' : ''}`, VW / 2, 57);
+  if (S.twist && S.mode === 'play') { c.fillStyle = '#c9a8ff'; c.font = '800 14px "Barlow Condensed", sans-serif'; c.fillText(`⚡ ${S.twist.name}`, VW / 2, S.combo >= 2 ? 106 : 84); }
+  if (S.fire > 0) { c.fillStyle = '#ff8a5c'; c.fillRect(VW / 2 - 100, 66, 200 * Math.min(1, S.fire / 10), 5); }
+  // where's the hot hoop, if it's off screen
+  { const h = HOOPS[S.hot], sx = (h.x - cam.x) * cam.z, sy = (h.y - cam.y) * cam.z; if (sx < 0 || sx > VW || sy < 0 || sy > VH) { const ex = clamp(sx, 26, VW - 26), ey = clamp(sy, 120, VH - 70), a = Math.atan2(sy - ey, sx - ex); c.save(); c.translate(ex, ey); c.rotate(a); c.fillStyle = 'rgba(255,138,92,.9)'; c.beginPath(); c.moveTo(14, 0); c.lineTo(-8, -10); c.lineTo(-8, 10); c.fill(); c.restore(); c.fillStyle = '#ff8a5c'; c.font = '800 13px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText('HOT 2×', ex, ey + 24); } }
+  // the next leaderboard name to pass
+  { const board = S.daily ? TOPD : TOP; if (board.length) { const above = board.filter((r) => r.score > S.score); c.textAlign = 'right'; c.font = '700 12px Barlow'; c.fillStyle = above.length ? '#9aa3b2' : '#ffd34d'; c.fillText(above.length ? `Next: ${above[above.length - 1].name} ${above[above.length - 1].score.toLocaleString()} (#${above.length})` : '👑 #1 on the board', VW - 14, 94); } }
+  if (S.toast) { c.font = '800 16px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; const tw = c.measureText(S.toast.text).width + 26; panel(VW / 2 - tw / 2, VH - 98, tw, 30, 0.95); c.fillStyle = '#3fcf7a'; c.fillText(S.toast.text, VW / 2, VH - 78); }
+  c.textAlign = 'center';
   if (S.combo >= 2) { const mult = 1 + Math.min(S.combo - 1, 16) * 0.25; c.fillStyle = S.combo >= 5 ? `hsl(${(now * 200) % 360},90%,65%)` : '#ffd34d'; c.font = '800 20px "Barlow Condensed", sans-serif'; c.fillText(`🔥 ${S.combo} STREAK · ×${mult.toFixed(2)}`, VW / 2, 86); }
   // frustration + claps + perks
   panel(10, 8, 250, 70); c.textAlign = 'left'; c.fillStyle = '#9aa3b2'; c.font = '700 11px Barlow'; c.fillText('FRUSTRATION', 22, 26);
@@ -577,36 +766,65 @@ function hud(now) {
   if (S.caption) { const k = S.caption, sc = 1 + Math.max(0, k.t - (k.big ? 1.7 : 1.1)) * 2.2; c.save(); c.translate(VW / 2, VH * 0.3); c.scale(sc, sc); c.font = `800 ${k.big ? 28 : 21}px "Barlow Condensed", sans-serif`; c.textAlign = 'center'; const tw = Math.min(VW - 40, c.measureText(k.text).width + 30); c.fillStyle = k.text.startsWith('🤡') || k.text.includes('RAGE') ? 'rgba(255,90,60,.92)' : 'rgba(31,95,191,.92)'; c.beginPath(); c.roundRect(-tw / 2, -26, tw, 40, 8); c.fill(); c.fillStyle = '#fff'; c.fillText(k.text, 0, 4, VW - 60); c.restore(); }
   // speech bubble
   if (S.bubble) { c.font = '600 14px Barlow'; const t = `${S.bubble.who}: ${S.bubble.text}`, tw = Math.min(560, c.measureText(t).width + 24); panel(VW / 2 - tw / 2, VH - 52, tw, 32, 0.9); c.fillStyle = '#eee'; c.textAlign = 'center'; c.fillText(t, VW / 2, VH - 31, 540); }
-  else if (S.d.balls > 0 && !S.d.charge && S.t < 60) { c.font = '700 13px Barlow'; c.fillStyle = 'rgba(255,255,255,.75)'; c.textAlign = 'center'; c.fillText('Get inside the green ring, then HOLD E and release in the green', VW / 2, VH - 30); }
+  else if (S.d.balls > 0 && !S.d.charge && S.t < 60) { c.font = '700 13px Barlow'; c.fillStyle = 'rgba(255,255,255,.75)'; c.textAlign = 'center'; c.fillText('Get in the green ring: HOLD E, release in the green. Right at the rim = DUNK', VW / 2, VH - 30); }
   else if (S.t < 8 && S.d.balls === 0 && !S.d.charge) { c.font = '700 13px Barlow'; c.fillStyle = 'rgba(255,255,255,.75)'; c.textAlign = 'center'; c.fillText('Run over a basketball to pick it up', VW / 2, VH - 30); }
   // perk picker
   perkRects = [];
-  if (S.mode === 'perk' && S.offers) {
+  rerollRect = null;
+  if ((S.mode === 'perk' || S.mode === 'warm') && S.offers) {
     c.fillStyle = 'rgba(10,13,20,.78)'; c.fillRect(0, 0, VW, VH);
-    c.textAlign = 'center'; c.fillStyle = '#ffb547'; c.font = '800 34px "Barlow Condensed", sans-serif'; c.fillText(`${otLabel(S.q)} SURVIVED · PICK A PERK`, VW / 2, 120);
-    c.fillStyle = '#9aa3b2'; c.font = '600 14px Barlow'; c.fillText(`Next up: ${otLabel(S.q + 1)}${ROSTER[S.q + 1] && ROSTER[S.q + 1].length ? ' · joining: ' + ROSTER[S.q + 1].map((id) => CAST[id].name).join(' & ') : ' · everyone gets faster'}`, VW / 2, 146);
-    const cw = 230, gap = 20, x0 = VW / 2 - (cw * 3 + gap * 2) / 2;
+    c.textAlign = 'center'; c.fillStyle = '#ffb547'; c.font = '800 34px "Barlow Condensed", sans-serif'; c.fillText(S.mode === 'warm' ? 'WARM-UP · PICK A FREE PERK' : `${otLabel(S.q)} SURVIVED · PICK A PERK`, VW / 2, 120);
+    c.fillStyle = '#9aa3b2'; c.font = '600 14px Barlow'; if (S.mode === 'perk') c.fillText(`Next up: ${otLabel(S.q + 1)}${ROSTER[S.q + 1] && ROSTER[S.q + 1].length ? ' · joining: ' + ROSTER[S.q + 1].map((id) => CAST[id].name).join(' & ') : ' · everyone gets faster'} · plus a random twist`, VW / 2, 146);
+    const n = S.offers.length, cw = n > 3 ? 200 : 230, gap = n > 3 ? 14 : 20, x0 = VW / 2 - (cw * n + gap * (n - 1)) / 2;
     S.offers.forEach((p, i) => {
-      const x = x0 + i * (cw + gap), y = 180, h = 220; perkRects.push({ x, y, w: cw, h });
-      panel(x, y, cw, h, 0.96); c.strokeStyle = '#ffb547'; c.lineWidth = 2; c.beginPath(); c.roundRect(x, y, cw, h, 10); c.stroke();
+      const x = x0 + i * (cw + gap), y = 180, h = 220; perkRects.push({ x, y, w: cw, h }); const rr = RARITY[p.rare || 0];
+      panel(x, y, cw, h, 0.96); c.strokeStyle = p.rare ? rr[1] : '#ffb547'; c.lineWidth = p.rare ? 3 : 2; c.beginPath(); c.roundRect(x, y, cw, h, 10); c.stroke();
+      c.fillStyle = rr[1]; c.font = '800 12px "Barlow Condensed", sans-serif'; c.fillText(rr[0], x + cw / 2, y + 20);
       c.font = '48px sans-serif'; c.fillText(p.icon, x + cw / 2, y + 74); c.fillStyle = '#fff'; c.font = '800 24px "Barlow Condensed", sans-serif'; c.fillText(p.name, x + cw / 2, y + 120);
       c.fillStyle = '#9aa3b2'; c.font = '600 14px Barlow'; const words = p.desc.split(' '); let line = '', ly = y + 148; for (const w of words) { if (c.measureText(line + w).width > cw - 30) { c.fillText(line, x + cw / 2, ly); line = ''; ly += 19; } line += w + ' '; } c.fillText(line, x + cw / 2, ly);
       c.fillStyle = '#ffb547'; c.font = '800 15px "Barlow Condensed", sans-serif'; c.fillText(`PRESS ${i + 1} OR TAP${P(p.id) ? ` · owned ×${P(p.id)}` : ''}`, x + cw / 2, y + h - 16); c.fillStyle = '#fff';
     });
+    if (S.mode === 'perk' && S.rerolls > 0) { rerollRect = { x: VW / 2 - 90, y: 422, w: 180, h: 38 }; panel(rerollRect.x, rerollRect.y, 180, 38, 0.95); c.fillStyle = '#ffb547'; c.font = '800 17px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText(`🎲 REROLL (R) · ${S.rerolls} LEFT`, VW / 2, 447); }
   }
 }
 
 // =================== flow ===================
-function show(id) { ['sStart', 'sHow', 'sPause', 'sEnd'].forEach((s) => ($(s).hidden = s !== id)); }
-function startRun(daily) { S = newRun(daily); show(null); startQuarter(); S.ballT = 0; for (let i = 0; i < 3; i++) spawnBall(); }
+function show(id) { ['sStart', 'sShop', 'sHow', 'sPause', 'sEnd'].forEach((s) => ($(s).hidden = s !== id)); }
+function startRun(daily) {
+  S = newRun(daily); show(null); startQuarter(); S.ballT = 0; for (let i = 0; i < 6; i++) spawnBall();
+  S.claps = U('clap'); S.rerolls = U('reroll'); S.revive = U('wind') > 0;
+  if (daily) loadTop('david-daily-' + today()).then((t) => (TOPD = t));
+  if (U('warm')) { for (let i = 1; i < U('warm'); i++) { const p = pick(PERKS.filter((x) => x.id !== 'heal' && !P(x.id))); S.perks[p.id] = 1; } S.mode = 'warm'; const avail = PERKS.filter((x) => x.id !== 'heal' && !P(x.id)); S.offers = []; while (S.offers.length < 3) S.offers.push(avail.splice(Math.floor(RNG() * avail.length), 1)[0]); }
+}
 function pause(on) { S.mode = on ? 'paused' : 'play'; show(on ? 'sPause' : null); }
-function renderCareer() { const k = career(); $('career').innerHTML = [['Best score', k.best.toLocaleString()], ['Best quarter', k.bestQ ? otLabel(k.bestQ) : '—'], ['Runs', k.runs], ['Times trolled', k.trolled]].map(([a, b]) => `<div>${a}<b>${b}</b></div>`).join(''); }
+function renderMenu() {
+  fillCh(); $('mBucks').textContent = `🪙 ${META.bucks}`;
+  $('mCh').innerHTML = META.ch.map((id) => { const c = CH.find((x) => x.id === id); return `<div><span>${esc(c.t(chGoal(id)))}</span><em>+${chReward(id)} 🪙</em></div>`; }).join('');
+  loadTop('david').then((t) => { TOP = t; $('mLb').innerHTML = t.length ? t.slice(0, 5).map((r, i) => `<div><span>${i + 1}. ${esc(r.name)}</span><b>${r.score.toLocaleString()}</b></div>`).join('') : '<span>No scores yet. Be first.</span>'; });
+}
+function renderShop() {
+  $('shopBucks').textContent = `🪙 ${META.bucks} Hoop Bucks`;
+  $('shopList').innerHTML = UPG.map((u) => { const lv = META.up[u.id] || 0, cost = u.cost[lv]; return `<div class="row"><div><b>${esc(u.name)}</b> <span class="pips">${Array.from({ length: u.max }, (_, i) => `<i class="${i < lv ? 'on' : ''}"></i>`).join('')}</span><small>${esc(u.desc)}</small></div>${lv >= u.max ? '<button class="btn alt" disabled>Maxed</button>' : `<button class="btn" data-up="${u.id}" ${META.bucks < cost ? 'disabled' : ''}>🪙 ${cost}</button>`}</div>`; }).join('');
+  $('bandList').innerHTML = BANDS.map(([id, name, col, cost]) => { const own = META.bands.includes(id); return `<button data-band="${id}" class="${META.band === id ? 'sel' : ''}"><i style="background:${col === 'rainbow' ? 'linear-gradient(90deg,#ff5a3c,#ffd34d,#3fcf7a,#3d7bff,#a46bff)' : col}"></i>${name}<br>${own ? (META.band === id ? 'On' : 'Wear') : '🪙 ' + cost}</button>`; }).join('');
+}
+$('sShop').addEventListener('click', (e) => {
+  const up = e.target.closest('[data-up]'), band = e.target.closest('[data-band]');
+  if (up) { const u = UPG.find((x) => x.id === up.dataset.up), lv = META.up[u.id] || 0, cost = u.cost[lv]; if (lv < u.max && META.bucks >= cost) { META.bucks -= cost; META.up[u.id] = lv + 1; saveMeta(); SFX.perk(); renderShop(); } }
+  if (band) { const [id, , , cost] = BANDS.find((b) => b[0] === band.dataset.band); if (META.bands.includes(id)) META.band = id; else if (META.bucks >= cost) { META.bucks -= cost; META.bands.push(id); META.band = id; SFX.coin(); } saveMeta(); renderShop(); }
+});
+function renderCareer() { renderMenu(); const k = career(); $('career').innerHTML = [['Best score', k.best.toLocaleString()], ['Best quarter', k.bestQ ? otLabel(k.bestQ) : '—'], ['Runs', k.runs], ['Times trolled', k.trolled]].map(([a, b]) => `<div>${a}<b>${b}</b></div>`).join(''); }
 function endScreen() {
+  checkChallenges();
+  const earned = Math.floor(S.score / 150) + S.q * 5; META.bucks += earned; saveMeta();
+  $('endBucks').textContent = `+${earned + (S.bucksCh || 0)} 🪙 Hoop Bucks (you have ${META.bucks}) · spend them in the Locker`;
+  $('endCh').innerHTML = S.chDone.map((t) => `<div><span>✅ ${esc(t)}</span></div>`).join('');
   const k = career(), isBest = S.score > k.best;
   k.runs++; k.best = Math.max(k.best, S.score); k.bestQ = Math.max(k.bestQ, S.q); k.makes += S.makes; k.trolled += S.trolledTotal; store.set('dah-career', k);
   const mins = Math.floor(S.t / 60), secs = String(Math.floor(S.t % 60)).padStart(2, '0'), pct = S.attempts ? Math.round(S.makes / S.attempts * 100) : 0;
   $('endTitle').textContent = isBest ? '🏆 New best!' : '💢 David rage-quit';
-  $('endMsg').textContent = `Made it to ${otLabel(S.q)}. ` + pick(['Ethan is wearing David\'s headband now.', 'James says "trust me bro, he\'ll be back." He will.', 'Aleksei called it "incredible." He was being sarcastic.', 'Lil Daniel says the lava is still there.', 'Jose is already telling everyone. Loudly.', 'Coach Brent: "Same time tomorrow."']);
+  const board = S.daily ? TOPD : TOP, above = board.filter((r) => r.score > S.score), near = !isBest && k.best - S.score < k.best * 0.15 ? `Only ${(k.best - S.score).toLocaleString()} off your best. ` : '';
+  const rankLine = board.length ? (above.length < 20 ? `That would be #${above.length + 1} on the ${S.daily ? 'daily' : 'team'} board. ` : `${(above[above.length - 1].score - S.score).toLocaleString()} more to crack the board. `) : '';
+  $('endMsg').textContent = `Made it to ${otLabel(S.q)}. ${near}${rankLine}` + pick(['Ethan is wearing David\'s headband now.', 'James says "trust me bro, he\'ll be back." He will.', 'Aleksei called it "incredible." He was being sarcastic.', 'Lil Daniel says the lava is still there.', 'Jose is already telling everyone. Loudly.', 'Coach Brent: "Same time tomorrow."']);
   $('endStats').innerHTML = [['Score', S.score.toLocaleString()], ['Reached', otLabel(S.q)], ['Time', `${mins}:${secs}`], ['Shooting', `${S.makes}/${S.attempts} (${pct}%)`], ['Best streak', S.bestCombo], ['Times trolled', S.trolledTotal]].map(([a, b]) => `<div>${a}<b>${esc(b)}</b></div>`).join('');
   const rows = TROLLERS.map((id) => [CAST[id].name, S.trolledBy[id] || 0]).filter((r) => r[1] > 0 || S.enemies.some((e) => CAST[e.id].name === r[0])).sort((a, b) => b[1] - a[1]), max = Math.max(1, rows.length ? rows[0][1] : 1);
   $('endBars').innerHTML = rows.map(([n, v], i) => `<div><span>${i === 0 && v ? '👑 ' : ''}${esc(n)}</span><i style="width:${(v / max) * 100}%;opacity:${v ? 1 : 0.2}"></i><b>${v}</b></div>`).join('') || '<p>Nobody got him. Suspicious.</p>';
@@ -622,6 +840,7 @@ $('bPost').onclick = async () => {
 };
 $('bPlay').onclick = () => { audio(); startRun(false); };
 $('bDaily').onclick = () => { audio(); startRun(true); };
+$('bShop').onclick = () => { renderShop(); show('sShop'); }; $('bShopBack').onclick = () => { renderCareer(); show('sStart'); };
 $('bHow').onclick = () => show('sHow'); $('bHowBack').onclick = () => show(S && S.mode === 'paused' ? 'sPause' : 'sStart');
 $('bResume').onclick = () => pause(false); $('bRestart').onclick = () => startRun(S.daily); $('bQuit').onclick = () => { S = null; renderCareer(); show('sStart'); };
 $('bAgain').onclick = () => startRun(S.daily); $('bMenu').onclick = () => { S = null; renderCareer(); show('sStart'); };
@@ -629,9 +848,11 @@ renderCareer();
 
 // =================== loop ===================
 let lastT = performance.now();
-function loop(now) { const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now; update(dt); draw(); requestAnimationFrame(loop); }
+let shootLabel = '';
+function loop(now) { let dt = Math.min(0.05, (now - lastT) / 1000); lastT = now; if (S && S.hitstop > 0) { S.hitstop -= dt; dt *= 0.25; } update(dt);
+  const lbl = S && S.mode === 'play' && S.d.balls > 0 && nearestHoop().d < 95 ? 'DUNK' : 'SHOOT'; if (lbl !== shootLabel) { shootLabel = lbl; $('tShoot').textContent = lbl; } draw(); requestAnimationFrame(loop); }
 requestAnimationFrame(loop);
-window.__david = { get S() { return S; }, startRun, choosePerk, endQuarter, clapBack }; // for testing from the console
+window.__david = { get S() { return S; }, startRun, choosePerk, endQuarter, clapBack, reroll, get META() { return META; } }; // for testing from the console
 })();
 </script>
 </body>
