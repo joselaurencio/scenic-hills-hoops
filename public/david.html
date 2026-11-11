@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>David at Hoops</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#10141c;--panel:#1a2130;--ink:#f3f1ea;--mute:#9aa3b2;--hi:#ffb547;--blue:#3d7bff;--good:#3fcf7a;--bad:#ff6363}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:15px/1.4 Barlow,system-ui,sans-serif;overflow:hidden}
+#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+canvas{display:block;width:100%;height:100%;touch-action:none;image-rendering:auto}
+.screen{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,13,20,.78);backdrop-filter:blur(3px);z-index:5;padding:16px}
+.screen[hidden]{display:none}
+.card{background:var(--panel);border:1px solid #2b3447;border-radius:14px;padding:26px 26px 22px;max-width:520px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.card h1{font:800 54px/.9 "Barlow Condensed";letter-spacing:.01em;margin:0 0 6px;text-transform:uppercase}
+.card h1 span{color:var(--hi)}
+.card h2{font:800 34px/1 "Barlow Condensed";margin:0 0 10px;text-transform:uppercase}
+.card p{color:var(--mute);margin:6px 0}
+.btn{display:inline-block;font:700 18px "Barlow Condensed";text-transform:uppercase;letter-spacing:.06em;background:var(--hi);color:#1b1305;border:0;border-radius:8px;padding:12px 26px;margin:8px 4px 0;cursor:pointer}
+.btn.alt{background:#2b3447;color:var(--ink)}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;text-align:left;margin:14px auto;max-width:360px;color:var(--ink)}
+kbd{font:700 13px Barlow;background:#2b3447;border-radius:5px;padding:2px 7px;border-bottom:2px solid #11151d;white-space:nowrap}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
+.stats div{background:#11161f;border-radius:8px;padding:8px}.stats b{display:block;font:800 26px "Barlow Condensed";color:var(--hi)}
+.ach{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}.ach span{background:#11161f;border-radius:20px;padding:4px 10px;font-size:13px}
+.lb{display:flex;gap:6px;margin-top:10px}.lb input{flex:1;font:600 15px Barlow;padding:10px;border-radius:8px;border:1px solid #2b3447;background:#11161f;color:var(--ink)}
+#touch{position:absolute;right:14px;bottom:14px;display:none;gap:10px;z-index:4}
+#touch button{width:68px;height:68px;border-radius:50%;border:2px solid rgba(255,255,255,.35);background:rgba(20,26,38,.6);color:#fff;font:800 20px "Barlow Condensed"}
+@media (pointer:coarse){#touch{display:flex}}
+a.back{position:absolute;left:12px;bottom:10px;z-index:6;color:var(--mute);font:600 13px Barlow;text-decoration:none}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="game"></canvas></div>
+<a class="back" href="./#play">← Back to Hawks Hoops Report</a>
+<div id="touch"><button id="tJump">JUMP</button><button id="tAct">E</button></div>
+
+<div class="screen" id="sStart"><div class="card">
+  <p style="letter-spacing:.2em;font-size:12px;color:var(--hi)">A HAWKS HOOPS REPORT ADVENTURE</p>
+  <h1>David at <span>Hoops</span></h1>
+  <p>Tonight is Hoops, the biggest basketball event of the year. David has one goal: walk in a regular guy, walk out the Hoops MVP.</p>
+  <button class="btn" id="bPlay">Play</button><button class="btn alt" id="bHow">How to play</button>
+</div></div>
+
+<div class="screen" id="sHow" hidden><div class="card">
+  <h2>How to play</h2>
+  <div class="keys">
+    <kbd>WASD / Arrows</kbd><span>Move David</span>
+    <kbd>Shift</kbd><span>Run</span>
+    <kbd>Space</kbd><span>Jump (dodges loose balls)</span>
+    <kbd>E</kbd><span>Talk / interact / shoot</span>
+    <kbd>Mouse</kbd><span>Pick dialogue options, click to shoot</span>
+    <kbd>Esc / P</kbd><span>Pause</span>
+    <kbd>Phone</kbd><span>Drag to walk, buttons for E and Jump</span>
+  </div>
+  <p>Finish the checklist in the top left. Keep your <b style="color:var(--hi)">Hype</b> up: if it hits zero, David goes home. Some things are hidden around the gym.</p>
+  <button class="btn" id="bHowBack">Got it</button>
+</div></div>
+
+<div class="screen" id="sPause" hidden><div class="card">
+  <h2>Paused</h2><p>David is tying his shoes.</p>
+  <button class="btn" id="bResume">Resume</button><button class="btn alt" id="bRestart">Restart</button><button class="btn alt" id="bHow2">Controls</button>
+</div></div>
+
+<div class="screen" id="sEnd" hidden><div class="card">
+  <h2 id="endTitle">Hoops MVP</h2>
+  <p id="endMsg"></p>
+  <div class="stats" id="endStats"></div>
+  <div class="ach" id="endAch"></div>
+  <div class="lb" id="endLb"><input id="lbName" maxlength="16" placeholder="Name for the team leaderboard"><button class="btn" id="bPost" style="margin:0">Post</button></div>
+  <p id="lbMsg" style="font-size:13px"></p>
+  <button class="btn" id="bAgain">Play again</button><a class="btn alt" href="./#play" style="text-decoration:none">Back to site</a>
+</div></div>
+
+<script>
+(() => {
+// ============ setup ============
+const cv = document.getElementById('game'), c = cv.getContext('2d');
+const VW = 960, VH = 540, MAPW = 1800, MAPH = 1250;
+let scale = 1, dpr = 1;
+function resize() {
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = innerWidth, h = innerHeight; scale = Math.min(w / VW, h / VH);
+  cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+}
+addEventListener('resize', resize); resize();
+const $ = (id) => document.getElementById(id);
+const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+const rand = (a, b) => a + Math.random() * (b - a), pick = (a) => a[Math.floor(Math.random() * a.length)];
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v)), dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+
+// ============ sound (synthesized, no files) ============
+let ac = null;
+function audio() { if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} } if (ac && ac.state === 'suspended') ac.resume(); return ac; }
+function tone(f, d = 0.12, type = 'square', vol = 0.08, slide = 0) {
+  const a = audio(); if (!a) return; const o = a.createOscillator(), g = a.createGain(), t = a.currentTime;
+  o.type = type; o.frequency.setValueAtTime(f, t); if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, f + slide), t + d);
+  g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + d); o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + d);
+}
+function noise(d = 0.4, vol = 0.05, hp = 800) {
+  const a = audio(); if (!a) return; const b = a.createBuffer(1, a.sampleRate * d, a.sampleRate), ch = b.getChannelData(0);
+  for (let i = 0; i < ch.length; i++) ch[i] = (Math.random() * 2 - 1) * (1 - i / ch.length);
+  const s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain(); f.type = 'highpass'; f.frequency.value = hp; g.gain.value = vol;
+  s.buffer = b; s.connect(f); f.connect(g); g.connect(a.destination); s.start();
+}
+const SFX = {
+  talk: () => tone(pick([420, 480, 540]), 0.05, 'square', 0.04),
+  swish: () => { noise(0.25, 0.06, 2500); tone(880, 0.15, 'sine', 0.05, 400); },
+  clank: () => { tone(160, 0.2, 'square', 0.08, -60); tone(240, 0.12, 'triangle', 0.05); },
+  cheer: () => { noise(1.2, 0.07, 600); tone(660, 0.1, 'sine', 0.03); },
+  boo: () => tone(180, 0.6, 'sawtooth', 0.05, -80),
+  bonk: () => { tone(300, 0.08, 'square', 0.09, -200); tone(120, 0.18, 'sine', 0.08); },
+  coin: () => { tone(988, 0.08, 'square', 0.05); setTimeout(() => tone(1318, 0.14, 'square', 0.05), 70); },
+  jump: () => tone(300, 0.15, 'sine', 0.06, 300),
+  buzzer: () => tone(140, 0.7, 'sawtooth', 0.07),
+  horn: () => { tone(392, 0.25, 'sawtooth', 0.05); setTimeout(() => tone(523, 0.4, 'sawtooth', 0.05), 200); },
+  win: () => [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => tone(f, 0.25, 'square', 0.05), i * 140)),
+  sad: () => [392, 349, 311, 262].forEach((f, i) => setTimeout(() => tone(f, 0.3, 'triangle', 0.06), i * 220)),
+};
+
+// ============ world ============
+const WALLS = [ // solid rectangles: [x, y, w, h]
+  [0, 0, MAPW, 60], [0, 0, 40, MAPH], [MAPW - 40, 0, 40, MAPH], [0, MAPH - 40, MAPW, 40],
+  [40, 60, MAPW - 80, 120],                      // bleachers along the top
+  [40, 880, 820, 30], [940, 880, 820, 30],       // fence with the entrance gap at 860-940
+  [780, 700, 240, 90],                           // snack stand
+  [860, 280, 80, 80],                            // DJ booth
+  [60, 720, 180, 40], [1560, 720, 180, 40],      // benches
+];
+const COURTS = [{ x: 120, y: 220, w: 640, h: 440 }, { x: 1040, y: 220, w: 640, h: 440 }];
+const HOOPS = [{ x: 140, y: 440 }, { x: 740, y: 440 }, { x: 1060, y: 440 }, { x: 1660, y: 440 }];
+const SHOT_SPOT = { x: 330, y: 440, r: 34 };
+const STAGE = { x: 900, y: 520, r: 60 };
+const GATE = { x: 900, y: 895 };
+
+const EGGS = [
+  { id: 'sneaker', name: 'Golden Sneaker', icon: '👟', x: 1730, y: 1180, line: 'A golden sneaker. Size 15. Nobody here is size 15.' },
+  { id: 'duck', name: 'Rubber Duck', icon: '🦆', x: 70, y: 230, line: 'A rubber duck in a tiny jersey. It has seen things.' },
+  { id: 'mixtape', name: 'Mysterious Mixtape', icon: '📼', x: 900, y: 250, line: 'A mixtape labeled "DJ Spinz — DO NOT PLAY". David pockets it.' },
+  { id: 'sock', name: 'Lone Sock', icon: '🧦', x: 1745, y: 820, line: 'One sock. Still warm. David chooses not to think about it.' },
+  { id: 'pigeon', name: 'Indoor Pigeon', icon: '🐦', x: 600, y: 1120, line: 'A pigeon guarding the parking lot. It nods at David with respect.' },
+];
+const WRISTBAND_SPOTS = [{ x: 260, y: 1060 }, { x: 1520, y: 1130 }, { x: 1180, y: 990 }];
+
+// NPCs: name, look, where they hang out, lines, optional challenge
+const NPC_DEFS = [
+  { id: 'mike', name: 'Big Mike', role: 'Bouncer', skin: '#8d5a3b', shirt: '#222', x: 960, y: 920, still: true },
+  { id: 'dj', name: 'DJ Spinz', role: 'DJ', skin: '#c68863', shirt: '#7a3cff', x: 900, y: 395, still: true,
+    lines: ['This next track goes out to David. I don\'t know why. Felt right.', 'I\'ve been playing the same song for an hour. Nobody noticed.', 'Requests? I only take them in writing. In cursive.'] },
+  { id: 'pam', name: 'Auntie Pam', role: 'Snack stand', skin: '#a06a48', shirt: '#e04f5f', x: 900, y: 815, still: true,
+    lines: ['Nachos are free if you can name three Hawks players. Kidding, they\'re $4.', 'Baby, you look like you need a pretzel.', 'Last kid who asked for extra cheese is still here. Look at him.'] },
+  { id: 'ray', name: 'Coach Ray', role: 'Coach', skin: '#e0b48a', shirt: '#2f6f3a', x: 450, y: 700,
+    lines: ['Feet set, elbow in, follow through. And for the love of everything, hydrate.', 'I\'ve been watching you, David. I don\'t know what I saw, but I saw it.', 'Back in my day we played with a peach basket. And we liked it.'] },
+  { id: 'tre', name: 'Hype Man Tre', role: 'Hype man', skin: '#6f4430', shirt: '#ffb547', x: 1200, y: 720,
+    lines: ['LET ME HEAR YOU MAKE SOME NOOOISE! ...ok that was just me.', 'David! My guy! I don\'t know you but I\'m hyped!', 'I lost my voice in 2019 and never got it back. This is my outdoor voice.'] },
+  { id: 'kayla', name: 'Kayla', role: 'Influencer', skin: '#f0c8a0', shirt: '#ff7ab8', x: 1400, y: 300, challenge: 'trick',
+    lines: ['Hi besties! Oh, it\'s David. Hi David.', 'This lighting is giving gymnasium.'] },
+  { id: 'earl', name: 'Grandpa Earl', role: 'Legend (allegedly)', skin: '#d9a87e', shirt: '#6b6b6b', x: 300, y: 760, challenge: 'story',
+    lines: ['Did I ever tell you about the time I dunked on a moose?', 'Kids today don\'t know about the short shorts.'] },
+  { id: 'kev', name: 'Lil Kevin', role: 'Age 9, undefeated', skin: '#b07a52', shirt: '#3d7bff', x: 1300, y: 560, challenge: 'stare',
+    lines: ['You looking at me? Good. Keep looking. I never blink.', 'I\'m not short, I\'m fun-sized.'] },
+  { id: 'hawk', name: 'Hoopsy the Hawk', role: 'Mascot', skin: '#7a4a20', shirt: '#1f5fbf', x: 640, y: 560, mascot: true,
+    lines: ['*flaps aggressively*', '*the mascot gives you a thumbs up that lasts way too long*', '*silently does the worm*'] },
+];
+const FAIL_MSGS = [
+  'David got so embarrassed he left to go eat cereal in the parking lot.',
+  'David\'s hype hit zero. He\'s now sitting on the bench pretending to text someone.',
+  'Out of hype. David said "I wasn\'t even trying" four times on the way out.',
+  'David has left the building. Hoopsy the Hawk is wearing his headband now.',
+];
+
+// ============ state ============
+let S;
+function newState() {
+  const band = pick(WRISTBAND_SPOTS);
+  return {
+    mode: 'menu', t: 0, score: 0, hype: 60,
+    d: { x: 900, y: 1150, vx: 0, vy: 0, face: 1, dir: 'up', z: 0, vz: 0, walk: 0, react: null, reactT: 0, bump: 0 },
+    npcs: NPC_DEFS.map((n) => ({ ...n, hx: n.x, hy: n.y, tx: n.x, ty: n.y, walk: 0, met: false, done: false, cool: 0 })),
+    band: { ...band, got: false }, eggs: {}, met: new Set(),
+    obj: { enter: false, meet: false, shots: false, social: 0, survive: 0, mvp: false },
+    shots: { made: 0, taken: 0, best: 0 }, socialDone: new Set(),
+    dialog: null, event: null, nextEvent: 22, balls: [], shirts: [], confetti: [], floaters: [], bubble: null,
+    crowd: Array.from({ length: 70 }, (_, i) => ({ x: 70 + i * 24.5 + rand(-4, 4), y: rand(80, 165), c: pick(['#e04f5f', '#3d7bff', '#ffb547', '#3fcf7a', '#ff7ab8', '#ddd', '#7a3cff']), s: pick(['#8d5a3b', '#e0b48a', '#c68863', '#6f4430', '#f0c8a0']), p: Math.random() * 6 })),
+    ach: new Map(), jumps: 0, falls: 0, shoot: null,
+  };
+}
+S = newState();
+
+// ============ input ============
+const keys = {};
+addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT') return;
+  keys[e.code] = true; audio();
+  if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault();
+  if (S.mode === 'play' && (e.code === 'Escape' || e.code === 'KeyP')) return pause(true);
+  if (S.mode === 'paused' && (e.code === 'Escape' || e.code === 'KeyP')) return pause(false);
+  if (S.mode !== 'play' || e.repeat) return;
+  if (S.dialog) { if (/^Digit[1-3]$/.test(e.code)) choose(+e.code.slice(5) - 1); else if (e.code === 'KeyE' || e.code === 'Space' || e.code === 'Enter') advance(); return; }
+  if (S.shoot) { if (e.code === 'KeyE' || e.code === 'Space') shootRelease(); return; }
+  if (S.event && S.event.type === 'stare') { if (e.code === 'KeyE' || e.code === 'Space') S.event.mash++; return; }
+  if (e.code === 'Space') jump();
+  if (e.code === 'KeyE') interact();
+});
+addEventListener('keyup', (e) => { keys[e.code] = false; });
+let touchTarget = null;
+const toWorld = (cx, cy) => { const r = cv.getBoundingClientRect(); const sx = (cx - r.left) / r.width * cv.width / dpr, sy = (cy - r.top) / r.height * cv.height / dpr; const ox = (cv.width / dpr - VW * scale) / 2, oy = (cv.height / dpr - VH * scale) / 2; return { x: (sx - ox) / scale + cam.x, y: (sy - oy) / scale + cam.y, vx: (sx - ox) / scale, vy: (sy - oy) / scale }; };
+cv.addEventListener('pointerdown', (e) => {
+  audio(); if (S.mode !== 'play') return;
+  const p = toWorld(e.clientX, e.clientY);
+  if (S.dialog) { const k = hitOption(p.vx, p.vy); if (k >= 0) choose(k); else advance(); return; }
+  if (S.shoot) { shootRelease(); return; }
+  if (S.event && S.event.type === 'stare') { S.event.mash++; return; }
+  if (e.pointerType !== 'mouse') { touchTarget = p; cv.setPointerCapture(e.pointerId); }
+  else { // mouse: click an NPC or spot nearby to interact, otherwise walk there
+    touchTarget = p; cv.setPointerCapture(e.pointerId);
+  }
+});
+cv.addEventListener('pointermove', (e) => { if (touchTarget && e.buttons) touchTarget = toWorld(e.clientX, e.clientY); });
+cv.addEventListener('pointerup', () => { touchTarget = null; });
+$('tAct').addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); keys.KeyE = false; if (S.mode !== 'play') return; if (S.dialog) advance(); else if (S.shoot) shootRelease(); else if (S.event && S.event.type === 'stare') S.event.mash++; else interact(); });
+$('tJump').addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); if (S.mode === 'play' && !S.dialog) jump(); });
+
+// ============ helpers ============
+function float(text, x, y, color = '#ffb547') { S.floaters.push({ text, x, y, t: 0, color }); }
+function addScore(n, x, y) { S.score += n; if (x != null) float((n > 0 ? '+' : '') + n, x, y - 40); }
+function hype(n, why) {
+  S.hype = clamp(S.hype + n, 0, 100);
+  if (n < 0) { S.d.react = 'oof'; S.d.reactT = 1; }
+  if (why) float((n > 0 ? '⬆ ' : '⬇ ') + why, S.d.x, S.d.y - 70, n > 0 ? '#3fcf7a' : '#ff6363');
+  if (S.hype <= 0 && S.mode === 'play') gameOver();
+}
+function say(who, text, ttl = 3) { S.bubble = { who, text, t: ttl }; SFX.talk(); }
+function achieve(id, label) { if (!S.ach.has(id)) { S.ach.set(id, label); float('🏆 ' + label, S.d.x, S.d.y - 95, '#ffd34d'); SFX.coin(); } }
+function solid(x, y, r = 14) { for (const [wx, wy, ww, wh] of WALLS) { if (x + r > wx && x - r < wx + ww && y + r > wy && y - r < wy + wh) { if (!S.obj.enter && wx === 40 && wy === 880) return true; if (wy === 880 && x > 860 && x < 940) continue; return true; } } if (!S.obj.enter && y > 865 && y < 925 && x > 855 && x < 945) return true; return false; }
+function nearestNpc(r = 70) { let best = null, bd = r; for (const n of S.npcs) { const dd = dist(n, S.d); if (dd < bd) { bd = dd; best = n; } } return best; }
+function jump() { if (S.d.z <= 0) { S.d.vz = 330; SFX.jump(); S.jumps++; if (S.jumps >= 25) achieve('bunny', 'Certified Bunny Hopper'); } }
+
+// ============ objectives ============
+function objectives() {
+  const o = S.obj, list = [
+    { done: o.enter, text: S.band.got ? 'Show Big Mike your wristband (E)' : 'Get into Hoops' },
+    { done: o.meet, text: `Meet everyone (${Math.min(S.met.size, 6)}/6)` },
+    { done: o.shots, text: `Basketball challenge: make 5 shots (${S.shots.made}/5)` },
+    { done: o.social >= 3, text: `Social challenges (${o.social}/3)` },
+    { done: o.survive >= 3, text: `Survive Hoops (${o.survive}/3 events)` },
+  ];
+  const all = list.every((x) => x.done);
+  list.push({ done: o.mvp, text: all ? 'Go to the MVP stage at center court!' : 'Become a Hoops Legend', hot: all });
+  return list;
+}
+const allDone = () => objectives().slice(0, 5).every((x) => x.done);
+
+// ============ interactions ============
+function interact() {
+  const d = S.d;
+  // wristband
+  if (!S.band.got && dist(d, S.band) < 50) { S.band.got = true; SFX.coin(); addScore(100, d.x, d.y); say('David', 'A VIP wristband. On the ground. This is my destiny.'); return; }
+  // eggs
+  for (const e of EGGS) if (!S.eggs[e.id] && dist(d, e) < 46) { S.eggs[e.id] = true; SFX.coin(); addScore(250, d.x, d.y); say('David', e.line, 3.5); if (Object.keys(S.eggs).length === EGGS.length) achieve('eggs', 'Found every secret'); return; }
+  // shooting spot
+  if (S.obj.enter && dist(d, SHOT_SPOT) < SHOT_SPOT.r + 10) { startShooting(); return; }
+  // stage
+  if (allDone() && dist(d, STAGE) < STAGE.r) { victory(); return; }
+  const n = nearestNpc(); if (!n) return;
+  if (S.event && S.event.type === 'kisscam') { S.event.done = true; return; }
+  talkTo(n);
+}
+function talkTo(n) {
+  if (n.id === 'mike') return mikeDialog();
+  const first = !n.met; n.met = true;
+  if (n.id !== 'mike' && first) { S.met.add(n.id); addScore(50, n.x, n.y); if (S.met.size >= 6 && !S.obj.meet) { S.obj.meet = true; SFX.horn(); float('✔ Met everyone!', S.d.x, S.d.y - 100, '#3fcf7a'); } }
+  if (n.challenge && !S.socialDone.has(n.id)) return challengeDialog(n);
+  openDialog(n, [pick(n.lines || ['...'])]);
+}
+function openDialog(n, pages, options = null, onChoose = null) { S.dialog = { n, pages, page: 0, options, onChoose }; SFX.talk(); }
+function advance() { const dl = S.dialog; if (!dl) return; if (dl.options && dl.page === dl.pages.length - 1) return; dl.page++; SFX.talk(); if (dl.page >= dl.pages.length) S.dialog = null; }
+function choose(k) { const dl = S.dialog; if (!dl || !dl.options || dl.page !== dl.pages.length - 1 || !dl.options[k]) return; const f = dl.onChoose; S.dialog = null; f(k); }
+let optionRects = [];
+function hitOption(x, y) { return optionRects.findIndex((r) => x > r.x && x < r.x + r.w && y > r.y && y < r.y + r.h); }
+
+function mikeDialog() {
+  const n = S.npcs.find((x) => x.id === 'mike');
+  if (S.obj.enter) return openDialog(n, [pick(['Have fun in there. Don\'t touch the DJ\'s mixtape.', 'I\'m watching you, David. Supportively.', 'Wristband looking crisp.'])]);
+  if (S.band.got) return openDialog(n, ['...Is that a VIP wristband?', 'Who gave you that? Actually, don\'t answer. Go on in, VIP.'], ['Thank you, sir', 'I know.'], (k) => {
+    S.obj.enter = true; SFX.cheer(); addScore(200, n.x, n.y); hype(10, k ? 'Confidence' : 'Manners');
+    if (k === 1) achieve('cool', 'Too Cool for the Door'); say('Big Mike', k ? 'Okay, Mr. Cool.' : 'Polite. I like that.');
+  });
+  openDialog(n, ['Whoa whoa whoa. Name?', '"David." Hmm. There are like nine Davids on this list.', 'No wristband, no Hoops.'], ['I\'m with the DJ', 'I\'m the MVP, you just don\'t know it yet', 'Okay... *walks away sadly*'], (k) => {
+    if (k === 0) { hype(-5, 'Busted'); say('Big Mike', 'The DJ is a cardboard cutout until 8 PM. Nice try. Find a wristband.'); }
+    else if (k === 1) { hype(5, 'Bold'); say('Big Mike', 'Ha. I like you. Still need a wristband though. People drop stuff in the parking lot all the time...'); }
+    else { say('Big Mike', 'Hey, chin up. Check the parking lot. People lose wristbands out there constantly.'); }
+  });
+}
+function challengeDialog(n) {
+  const done = (ok, pts, h, line) => {
+    S.socialDone.add(n.id); if (ok) { S.obj.social++; addScore(pts, n.x, n.y); hype(h, 'Crowd loved it'); SFX.cheer(); S.d.react = 'yay'; S.d.reactT = 1.2; }
+    else { hype(-10, 'Awkward'); SFX.boo(); } say(n.name, line, 3.5);
+    if (S.obj.social >= 3) float('✔ Social challenges done!', S.d.x, S.d.y - 100, '#3fcf7a');
+    if (!ok) setTimeout(() => S.socialDone.delete(n.id), 4000); // you can retry after a bit
+  };
+  if (n.challenge === 'trick') openDialog(n, ['Okay we\'re live. 4,000 people watching.', 'Do something cool for the story. GO.'], ['Spin the ball on one finger', 'Hit the moonwalk', 'Stare at the camera and panic'], (k) => {
+    if (k === 0) done(true, 300, 12, 'Okay that was actually sick. Posting it.');
+    else if (k === 1) done(true, 300, 15, 'THE MOONWALK. In basketball shoes. Legend behavior.');
+    else done(false, 0, 0, '...I\'m gonna crop you out of this one.');
+  });
+  else if (n.challenge === 'story') openDialog(n, ['1974. Championship game. Down by one.', 'I steal the ball, dribble the length of the court, and dunk on a moose.', 'A real moose. It was a different time.'], ['Wow, a real moose?!', 'That definitely did not happen', 'Can I get your autograph?'], (k) => {
+    if (k === 0) done(true, 300, 12, 'Finally, somebody who believes me. You\'re alright, David.');
+    else if (k === 2) done(true, 350, 15, 'Nobody\'s asked me that since 1975. *signs your forehead*');
+    else done(false, 0, 0, 'Back in my day we respected our elders AND our mooses.');
+  });
+  else if (n.challenge === 'stare') openDialog(n, ['Staring contest. You blink, you lose.', 'Mash E (or tap) to keep your eyes open. Ready?'], ['Let\'s go', 'I\'m scared of you'], (k) => {
+    if (k === 1) { done(false, 0, 0, 'Correct. Everyone is.'); return; }
+    S.event = { type: 'stare', t: 0, dur: 4, mash: 0, need: 20, n, cb: (ok) => done(ok, 400, 15, ok ? 'You... didn\'t blink. Nobody has ever... I need a minute.' : 'BLINKED. Undefeated. Tell your friends.') };
+  });
+}
+
+// ============ shooting mini-game ============
+function startShooting() {
+  if (S.obj.shots && S.shots.taken >= 10) { say('Coach Ray', 'You already proved it. Save something for the playoffs.'); return; }
+  S.shoot = { t: 0, phase: 0, shotsLeft: 10, made: 0, ball: null, msg: 'Click / E / Space when the marker hits green', zone: 0.24 };
+  S.shots.made = 0; S.shots.taken = 0;
+}
+function shootRelease() {
+  const sh = S.shoot; if (!sh || sh.ball) return;
+  const p = 0.5 + 0.5 * Math.sin(sh.t * (2.2 + (10 - sh.shotsLeft) * 0.25));
+  const off = Math.abs(p - 0.5), kind = off < sh.zone / 4 ? 'swish' : off < sh.zone / 2 ? 'make' : 'miss';
+  sh.ball = { k: 0, kind, dir: p - 0.5 }; sh.shotsLeft--; S.shots.taken++;
+}
+function updateShooting(dt) {
+  const sh = S.shoot; sh.t += dt;
+  if (sh.ball) {
+    sh.ball.k += dt / 0.8;
+    if (sh.ball.k >= 1 && !sh.ball.done) {
+      sh.ball.done = true;
+      if (sh.ball.kind === 'miss') { SFX.clank(); sh.msg = pick(['CLANK. The rim filed a complaint.', 'Brick. Somebody call a contractor.', 'Airball chant incoming...', 'That one\'s still in orbit.']); S.d.react = 'oof'; S.d.reactT = 0.8; }
+      else { sh.made++; S.shots.made++; SFX.swish(); addScore(sh.ball.kind === 'swish' ? 150 : 100); sh.msg = sh.ball.kind === 'swish' ? pick(['SWISH! Nothing but net.', 'Cash. The crowd is losing it.', 'Pure. Coach Ray shed a tear.']) : pick(['Good! Off the glass.', 'It rolled around and dropped. Lucky counts.', 'Bucket.']); S.d.react = 'yay'; S.d.reactT = 0.8; }
+    }
+    if (sh.ball.k >= 1.4) {
+      sh.ball = null;
+      if (S.shots.made >= 5 && !S.obj.shots) { S.obj.shots = true; SFX.horn(); hype(15, 'Bucket getter'); }
+      if (sh.shotsLeft <= 0 || (S.obj.shots && sh.made >= 5 && sh.shotsLeft <= 0)) {
+        if (sh.made === 10) achieve('perfect', 'Perfect 10/10');
+        if (!S.obj.shots) { hype(-10, 'Cold shooting'); say('Coach Ray', `${sh.made}/10. We'll work on it. Try again whenever.`); }
+        else say('Coach Ray', `${sh.made}/10! That's a shooter.`);
+        S.shots.best = Math.max(S.shots.best, sh.made); S.shoot = null;
+      }
+    }
+  }
+}
+
+// ============ random events ============
+const EVENTS = ['balls', 'mascot', 'kisscam', 'shirts'];
+function startEvent() {
+  const type = pick(EVENTS.filter((e) => !S.event || S.event.type !== e));
+  SFX.horn(); const d = S.d;
+  if (type === 'balls') { S.event = { type, t: 0, dur: 7, title: '🏀 LOOSE BALLS!', sub: 'Jump (Space) or dodge the runaway basketballs' }; S.balls = []; }
+  if (type === 'mascot') { const m = S.npcs.find((n) => n.id === 'hawk'); S.event = { type, t: 0, dur: 9, title: '🦅 HOOPSY WANTS A HUG', sub: 'Run away (hold Shift)! The hug is too strong', m }; }
+  if (type === 'kisscam') { S.event = { type, t: 0, dur: 6, title: '📸 YOU\'RE ON THE BIG SCREEN', sub: 'Get near anyone and press E to wave with them' }; }
+  if (type === 'shirts') { S.event = { type, t: 0, dur: 7, title: '👕 T-SHIRT CANNON', sub: 'Stand in the glowing circles to catch free shirts', caught: 0 }; S.shirts = Array.from({ length: 4 }, () => ({ x: clamp(d.x + rand(-260, 260), 80, MAPW - 80), y: clamp(d.y + rand(-200, 200), 220, 860), got: false, t: rand(0.5, 2.5) })); }
+}
+function endEvent(ok, msg) {
+  const ev = S.event; S.event = null; S.balls = []; S.shirts = []; S.nextEvent = rand(18, 26);
+  if (ev.type === 'stare') { ev.cb(ok); return; }
+  if (ok) { S.obj.survive++; addScore(200, S.d.x, S.d.y); SFX.cheer(); if (S.obj.survive === 3) float('✔ Survived Hoops!', S.d.x, S.d.y - 100, '#3fcf7a'); }
+  if (msg) say('Announcer', msg, 3);
+}
+function updateEvent(dt) {
+  const ev = S.event, d = S.d; ev.t += dt;
+  if (ev.type === 'stare') { if (ev.mash >= ev.need) return endEvent(true); if (ev.t >= ev.dur) return endEvent(false); return; }
+  if (ev.type === 'balls') {
+    if (Math.random() < dt * 3.2) { const fromL = Math.random() < 0.5; S.balls.push({ x: fromL ? d.x - 520 : d.x + 520, y: d.y + rand(-140, 140), vx: (fromL ? 1 : -1) * rand(260, 380), r: 13, spin: 0 }); }
+    for (const b of S.balls) { b.x += b.vx * dt; b.spin += b.vx * dt / 13; if (!b.hit && Math.abs(b.x - d.x) < 24 && Math.abs(b.y - d.y) < 22 && d.z < 18) { b.hit = true; ev.hits = (ev.hits || 0) + 1; SFX.bonk(); hype(-8, 'Bonk'); S.falls++; d.react = 'dizzy'; d.reactT = 1.2; } }
+    if (ev.t >= ev.dur) endEvent(!(ev.hits >= 2), ev.hits >= 2 ? 'That was rough to watch. Somebody get David some ice.' : 'Smooth! David treated those balls like traffic cones.');
+  }
+  if (ev.type === 'mascot') {
+    const m = ev.m, ang = Math.atan2(d.y - m.y, d.x - m.x), sp = 175 + ev.t * 6;
+    const nx = m.x + Math.cos(ang) * sp * dt, ny = m.y + Math.sin(ang) * sp * dt; if (!solid(nx, m.y)) m.x = nx; if (!solid(m.x, ny)) m.y = ny; m.walk += dt * 10;
+    if (dist(m, d) < 30) { SFX.bonk(); hype(-15, 'Bear hugged'); d.react = 'squish'; d.reactT = 1.4; m.x -= 90; achieve('hugged', 'Got Hoopsy\'d'); endEvent(false, 'Hoopsy got him. That hug lasted 11 seconds. Security had to step in.'); return; }
+    if (ev.t >= ev.dur) { achieve('escape', 'Outran the Mascot'); endEvent(true, 'David escaped the hug! Hoopsy is doing sad flaps.'); }
+  }
+  if (ev.type === 'kisscam') {
+    if (ev.done) { const n = nearestNpc(80); if (n) { hype(15, 'Big screen moment'); achieve('kisscam', 'Big Screen Star'); endEvent(true, `David and ${n.name} wave on the big screen. The crowd goes "awww".`); } else { ev.done = false; say('David', 'There\'s nobody near me. I am waving at air.'); } return; }
+    if (ev.t >= ev.dur) { hype(-10, 'Froze on camera'); endEvent(false, 'David froze on the big screen for 6 straight seconds. Iconic, honestly.'); }
+  }
+  if (ev.type === 'shirts') {
+    for (const s of S.shirts) { s.t -= dt; if (!s.got && s.t <= 0 && dist(s, d) < 40) { s.got = true; ev.caught++; SFX.coin(); addScore(75, s.x, s.y); } }
+    if (ev.t >= ev.dur) { if (ev.caught >= 3) achieve('shirts', 'Shirt Collector'); endEvent(ev.caught >= 1, ev.caught ? `David caught ${ev.caught} shirt${ev.caught > 1 ? 's' : ''}. He\'s wearing all of them.` : 'Zero shirts. A kid next to David caught four.'); }
+  }
+}
+
+// ============ game flow ============
+function show(id) { ['sStart', 'sHow', 'sPause', 'sEnd'].forEach((s) => ($(s).hidden = s !== id)); }
+function startGame() { S = newState(); S.mode = 'play'; show(null); SFX.horn(); say('David', 'Hoops. Tonight\'s the night. Let\'s go inside.', 3); }
+function pause(on) { S.mode = on ? 'paused' : 'play'; show(on ? 'sPause' : null); }
+function gameOver() { S.mode = 'over'; SFX.sad(); setTimeout(() => endScreen(false), 900); }
+function victory() { S.obj.mvp = true; S.mode = 'victory'; SFX.win(); SFX.cheer(); for (let i = 0; i < 160; i++) S.confetti.push({ x: S.d.x + rand(-300, 300), y: S.d.y - rand(200, 500), vx: rand(-60, 60), vy: rand(40, 160), c: pick(['#ffb547', '#3d7bff', '#ff7ab8', '#3fcf7a', '#fff']), r: rand(0, 6) }); setTimeout(() => endScreen(true), 2600); }
+function finalScore(won) { const timeBonus = won ? Math.max(0, Math.round(3000 - S.t * 8)) : 0; return S.score + timeBonus + (won ? Math.round(S.hype * 10) : 0); }
+function endScreen(won) {
+  const fs = finalScore(won), mins = Math.floor(S.t / 60), secs = String(Math.floor(S.t % 60)).padStart(2, '0');
+  const best = store.get('david-best', 0); if (fs > best) store.set('david-best', fs);
+  $('endTitle').textContent = won ? '🏆 Hoops MVP' : 'Game over';
+  $('endMsg').textContent = won ? pick(['David walked in a regular guy. He walks out a legend. Hoopsy is crying in the bathroom.', 'They\'re putting David\'s headband in the rafters. It\'s just a headband. It\'s beautiful.', 'Grandpa Earl says it\'s the greatest thing he\'s seen since the moose.']) : pick(FAIL_MSGS);
+  $('endStats').innerHTML = [['Final score', fs], ['Time', `${mins}:${secs}`], ['Shots made', `${S.shots.made}/${Math.max(S.shots.taken, 10)}`], ['Secrets found', `${Object.keys(S.eggs).length}/${EGGS.length}`], ['People met', `${S.met.size}/8`], ['Best ever', Math.max(best, fs)]].map(([a, b]) => `<div>${a}<b>${b}</b></div>`).join('');
+  $('endAch').innerHTML = [...S.ach.values()].map((a) => `<span>🏆 ${a}</span>`).join('') || '<span>No achievements this time</span>';
+  $('lbName').value = store.get('lb-name', ''); $('lbMsg').textContent = ''; $('endLb').hidden = fs <= 0; S.final = fs;
+  show('sEnd');
+}
+$('bPost').onclick = async () => {
+  const name = $('lbName').value.trim(); if (!name) return; store.set('lb-name', name); $('lbMsg').textContent = 'Posting…';
+  try { const r = await fetch('https://scenic-hills-hoops.vercel.app/api/scores', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ game: 'david', name, score: S.final }) }); const j = await r.json(); if (!r.ok) throw j.error || r.status; const rank = j.top.findIndex((x) => x.name.toLowerCase() === name.toLowerCase()) + 1; $('lbMsg').textContent = rank ? `You're #${rank} on the team leaderboard.` : 'Posted!'; $('bPost').disabled = true; }
+  catch (e) { $('lbMsg').textContent = 'Couldn\'t post: ' + e; }
+};
+$('bPlay').onclick = () => { audio(); startGame(); };
+$('bHow').onclick = () => show('sHow'); $('bHow2').onclick = () => show('sHow');
+$('bHowBack').onclick = () => show(S.mode === 'paused' ? 'sPause' : 'sStart');
+$('bResume').onclick = () => pause(false); $('bRestart').onclick = startGame;
+$('bAgain').onclick = () => { $('bPost').disabled = false; startGame(); };
+
+// ============ update ============
+const cam = { x: 0, y: 0 };
+function update(dt) {
+  if (S.mode === 'victory') { for (const p of S.confetti) { p.x += p.vx * dt; p.y += p.vy * dt; p.r += dt * 4; } S.d.react = 'yay'; S.d.reactT = 1; return; }
+  if (S.mode !== 'play') return;
+  S.t += dt; const d = S.d;
+  // crowd + NPC wandering
+  for (const n of S.npcs) {
+    if (S.event && S.event.type === 'mascot' && n.id === 'hawk') continue;
+    n.cool -= dt; if (n.still) continue;
+    if (n.cool <= 0) { n.tx = clamp(n.hx + rand(-120, 120), 70, MAPW - 70); n.ty = clamp(n.hy + rand(-90, 90), 200, 860); n.cool = rand(2, 5); }
+    const dx = n.tx - n.x, dy = n.ty - n.y, dd = Math.hypot(dx, dy);
+    if (dd > 4 && !(S.dialog && S.dialog.n === n)) { const nx = n.x + dx / dd * 50 * dt, ny = n.y + dy / dd * 50 * dt; if (!solid(nx, ny)) { n.x = nx; n.y = ny; n.walk += dt * 8; n.face = dx > 0 ? 1 : -1; } else n.cool = 0; }
+  }
+  for (const f of S.floaters) f.t += dt; S.floaters = S.floaters.filter((f) => f.t < 1.6);
+  if (S.bubble) { S.bubble.t -= dt; if (S.bubble.t <= 0) S.bubble = null; }
+  if (d.reactT > 0) d.reactT -= dt; else d.react = null;
+  if (S.shoot) { updateShooting(dt); return; }
+  if (S.event && !S.dialog) updateEvent(dt);
+  else if (!S.event && S.obj.enter && !S.dialog && !S.obj.mvp) { S.nextEvent -= dt; if (S.nextEvent <= 0) startEvent(); }
+  if (S.dialog) return;
+  // movement
+  let ix = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0), iy = (keys.KeyS || keys.ArrowDown ? 1 : 0) - (keys.KeyW || keys.ArrowUp ? 1 : 0);
+  if (touchTarget) { const tx = touchTarget.x - d.x, ty = touchTarget.y - d.y, tl = Math.hypot(tx, ty); if (tl > 10) { ix = tx / tl; iy = ty / tl; } }
+  const len = Math.hypot(ix, iy), run = keys.ShiftLeft || keys.ShiftRight || (touchTarget && Math.hypot(touchTarget.x - d.x, touchTarget.y - d.y) > 220);
+  const sp = (run ? 270 : 170) * (d.react === 'dizzy' ? 0.5 : 1);
+  if (len > 0) {
+    const vx = ix / len * sp, vy = iy / len * sp;
+    if (!solid(d.x + vx * dt, d.y)) d.x += vx * dt; else if (!S.obj.enter && d.y > 860) d.bump += dt;
+    if (!solid(d.x, d.y + vy * dt)) d.y += vy * dt; else if (!S.obj.enter && d.y > 860) d.bump += dt;
+    d.walk += dt * (run ? 14 : 9); if (Math.abs(ix) > 0.1) d.face = ix > 0 ? 1 : -1; d.moving = true; d.running = run;
+  } else d.moving = false;
+  if (d.bump > 0.6 && !S.obj.enter) { d.bump = 0; say('Big Mike', S.band.got ? 'Wristband? Come show me. Press E.' : 'Uh-uh. Talk to me first, buddy.'); }
+  // jump physics
+  if (d.z > 0 || d.vz > 0) { d.vz -= 900 * dt; d.z = Math.max(0, d.z + d.vz * dt); if (d.z === 0) d.vz = 0; }
+  // proximity hints
+  S.hint = null;
+  if (!S.band.got && dist(d, S.band) < 50) S.hint = 'E — pick up wristband';
+  else if (EGGS.some((e) => !S.eggs[e.id] && dist(d, e) < 46)) S.hint = 'E — inspect';
+  else if (S.obj.enter && dist(d, SHOT_SPOT) < SHOT_SPOT.r + 10) S.hint = 'E — basketball challenge';
+  else if (allDone() && dist(d, STAGE) < STAGE.r) S.hint = 'E — accept your MVP trophy';
+  else { const n = nearestNpc(); if (n) S.hint = `E — talk to ${n.name}`; }
+  if (S.t > 600) achieve('marathon', 'Still Here After 10 Minutes');
+}
+
+// ============ drawing ============
+function person(x, y, o) { // generic cartoon person, used for NPCs
+  const w = Math.sin(o.walk || 0) * (o.moving === false ? 0 : 1);
+  c.fillStyle = 'rgba(0,0,0,.25)'; c.beginPath(); c.ellipse(x, y + 18, 13, 5, 0, 0, 6.3); c.fill();
+  c.fillStyle = '#2a2f3a'; c.fillRect(x - 7 + w * 3, y + 4, 5, 14); c.fillRect(x + 2 - w * 3, y + 4, 5, 14);
+  c.fillStyle = o.shirt; c.beginPath(); c.roundRect(x - 11, y - 14, 22, 22, 6); c.fill();
+  c.fillStyle = o.skin; c.beginPath(); c.arc(x, y - 22, 10, 0, 6.3); c.fill();
+  c.fillStyle = '#111'; c.fillRect(x - 4 + (o.face || 1) * 2, y - 24, 2, 2.5); c.fillRect(x + 2 + (o.face || 1) * 2, y - 24, 2, 2.5);
+}
+function mascot(x, y, o) {
+  const w = Math.sin(o.walk || 0);
+  c.fillStyle = 'rgba(0,0,0,.25)'; c.beginPath(); c.ellipse(x, y + 22, 18, 6, 0, 0, 6.3); c.fill();
+  c.fillStyle = '#ffb547'; c.fillRect(x - 10 + w * 3, y + 10, 7, 12); c.fillRect(x + 3 - w * 3, y + 10, 7, 12);
+  c.fillStyle = '#1f5fbf'; c.beginPath(); c.ellipse(x, y - 4, 18, 20, 0, 0, 6.3); c.fill();
+  c.save(); c.translate(x, y - 6); c.rotate(Math.sin(performance.now() / 120) * 0.4); c.fillStyle = '#163f80'; c.beginPath(); c.ellipse(-20, 0, 7, 16, -0.5, 0, 6.3); c.ellipse(20, 0, 7, 16, 0.5, 0, 6.3); c.fill(); c.restore();
+  c.fillStyle = '#fff'; c.beginPath(); c.arc(x, y - 28, 13, 0, 6.3); c.fill();
+  c.fillStyle = '#ffb547'; c.beginPath(); c.moveTo(x - 4, y - 26); c.lineTo(x + 12, y - 23); c.lineTo(x - 4, y - 20); c.fill();
+  c.fillStyle = '#111'; c.beginPath(); c.arc(x - 3, y - 31, 2.4, 0, 6.3); c.arc(x + 4, y - 31, 2.4, 0, 6.3); c.fill();
+}
+function drawDavid() { // David: headband, curly hair, #15 Hawks jersey
+  const d = S.d, x = d.x, y = d.y - d.z, t = performance.now() / 1000;
+  const w = d.moving ? Math.sin(d.walk) : 0, bob = d.moving ? Math.abs(Math.sin(d.walk)) * 2 : Math.sin(t * 2.2) * 1.2;
+  c.fillStyle = 'rgba(0,0,0,.28)'; c.beginPath(); c.ellipse(d.x, d.y + 20, 15 - d.z / 12, 6 - d.z / 30, 0, 0, 6.3); c.fill();
+  c.save(); c.translate(x, y - bob);
+  if (d.react === 'dizzy') c.rotate(Math.sin(t * 20) * 0.15);
+  if (d.react === 'squish') c.scale(1.25, 0.75);
+  // legs + shoes
+  c.fillStyle = '#e8e8e8'; c.fillRect(-8 + w * 4, 4, 6, 13); c.fillRect(2 - w * 4, 4, 6, 13);
+  c.fillStyle = '#ff5a3c'; c.fillRect(-10 + w * 4, 15, 9, 5); c.fillRect(1 - w * 4, 15, 9, 5);
+  // shorts + jersey
+  c.fillStyle = '#163f80'; c.fillRect(-11, -2, 22, 9);
+  c.fillStyle = '#1f5fbf'; c.beginPath(); c.roundRect(-12, -18, 24, 20, 6); c.fill();
+  c.fillStyle = '#fff'; c.font = '800 11px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText('15', 0, -4);
+  // arms
+  const up = d.react === 'yay' || S.mode === 'victory';
+  c.strokeStyle = '#a8724c'; c.lineWidth = 5; c.lineCap = 'round'; c.beginPath();
+  if (up) { c.moveTo(-11, -14); c.lineTo(-18, -32 - Math.sin(t * 12) * 3); c.moveTo(11, -14); c.lineTo(18, -32 + Math.sin(t * 12) * 3); }
+  else { c.moveTo(-12, -14); c.lineTo(-15 - w * 3, 2); c.moveTo(12, -14); c.lineTo(15 + w * 3, 2); }
+  c.stroke();
+  // head, hair, headband, face
+  c.fillStyle = '#a8724c'; c.beginPath(); c.arc(0, -28, 11, 0, 6.3); c.fill();
+  c.fillStyle = '#1b1410'; for (let i = -9; i <= 9; i += 4.5) { c.beginPath(); c.arc(i, -37 + Math.abs(i) * 0.25, 4.6, 0, 6.3); c.fill(); }
+  c.fillStyle = '#ff5a3c'; c.fillRect(-11.5, -35, 23, 4);
+  const f = d.face;
+  c.fillStyle = '#111';
+  if (d.react === 'oof' || d.react === 'dizzy' || d.react === 'squish') { c.font = '9px sans-serif'; c.fillText('x', -4 + f * 2, -25); c.fillText('x', 4 + f * 2, -25); }
+  else { c.fillRect(-4 + f * 2, -29, 2.4, 3); c.fillRect(3 + f * 2, -29, 2.4, 3); }
+  c.strokeStyle = '#111'; c.lineWidth = 1.4; c.beginPath();
+  if (d.react === 'yay' || S.mode === 'victory') c.arc(f * 2, -23, 4, 0.1, Math.PI - 0.1); else if (d.react) c.arc(f * 2, -18, 3, Math.PI + 0.3, -0.3); else { c.moveTo(-2 + f * 2, -21); c.lineTo(3 + f * 2, -21); }
+  c.stroke();
+  if (!d.moving && !d.react && Math.sin(t * 0.7) > 0.97) { c.fillStyle = '#fff'; c.fillText('♪', 16, -40); } // idle humming
+  c.restore();
+  if (d.react === 'dizzy') { c.font = '14px sans-serif'; c.textAlign = 'center'; c.fillText('⭐', d.x + Math.cos(t * 8) * 16, y - 48); c.fillText('🏀', d.x + Math.cos(t * 8 + 3) * 16, y - 46); }
+}
+function court(cx) {
+  const C = COURTS[cx];
+  c.fillStyle = '#c98b4e'; c.fillRect(C.x, C.y, C.w, C.h);
+  c.strokeStyle = 'rgba(80,40,10,.12)'; c.lineWidth = 1; for (let i = C.x; i < C.x + C.w; i += 16) { c.beginPath(); c.moveTo(i, C.y); c.lineTo(i, C.y + C.h); c.stroke(); }
+  c.strokeStyle = '#fff'; c.lineWidth = 3; c.strokeRect(C.x, C.y, C.w, C.h);
+  c.beginPath(); c.moveTo(C.x + C.w / 2, C.y); c.lineTo(C.x + C.w / 2, C.y + C.h); c.stroke();
+  c.beginPath(); c.arc(C.x + C.w / 2, C.y + C.h / 2, 55, 0, 6.3); c.stroke();
+  c.fillStyle = 'rgba(31,95,191,.55)'; c.fillRect(C.x, C.y + C.h / 2 - 60, 150, 120); c.fillRect(C.x + C.w - 150, C.y + C.h / 2 - 60, 150, 120);
+  c.strokeRect(C.x, C.y + C.h / 2 - 60, 150, 120); c.strokeRect(C.x + C.w - 150, C.y + C.h / 2 - 60, 150, 120);
+  c.beginPath(); c.arc(C.x, C.y + C.h / 2, 200, -Math.PI / 2, Math.PI / 2); c.stroke(); c.beginPath(); c.arc(C.x + C.w, C.y + C.h / 2, 200, Math.PI / 2, Math.PI * 1.5); c.stroke();
+  c.fillStyle = 'rgba(255,255,255,.18)'; c.font = '800 64px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText('HOOPS', C.x + C.w / 2, C.y + C.h / 2 + 22);
+}
+function hoop(h) { c.fillStyle = '#ddd'; c.fillRect(h.x - 4, h.y - 34, 8, 68); c.strokeStyle = '#ff5a3c'; c.lineWidth = 3; c.beginPath(); c.arc(h.x + (h.x < MAPW / 2 ? (h.x < 500 || (h.x > 900 && h.x < 1200) ? 14 : -14) : (h.x < 1200 ? 14 : -14)), h.y, 11, 0, 6.3); c.stroke(); }
+function draw() {
+  const W = cv.width, H = cv.height;
+  c.setTransform(1, 0, 0, 1, 0, 0); c.fillStyle = '#0c0f15'; c.fillRect(0, 0, W, H);
+  const ox = (W / dpr - VW * scale) / 2, oy = (H / dpr - VH * scale) / 2;
+  c.setTransform(dpr * scale, 0, 0, dpr * scale, dpr * ox, dpr * oy);
+  cam.x += (clamp(S.d.x - VW / 2, 0, MAPW - VW) - cam.x) * 0.15; cam.y += (clamp(S.d.y - VH / 2, 0, MAPH - VH) - cam.y) * 0.15;
+  c.save(); c.beginPath(); c.rect(0, 0, VW, VH); c.clip(); c.translate(-Math.round(cam.x), -Math.round(cam.y));
+  const now = performance.now() / 1000;
+  // floor: gym inside, parking lot outside
+  c.fillStyle = '#2b3140'; c.fillRect(0, 0, MAPW, 900);
+  c.fillStyle = '#3a3f48'; c.fillRect(0, 900, MAPW, MAPH - 900);
+  c.strokeStyle = '#d9d9d9'; c.lineWidth = 3; for (let x = 120; x < MAPW - 100; x += 160) { c.beginPath(); c.moveTo(x, 980); c.lineTo(x, 1080); c.stroke(); }
+  [[200, 1000, '#c0392b'], [520, 1110, '#2c3e50'], [1360, 1000, '#16a085'], [1680, 1110, '#8e44ad']].forEach(([x, y, col]) => { c.fillStyle = col; c.beginPath(); c.roundRect(x, y, 110, 54, 10); c.fill(); c.fillStyle = 'rgba(255,255,255,.3)'; c.fillRect(x + 20, y + 8, 70, 16); });
+  court(0); court(1);
+  // bleachers + crowd
+  c.fillStyle = '#4a5266'; c.fillRect(40, 60, MAPW - 80, 120); for (let r = 0; r < 4; r++) { c.fillStyle = r % 2 ? '#3d4456' : '#525b70'; c.fillRect(40, 64 + r * 29, MAPW - 80, 26); }
+  const cheer = S.event || S.mode === 'victory' || (S.shoot && S.shoot.ball && S.shoot.ball.done && S.shoot.ball.kind !== 'miss');
+  for (const p of S.crowd) { const j = cheer ? Math.abs(Math.sin(now * 8 + p.p)) * 6 : Math.abs(Math.sin(now * 1.5 + p.p)) * 1.5; c.fillStyle = p.c; c.fillRect(p.x - 7, p.y - j, 14, 12); c.fillStyle = p.s; c.beginPath(); c.arc(p.x, p.y - 7 - j, 6, 0, 6.3); c.fill(); }
+  // banners
+  [300, 900, 1500].forEach((bx, i) => { c.fillStyle = ['#ff5a3c', '#1f5fbf', '#ffb547'][i]; c.fillRect(bx - 110, 4, 220, 46); c.fillStyle = '#fff'; c.font = '800 34px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText('HOOPS', bx, 40); });
+  // fence + gate
+  c.fillStyle = '#5c6372'; c.fillRect(40, 880, 820, 30); c.fillRect(940, 880, 820, 30);
+  c.fillStyle = '#ffb547'; c.fillRect(840, 860, 20, 70); c.fillRect(940, 860, 20, 70);
+  c.fillStyle = '#ffb547'; c.font = '800 22px "Barlow Condensed", sans-serif'; c.fillText(S.obj.enter ? 'WELCOME TO HOOPS' : 'HOOPS · VIP ONLY', 900, 850);
+  if (!S.obj.enter) { c.strokeStyle = '#e04f5f'; c.lineWidth = 4; c.setLineDash([10, 8]); c.beginPath(); c.moveTo(860, 895); c.lineTo(940, 895); c.stroke(); c.setLineDash([]); }
+  // snack stand, DJ booth, benches
+  c.fillStyle = '#7a2e2e'; c.fillRect(780, 700, 240, 90); c.fillStyle = '#ffd34d'; c.fillRect(780, 700, 240, 22); c.fillStyle = '#7a2e2e'; c.font = '800 18px "Barlow Condensed", sans-serif'; c.fillText('AUNTIE PAM\'S SNACKS', 900, 717);
+  c.font = '22px sans-serif'; c.fillText('🌭 🧀 🥨', 900, 760);
+  c.fillStyle = '#1b1e29'; c.fillRect(860, 280, 80, 80); c.fillStyle = `hsl(${(now * 120) % 360},90%,60%)`; c.fillRect(866, 286, 68, 8); c.font = '26px sans-serif'; c.fillText('🎧', 900, 335);
+  c.fillStyle = '#8a6a43'; c.fillRect(60, 720, 180, 40); c.fillRect(1560, 720, 180, 40);
+  // basketball racks + loose decor balls
+  [[80, 790], [1700, 790], [760, 180 + 10]].forEach(([x, y]) => { for (let i = 0; i < 4; i++) { c.fillStyle = '#e07a2e'; c.beginPath(); c.arc(x + i * 18, y, 8, 0, 6.3); c.fill(); } });
+  HOOPS.forEach(hoop);
+  // shot spot + stage
+  if (S.obj.enter) { c.strokeStyle = S.obj.shots ? 'rgba(63,207,122,.8)' : `rgba(255,181,71,${0.5 + 0.4 * Math.sin(now * 4)})`; c.lineWidth = 4; c.beginPath(); c.arc(SHOT_SPOT.x, SHOT_SPOT.y, SHOT_SPOT.r, 0, 6.3); c.stroke(); c.fillStyle = '#fff'; c.font = '700 14px Barlow'; c.fillText(S.obj.shots ? 'DONE ✔' : 'SHOOT HERE', SHOT_SPOT.x, SHOT_SPOT.y + 54); }
+  if (allDone()) { c.fillStyle = `rgba(255,211,77,${0.25 + 0.2 * Math.sin(now * 3)})`; c.beginPath(); c.arc(STAGE.x, STAGE.y, STAGE.r + 10, 0, 6.3); c.fill(); c.fillStyle = '#ffd34d'; c.beginPath(); c.arc(STAGE.x, STAGE.y, STAGE.r, 0, 6.3); c.fill(); c.fillStyle = '#1b1305'; c.font = '800 20px "Barlow Condensed", sans-serif'; c.fillText('🏆 MVP STAGE', STAGE.x, STAGE.y + 7); }
+  // wristband + eggs
+  if (!S.band.got) { c.fillStyle = `rgba(255,211,77,${0.4 + 0.3 * Math.sin(now * 5)})`; c.beginPath(); c.arc(S.band.x, S.band.y, 18, 0, 6.3); c.fill(); c.font = '20px sans-serif'; c.fillText('🎟️', S.band.x, S.band.y + 7); }
+  for (const e of EGGS) if (!S.eggs[e.id]) { c.globalAlpha = dist(e, S.d) < 160 ? 1 : 0.55; c.font = '20px sans-serif'; c.fillText(e.icon, e.x, e.y + 7); c.globalAlpha = 1; }
+  // t-shirt targets
+  for (const s of S.shirts) if (!s.got) { c.strokeStyle = s.t <= 0 ? '#3fcf7a' : `rgba(255,255,255,${0.4 + 0.3 * Math.sin(now * 10)})`; c.lineWidth = 4; c.beginPath(); c.arc(s.x, s.y, 34, 0, 6.3); c.stroke(); if (s.t <= 0) { c.font = '22px sans-serif'; c.fillText('👕', s.x, s.y + 8); } }
+  // sorted characters
+  const ents = S.npcs.map((n) => ({ y: n.y, f: () => { if (n.mascot) mascot(n.x, n.y, n); else person(n.x, n.y, { ...n, moving: Math.hypot(n.tx - n.x, n.ty - n.y) > 4 }); if (dist(n, S.d) < 200) { c.fillStyle = 'rgba(0,0,0,.55)'; c.font = '600 11px Barlow'; const tw = c.measureText(n.name).width + 10; c.fillRect(n.x - tw / 2, n.y - 52, tw, 15); c.fillStyle = n.met ? '#3fcf7a' : '#fff'; c.textAlign = 'center'; c.fillText(n.name, n.x, n.y - 41); } } }));
+  ents.push({ y: S.d.y, f: drawDavid });
+  for (const b of S.balls) ents.push({ y: b.y, f: () => { c.fillStyle = 'rgba(0,0,0,.25)'; c.beginPath(); c.ellipse(b.x, b.y + 12, 12, 4, 0, 0, 6.3); c.fill(); c.save(); c.translate(b.x, b.y); c.rotate(b.spin); c.fillStyle = '#e07a2e'; c.beginPath(); c.arc(0, 0, b.r, 0, 6.3); c.fill(); c.strokeStyle = '#7a3a10'; c.lineWidth = 1.5; c.beginPath(); c.moveTo(-b.r, 0); c.lineTo(b.r, 0); c.moveTo(0, -b.r); c.lineTo(0, b.r); c.stroke(); c.restore(); } });
+  ents.sort((a, b) => a.y - b.y).forEach((e) => e.f());
+  // shooting ball
+  if (S.shoot && S.shoot.ball) {
+    const b = S.shoot.ball, k = Math.min(1, b.k), sx = S.d.x, sy = S.d.y - 30, ex = HOOPS[0].x + 14 + (b.kind === 'miss' ? b.dir * 70 : 0), ey = HOOPS[0].y;
+    let bx = sx + (ex - sx) * k, by = sy + (ey - sy) * k - Math.sin(k * Math.PI) * 110;
+    if (b.k > 1) { const k2 = b.k - 1; if (b.kind === 'miss') { bx = ex + Math.sign(b.dir || 1) * 90 * k2; by = ey - 40 * Math.sin(k2 * Math.PI * 1.5) + 80 * k2; } else { by = ey + 40 * k2; } }
+    c.fillStyle = '#e07a2e'; c.beginPath(); c.arc(bx, by, 10, 0, 6.3); c.fill();
+  }
+  // floaters + confetti
+  for (const f of S.floaters) { c.globalAlpha = 1 - f.t / 1.6; c.fillStyle = f.color; c.font = '800 20px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText(f.text, f.x, f.y - f.t * 40); c.globalAlpha = 1; }
+  for (const p of S.confetti) { c.save(); c.translate(p.x, p.y); c.rotate(p.r); c.fillStyle = p.c; c.fillRect(-4, -2, 8, 4); c.restore(); }
+  c.restore();
+  if (S.mode !== 'menu') hud(now);
+}
+function wrap(text, maxW) { const words = text.split(' '), lines = []; let line = ''; for (const w of words) { const t = line ? line + ' ' + w : w; if (c.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; } if (line) lines.push(line); return lines; }
+function panel(x, y, w, h, a = 0.82) { c.fillStyle = `rgba(16,20,28,${a})`; c.beginPath(); c.roundRect(x, y, w, h, 10); c.fill(); c.strokeStyle = 'rgba(255,255,255,.08)'; c.lineWidth = 1; c.stroke(); }
+function hud(now) {
+  c.textAlign = 'left';
+  // checklist
+  const obj = objectives(); panel(10, 10, 300, 22 + obj.length * 19);
+  c.fillStyle = '#ffb547'; c.font = '800 15px "Barlow Condensed", sans-serif'; c.fillText('DAVID\'S NIGHT AT HOOPS', 20, 28);
+  obj.forEach((o, i) => { c.font = '600 13px Barlow'; c.fillStyle = o.done ? '#3fcf7a' : o.hot ? `hsl(45,100%,${60 + 15 * Math.sin(now * 6)}%)` : '#e6e6e6'; c.fillText(`${o.done ? '✔' : '○'} ${o.text}`, 20, 47 + i * 19); });
+  // score + hype
+  panel(VW - 230, 10, 220, 58);
+  c.fillStyle = '#9aa3b2'; c.font = '600 12px Barlow'; c.fillText('SCORE', VW - 218, 27); c.fillText('HYPE', VW - 120, 27);
+  c.fillStyle = '#fff'; c.font = '800 24px "Barlow Condensed", sans-serif'; c.fillText(S.score, VW - 218, 54);
+  c.fillStyle = '#2b3447'; c.fillRect(VW - 120, 36, 100, 14); c.fillStyle = S.hype > 30 ? '#3fcf7a' : '#ff6363'; c.fillRect(VW - 120, 36, S.hype, 14);
+  c.font = '14px sans-serif'; c.fillText(S.hype > 70 ? '🔥' : S.hype > 30 ? '😎' : '😰', VW - 40, 27);
+  // event banner
+  if (S.event && S.event.title) { const ev = S.event, left = Math.max(0, Math.ceil(ev.dur - ev.t)); panel(VW / 2 - 230, 80, 460, 54, 0.9); c.textAlign = 'center'; c.fillStyle = '#ffb547'; c.font = '800 22px "Barlow Condensed", sans-serif'; c.fillText(`${ev.title}  ${left}s`, VW / 2, 103); c.fillStyle = '#ddd'; c.font = '600 13px Barlow'; c.fillText(ev.sub, VW / 2, 123); }
+  if (S.event && S.event.type === 'stare') { const ev = S.event; panel(VW / 2 - 200, 170, 400, 90, 0.92); c.textAlign = 'center'; c.fillStyle = '#fff'; c.font = '800 24px "Barlow Condensed", sans-serif'; c.fillText(`👀 STARING CONTEST  ${Math.max(0, ev.dur - ev.t).toFixed(1)}s`, VW / 2, 200); c.fillStyle = '#2b3447'; c.fillRect(VW / 2 - 170, 215, 340, 18); c.fillStyle = '#3fcf7a'; c.fillRect(VW / 2 - 170, 215, 340 * Math.min(1, ev.mash / ev.need), 18); c.fillStyle = '#ddd'; c.font = '600 13px Barlow'; c.fillText('MASH E / TAP — don\'t blink!', VW / 2, 250); }
+  // shooting UI
+  if (S.shoot) {
+    const sh = S.shoot; panel(VW / 2 - 220, VH - 140, 440, 110, 0.92); c.textAlign = 'center';
+    c.fillStyle = '#ffb547'; c.font = '800 20px "Barlow Condensed", sans-serif'; c.fillText(`BASKETBALL CHALLENGE · ${sh.made} made · ${sh.shotsLeft} left`, VW / 2, VH - 116);
+    const p = 0.5 + 0.5 * Math.sin(sh.t * (2.2 + (10 - sh.shotsLeft - (sh.ball ? 1 : 0)) * 0.25)), mx = VW / 2 - 180, mw = 360;
+    c.fillStyle = '#2b3447'; c.fillRect(mx, VH - 100, mw, 16); c.fillStyle = '#3fcf7a'; c.fillRect(mx + mw * (0.5 - sh.zone / 2), VH - 100, mw * sh.zone, 16); c.fillStyle = '#3d7bff'; c.fillRect(mx + mw * (0.5 - sh.zone / 8), VH - 100, mw * sh.zone / 4, 16);
+    if (!sh.ball) { c.fillStyle = '#fff'; c.fillRect(mx + mw * p - 2, VH - 106, 4, 28); }
+    c.fillStyle = '#ddd'; c.font = '600 14px Barlow'; c.fillText(sh.msg, VW / 2, VH - 58);
+  }
+  // speech bubble
+  if (S.bubble && !S.dialog) { c.font = '600 14px Barlow'; const lines = wrap(S.bubble.text, 420); const h = 30 + lines.length * 18; panel(VW / 2 - 230, VH - h - 20, 460, h, 0.9); c.textAlign = 'left'; c.fillStyle = '#ffb547'; c.font = '800 14px "Barlow Condensed", sans-serif'; c.fillText(S.bubble.who.toUpperCase(), VW / 2 - 216, VH - h - 2); c.fillStyle = '#eee'; c.font = '600 14px Barlow'; lines.forEach((l, i) => c.fillText(l, VW / 2 - 216, VH - h + 18 + i * 18)); }
+  // dialog box
+  optionRects = [];
+  if (S.dialog) {
+    const dl = S.dialog, txt = dl.pages[dl.page] || '', last = dl.page === dl.pages.length - 1 && dl.options;
+    c.font = '600 16px Barlow'; const lines = wrap(txt, 760), oh = last ? dl.options.length * 34 + 8 : 0, h = 56 + lines.length * 22 + oh;
+    panel(60, VH - h - 16, VW - 120, h, 0.95); c.textAlign = 'left';
+    c.fillStyle = '#ffb547'; c.font = '800 18px "Barlow Condensed", sans-serif'; c.fillText(`${dl.n.name.toUpperCase()}  ·  ${dl.n.role || ''}`, 80, VH - h + 10);
+    c.fillStyle = '#f0f0f0'; c.font = '600 16px Barlow'; lines.forEach((l, i) => c.fillText(l, 80, VH - h + 36 + i * 22));
+    if (last) dl.options.forEach((o, i) => { const y = VH - oh - 22 + i * 34; optionRects.push({ x: 74, y, w: VW - 148, h: 30 }); c.fillStyle = '#2b3447'; c.beginPath(); c.roundRect(74, y, VW - 148, 30, 6); c.fill(); c.fillStyle = '#fff'; c.font = '600 15px Barlow'; c.fillText(`${i + 1}. ${o}`, 88, y + 20); });
+    else { c.fillStyle = '#9aa3b2'; c.font = '600 12px Barlow'; c.textAlign = 'right'; c.fillText('E / click to continue ▸', VW - 80, VH - 28); }
+  }
+  // interaction hint
+  if (S.hint && !S.dialog && !S.shoot && !S.event) { c.font = '700 14px Barlow'; const tw = c.measureText(S.hint).width + 24; panel(VW / 2 - tw / 2, VH - 64, tw, 30, 0.9); c.fillStyle = '#ffb547'; c.textAlign = 'center'; c.fillText(S.hint, VW / 2, VH - 44); }
+}
+
+// ============ loop ============
+let lastT = performance.now();
+function loop(now) { const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now; update(dt); draw(); requestAnimationFrame(loop); }
+requestAnimationFrame(loop);
+window.__david = { get S() { return S; }, startGame, interact, talkTo }; // handy for testing in the console
+})();
+</script>
+</body>
+</html>

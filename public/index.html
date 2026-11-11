@@ -220,6 +220,9 @@ table.edit tr.warn td{background:var(--hiBg)}
 .lbrow button{font:600 15px Barlow;border:1px solid var(--navy);background:var(--navy);color:#fff;padding:9px 16px}
 .tmode{display:flex;flex-direction:column;gap:2px}.tmode b{font:800 19px "Barlow Condensed";color:var(--ink);width:auto}
 @media (min-width:900px){#play{display:none}#play.on{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(260px,.9fr);gap:0 28px}#play>.chips,#play>#game-help{grid-column:1/-1}#play .lbpanel{grid-column:2;grid-row:3/span 9;align-self:start}}
+.davidcta{display:flex;flex-direction:column;gap:2px;border:2px solid var(--navy);padding:12px 14px;margin:4px 0 10px;text-decoration:none;color:var(--ink);background:var(--hiBg);max-width:520px}
+.davidcta b{font:800 22px "Barlow Condensed";text-transform:uppercase;color:var(--navy)}.davidcta span{font-size:13px;color:var(--mute)}
+@media (min-width:900px){#play .davidcta{grid-column:1/-1}}
 </style>
 </head>
 <body>
@@ -369,6 +372,7 @@ table.edit tr.warn td{background:var(--hiBg)}
       <button data-g="hs" class="on">🔥 Hot Streak</button><button data-g="hs-daily">📅 Daily</button><button data-g="br">⏱️ Buzzer Rush</button>
       <button data-g="cr">💨 Crossover Rush</button><button data-g="rb">🧱 Rebound Reflex</button><button data-g="fb">⚡ Fast Break</button><button data-g="tr">🧠 Trivia</button><button data-g="hl">⬆️ Higher or Lower</button><button data-g="lk">🏅 Locker Room</button>
     </div>
+    <a class="davidcta" href="david.html"><b>🎮 David at Hoops</b><span>The full adventure: get into Hoops, meet everyone, survive the chaos, become MVP. Opens full screen.</span></a>
     <p class="small" id="game-help">Tap the court or press Space when the marker is in the green. It gets faster every make.</p>
     <div id="hs-wrap"><canvas id="hs-canvas" class="gamecv"></canvas><div class="cardbtns"><button type="button" id="hs-share" hidden>Share result</button></div></div>
     <div id="br-wrap" hidden><canvas id="br-canvas" class="gamecv"></canvas></div>

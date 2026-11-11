@@ -4,7 +4,7 @@ const { put, head } = require('@vercel/blob');
 
 // highest believable score per game; anything above is rejected
 const CAPS = { hotstreak: 200, buzzer: 400, crossover: 200000, rebound: 2000, fastbreak: 500, higherlower: 300,
-  'trivia-classic': 3000, 'trivia-sudden': 200, 'trivia-speed': 200, 'trivia-hawks': 3000 };
+  'trivia-classic': 3000, 'trivia-sudden': 200, 'trivia-speed': 200, 'trivia-hawks': 3000, david: 20000 };
 const DAILY = /^(daily|trivia-daily)-\d{4}-\d{2}-\d{2}$/;
 const BAD = /(fuck|shit|bitch|nigg|fag|cunt|dick|pussy|whore|slut|rape|nazi|porn|sex)/i;
 const KEEP = 20;
