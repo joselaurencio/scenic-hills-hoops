@@ -188,6 +188,9 @@ table.edit tr.warn td{background:var(--hiBg)}
 .qrow.wide{grid-template-columns:150px 1fr 40px}
 #playerpick{display:none}
 @media (max-width:700px){.rostergrid{grid-template-columns:1fr 1fr}.pcard b{font-size:16px}.qrow.wide{grid-template-columns:110px 1fr 34px}.pname{font-size:26px}}
+
+.gamecv{display:block;width:100%;max-width:420px;aspect-ratio:3/4;border:1px solid var(--rule);touch-action:none;user-select:none;-webkit-user-select:none;margin:6px 0}
+@media (max-width:700px){nav.tabs a{padding:12px 4px;font-size:14px;letter-spacing:.03em}}
 </style>
 </head>
 <body>
@@ -222,6 +225,7 @@ table.edit tr.warn td{background:var(--hiBg)}
   <a href="#scout" data-tab="scout">Scout</a>
   <a href="#playoffs" data-tab="playoffs">Playoffs</a>
   <a href="#share" data-tab="share">Share</a>
+  <a href="#play" data-tab="play">Play</a>
 </div></nav>
 
 <main class="wrap">
@@ -329,6 +333,13 @@ table.edit tr.warn td{background:var(--hiBg)}
     <div id="finalpick" class="small"></div>
     <canvas id="card" width="1080" height="1350"></canvas>
     <div class="cardbtns"><button type="button" id="sharebtn">Share</button><button type="button" id="savebtn">Download PNG</button></div>
+  </section>
+  <!-- PLAY -->
+  <section id="play">
+    <div class="seg subtabs" id="gamepick"><button data-g="hs" class="on">Hot Streak</button><button data-g="hs-daily">Daily</button><button data-g="br">Buzzer Rush</button></div>
+    <p class="small" id="game-help">Tap the court or press Space when the marker is in the green. It gets faster every make.</p>
+    <div id="hs-wrap"><canvas id="hs-canvas" class="gamecv"></canvas><div class="cardbtns"><button type="button" id="hs-share" hidden>Share result</button></div></div>
+    <div id="br-wrap" hidden><canvas id="br-canvas" class="gamecv"></canvas></div>
   </section>
 </main>
 
@@ -801,5 +812,6 @@ const q=new URLSearchParams(location.search).get('team');
 const startTab=(location.hash||'#home').slice(1);
 if(CFG[q]){pickTeam(q,true);show(startTab)}else document.getElementById('picker').hidden=false;
 </script>
+<script src="games.js"></script>
 </body>
 </html>
