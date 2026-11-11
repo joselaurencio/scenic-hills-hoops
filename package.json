@@ -1,1 +1,1 @@
-{"name":"scenic-hills-hoops","private":true,"scripts":{"build":"node scripts/build-data.js"}}
+{"name":"scenic-hills-hoops","private":true,"scripts":{"build":"node scripts/build-data.js"},"dependencies":{"@vercel/blob":"^2.8.2"}}
