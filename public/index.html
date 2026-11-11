@@ -191,6 +191,27 @@ table.edit tr.warn td{background:var(--hiBg)}
 
 .gamecv{display:block;width:100%;max-width:420px;aspect-ratio:3/4;border:1px solid var(--rule);touch-action:none;user-select:none;-webkit-user-select:none;margin:6px 0}
 @media (max-width:700px){nav.tabs a{padding:12px 4px;font-size:14px;letter-spacing:.03em}}
+
+.gamebox{max-width:520px}
+.tq{border:1px solid var(--rule);padding:14px}
+.tqh{display:flex;justify-content:space-between;font:700 15px "Barlow Condensed";text-transform:uppercase;color:var(--mute)}
+.ttimer{height:6px;background:var(--rule);margin:8px 0}.ttimer i{display:block;height:100%;width:100%;background:var(--navy);transition:width .1s linear}
+.tqq{font:700 21px/1.25 "Barlow Condensed";margin:10px 0 12px}
+.topt{display:block;width:100%;text-align:left;border:1px solid var(--rule2);background:var(--paper);color:var(--ink);font:500 16px Barlow;padding:12px;margin:0 0 8px}
+.topt b{display:inline-block;width:22px;color:var(--navy)}
+.topt.ok{background:var(--good);color:#fff;border-color:var(--good)}.topt.no{background:var(--bad);color:#fff;border-color:var(--bad)}
+.hlrow{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:stretch}
+.hlvs{align-self:center;font:800 18px "Barlow Condensed";color:var(--mute)}
+.hlcard{border:2px solid var(--rule2);background:var(--paper);color:var(--ink);padding:14px 10px;display:flex;flex-direction:column;gap:6px;text-align:center;min-height:150px;justify-content:center}
+.hlcard b{font:800 20px/1.1 "Barlow Condensed";text-transform:uppercase}.hlcard em{font:800 34px "Barlow Condensed";font-style:normal;color:var(--navy)}
+.hlcard.ok{border-color:var(--good)}.hlcard.no{border-color:var(--bad)}
+.skins{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.skin{border:1px solid var(--rule);background:var(--paper);color:var(--ink);padding:10px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;font:600 15px Barlow}
+.skin i{width:28px;height:28px;border-radius:50%;border:2px solid}.skin.on{border-color:var(--navy);box-shadow:inset 0 -3px 0 var(--navy)}.skin[disabled]{opacity:.5}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.badge{border:1px solid var(--rule);padding:8px 10px;opacity:.55}.badge.got{opacity:1;border-color:var(--good)}.badge b{display:block;font:700 16px "Barlow Condensed"}
+.gtoast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,40px);background:var(--ink);color:var(--paper);padding:10px 16px;font:600 15px Barlow;opacity:0;transition:.3s;z-index:30;pointer-events:none;max-width:90vw;text-align:center}
+.gtoast.on{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
 <body>
@@ -336,10 +357,17 @@ table.edit tr.warn td{background:var(--hiBg)}
   </section>
   <!-- PLAY -->
   <section id="play">
-    <div class="seg subtabs" id="gamepick"><button data-g="hs" class="on">Hot Streak</button><button data-g="hs-daily">Daily</button><button data-g="br">Buzzer Rush</button></div>
+    <div class="chips" id="gamepick">
+      <button data-g="hs" class="on">🔥 Hot Streak</button><button data-g="hs-daily">📅 Daily</button><button data-g="br">⏱️ Buzzer Rush</button>
+      <button data-g="cr">💨 Crossover Rush</button><button data-g="tr">🧠 Trivia</button><button data-g="hl">⬆️ Higher or Lower</button><button data-g="lk">🏅 Locker Room</button>
+    </div>
     <p class="small" id="game-help">Tap the court or press Space when the marker is in the green. It gets faster every make.</p>
     <div id="hs-wrap"><canvas id="hs-canvas" class="gamecv"></canvas><div class="cardbtns"><button type="button" id="hs-share" hidden>Share result</button></div></div>
     <div id="br-wrap" hidden><canvas id="br-canvas" class="gamecv"></canvas></div>
+    <div id="cr-wrap" hidden><canvas id="cr-canvas" class="gamecv"></canvas></div>
+    <div id="tr-wrap" hidden><div id="tr-box" class="gamebox"></div></div>
+    <div id="hl-wrap" hidden><div id="hl-box" class="gamebox"></div></div>
+    <div id="lk-wrap" hidden><div id="lk-box"></div></div>
   </section>
 </main>
 
@@ -417,7 +445,7 @@ function renderHome(d){
     `<div><span>Record</span><b>${us.w}-${us.l}</b></div><div><span>Division</span><b>${['1st','2nd','3rd','4th','5th','6th'][place-1]||place}</b></div>`+
     `<div><span>Power rank</span><b>#${rank[US]}<small style="font-size:15px"> /${T.length}</small></b></div><div><span>Playoff odds</span><b>${pct(us.odds.playoffs)}</b></div>`;
   document.getElementById('games2').innerHTML=
-    `<div><span class="small">NEXT</span><div class="big">${next?`${next.home?'vs':'@'} ${esc(short(next.opponent))}`:'Season done'}</div>${next?`<span class="small">${esc(md(next.date))} · ${esc(next.time)} · ${esc(next.venue)}</span>`:''}</div>`+
+    `<div><span class="small">NEXT</span><div class="big">${next?`${next.home?'vs':'@'} ${esc(short(next.opponent))}`:us.games.length?'Season done':'Schedule loading…'}</div>${next?`<span class="small">${esc(md(next.date))} · ${esc(next.time)} · ${esc(next.venue)}</span>`:''}</div>`+
     `<div><span class="small">LAST</span><div class="big">${last?`${res(last)} ${last.home?'vs':'@'} ${esc(short(last.opponent))}`:'No games yet'}</div>${last?`<span class="small">${esc(md(last.date))}</span>`:''}</div>`;
   document.getElementById('mydivname').textContent=divName(us.division);
   document.getElementById('minitbl').innerHTML='<tr><th>Team</th><th class="n">Div</th><th class="n">All</th><th class="n">Odds</th></tr>'+
