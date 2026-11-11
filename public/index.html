@@ -243,6 +243,7 @@ table.edit tr.warn td{background:var(--hiBg)}
         <div id="lastyrbox"></div>
       </div>
     </div>
+    <div id="homeleaders"></div>
     <details id="scheddetails"><summary>Full schedule</summary><div class="scroll"><table id="sched"></table></div></details>
   </section>
 
@@ -266,7 +267,7 @@ table.edit tr.warn td{background:var(--hiBg)}
 
   <!-- STATS -->
   <section id="stats">
-    <div class="seg sm subtabs" data-sub="stats"><button data-p="game" class="on">Game</button><button data-p="leaders">Leaders</button><button data-p="players">Players</button></div>
+    <div class="seg subtabs" data-sub="stats"><button data-p="game" class="on">Game</button><button data-p="leaders">Leaders</button><button data-p="players">Player profiles</button></div>
     <div id="nostats" class="lede" hidden>No stat sheets entered for this team yet.</div>
     <div class="pane on" data-pane="game">
       <div class="chips" id="gamechips"></div>
@@ -667,6 +668,7 @@ function renderStats(d){
   const S=STATS&&STATS[TEAM],has=S&&S.games.length;
   document.getElementById('nostats').hidden=!!has;
   document.querySelectorAll('#stats .pane,#stats .subtabs').forEach(e=>e.style.visibility=has?'':'hidden');
+  document.getElementById('homeleaders').innerHTML='';
   if(!has)return;
   const name=no=>S.players[no]||('#'+no);
   const games=S.games.slice().sort((a,b)=>a.date.localeCompare(b.date));
@@ -738,6 +740,11 @@ function renderStats(d){
     `<div><span>Margin / game</span><b>${((ptsFor-ptsAg)/gs>0?'+':'')+((ptsFor-ptsAg)/gs).toFixed(1)}</b></div><div><span>Assists / game</span><b>${(sum('ast')/gs).toFixed(1)}</b></div>`+
     `<div><span>FG %</span><b>${pctS(fgm,fga)}</b></div><div><span>3PT %</span><b>${pctS(f3m,f3a)}</b></div><div><span>FT %</span><b>${pctS(ftm,fta)}</b></div><div><span>Games tracked</span><b>${gs}</b></div>`+
     (sgames<gs?`<p class="small" style="grid-column:1/-1">Shooting % uses the ${sgames} game${sgames>1?'s':''} with shot-by-shot stats.</p>`:'');
+
+  // home tab: leaders strip + links into the stats pages
+  const hl3=[['Points','pts'],['Rebounds','reb'],['Assists','ast']].map(([lab,k])=>{const c=P.slice().sort((x,y)=>avg(y,k)-avg(x,k))[0];return c&&avg(c,k)>0?`<div><span>${lab} / game</span><b>${avg(c,k).toFixed(1)}</b><em>${esc(name(c.no))}</em></div>`:''}).join('');
+  document.getElementById('homeleaders').innerHTML=`<h3>Team leaders</h3><div class="leaders">${hl3}</div><div class="cardbtns" style="max-width:none;margin:10px 0 4px"><button type="button" data-go="players">All player profiles</button><button type="button" data-go="game">Latest box score</button></div>`;
+  document.getElementById('homeleaders').onclick=e=>{const b=e.target.closest('[data-go]');if(!b)return;show('stats');setURL();document.querySelector(`[data-sub=stats] [data-p=${b.dataset.go}]`).click();scrollTo(0,0)};
 
   // ---- roster grid + player profile ----
   const order=P.slice().sort((a,b)=>b.pts-a.pts||(+a.no)-(+b.no));
