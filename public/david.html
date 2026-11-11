@@ -8,101 +8,105 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#10141c;--panel:#1a2130;--ink:#f3f1ea;--mute:#9aa3b2;--hi:#ffb547;--blue:#3d7bff;--good:#3fcf7a;--bad:#ff6363}
+:root{--bg:#10141c;--panel:#1a2130;--ink:#f3f1ea;--mute:#9aa3b2;--hi:#ffb547;--good:#3fcf7a;--bad:#ff6363}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:15px/1.4 Barlow,system-ui,sans-serif;overflow:hidden}
-#wrap{position:fixed;inset:0}
-canvas{display:block;width:100%;height:100%;touch-action:none}
-.screen{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,13,20,.8);backdrop-filter:blur(3px);z-index:5;padding:16px;overflow:auto}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:15px/1.4 Barlow,system-ui,sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none}
+#wrap{position:fixed;inset:0}canvas{display:block;width:100%;height:100%;touch-action:none}
+.screen{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,13,20,.82);backdrop-filter:blur(3px);z-index:5;padding:16px;overflow:auto}
 .screen[hidden]{display:none}
-.card{background:var(--panel);border:1px solid #2b3447;border-radius:14px;padding:24px;max-width:560px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.45);max-height:100%;overflow:auto}
+.card{background:var(--panel);border:1px solid #2b3447;border-radius:14px;padding:22px;max-width:580px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.45);max-height:100%;overflow:auto}
 .card h1{font:800 54px/.9 "Barlow Condensed";margin:0 0 6px;text-transform:uppercase}.card h1 span{color:var(--hi)}
 .card h2{font:800 34px/1 "Barlow Condensed";margin:0 0 8px;text-transform:uppercase}
-.card h3{font:800 18px "Barlow Condensed";text-transform:uppercase;color:var(--hi);margin:14px 0 6px;letter-spacing:.05em}
+.card h3{font:800 17px "Barlow Condensed";text-transform:uppercase;color:var(--hi);margin:14px 0 6px;letter-spacing:.05em}
 .card p{color:var(--mute);margin:6px 0}
-.btn{display:inline-block;font:700 18px "Barlow Condensed";text-transform:uppercase;letter-spacing:.06em;background:var(--hi);color:#1b1305;border:0;border-radius:8px;padding:12px 24px;margin:8px 4px 0;cursor:pointer;text-decoration:none}
+.btn{display:inline-block;font:700 18px "Barlow Condensed";text-transform:uppercase;letter-spacing:.06em;background:var(--hi);color:#1b1305;border:0;border-radius:8px;padding:12px 22px;margin:8px 4px 0;cursor:pointer;text-decoration:none}
 .btn.alt{background:#2b3447;color:var(--ink)}
-.keys{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;text-align:left;margin:12px auto;max-width:380px;color:var(--ink)}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;text-align:left;margin:12px auto;max-width:400px;color:var(--ink)}
 kbd{font:700 13px Barlow;background:#2b3447;border-radius:5px;padding:2px 7px;border-bottom:2px solid #11151d;white-space:nowrap}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
 .stats div{background:#11161f;border-radius:8px;padding:8px;font-size:13px}.stats b{display:block;font:800 22px "Barlow Condensed";color:var(--hi)}
-.bars{text-align:left}.bars div{display:grid;grid-template-columns:110px 1fr 28px;gap:8px;align-items:center;margin:4px 0;font-size:14px}
+.bars{text-align:left}.bars div{display:grid;grid-template-columns:110px 1fr 30px;gap:8px;align-items:center;margin:4px 0;font-size:14px}
 .bars i{display:block;height:12px;border-radius:6px;background:var(--bad)}
-.ach{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:6px 0}.ach span{background:#11161f;border-radius:20px;padding:4px 10px;font-size:13px}
-.lb{display:flex;gap:6px;margin-top:10px}.lb input{flex:1;font:600 15px Barlow;padding:10px;border-radius:8px;border:1px solid #2b3447;background:#11161f;color:var(--ink)}
-.cast{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;text-align:left;font-size:13px;margin:10px 0;color:var(--mute)}.cast b{color:var(--ink)}
-#touch{position:absolute;right:14px;bottom:14px;display:none;gap:10px;z-index:4}
-#touch button{width:68px;height:68px;border-radius:50%;border:2px solid rgba(255,255,255,.35);background:rgba(20,26,38,.6);color:#fff;font:800 20px "Barlow Condensed"}
+.lb{display:flex;gap:6px;margin-top:10px}.lb input{flex:1;font:600 15px Barlow;padding:10px;border-radius:8px;border:1px solid #2b3447;background:#11161f;color:var(--ink);user-select:text}
+.career{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}.career div{background:#11161f;border-radius:8px;padding:6px;font-size:12px;color:var(--mute)}.career b{display:block;font:800 20px "Barlow Condensed";color:var(--ink)}
+.cast{display:grid;grid-template-columns:1fr 1fr;gap:3px 12px;text-align:left;font-size:13px;margin:8px 0;color:var(--mute)}.cast b{color:var(--ink)}
+#touch{position:absolute;right:12px;bottom:12px;display:none;gap:10px;z-index:4;align-items:flex-end}
+#touch button{width:66px;height:66px;border-radius:50%;border:2px solid rgba(255,255,255,.35);background:rgba(20,26,38,.65);color:#fff;font:800 16px "Barlow Condensed"}
+#touch #tShoot{width:84px;height:84px;background:rgba(255,181,71,.55);font-size:20px}
 @media (pointer:coarse){#touch{display:flex}}
 a.back{position:absolute;left:12px;bottom:10px;z-index:6;color:var(--mute);font:600 13px Barlow;text-decoration:none}
-@media (max-width:600px){.stats{grid-template-columns:1fr 1fr}.card h1{font-size:42px}}
+@media (max-width:600px){.stats{grid-template-columns:1fr 1fr}.card h1{font-size:42px}.career{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 <div id="wrap"><canvas id="game"></canvas></div>
 <a class="back" href="./#play">← Back to Hawks Hoops Report</a>
-<div id="touch"><button id="tJump">JUMP</button><button id="tAct">E</button></div>
+<div id="touch"><button id="tClap">CLAP<br>BACK</button><button id="tJump">JUMP</button><button id="tShoot">SHOOT</button></div>
 
 <div class="screen" id="sStart"><div class="card">
-  <p style="letter-spacing:.2em;font-size:12px;color:var(--hi)">THE TROLLING EXPANSION</p>
+  <p style="letter-spacing:.2em;font-size:12px;color:var(--hi)">ENDLESS · EVERYONE IS AGAINST DAVID</p>
   <h1>David at <span>Hoops</span></h1>
-  <p>Tonight is Hoops. David just wants to play some basketball and leave with his dignity. Unfortunately, every single person he knows is here, and every single one of them is against him.</p>
+  <p>Score as many buckets as you can while the whole crew trolls you. Every quarter gets worse. It never ends. How long can David keep his dignity?</p>
   <div class="cast">
-    <span><b>James</b> · "trust me bro"</span><span><b>Jose</b> · the instigator</span>
-    <span><b>Aleksei</b> · sarcasm, nonstop</span><span><b>Caleb</b> · professional distraction</span>
-    <span><b>Frank &amp; Kalel</b> · prank duo</span><span><b>Lil Daniel</b> · pure chaos</span>
-    <span><b>Ethan</b> · tiny, unstoppable</span><span><b>Coach Brent</b> · "David, we need to talk"</span>
+    <span><b>Ethan</b> steals your ball</span><span><b>Aleksei</b> fires sarcasm</span>
+    <span><b>James</b> plants fake balls</span><span><b>Caleb</b> "DAVID LOOK!"</span>
+    <span><b>Frank &amp; Kalel</b> banana lines</span><span><b>Lil Daniel</b> flips your controls</span>
+    <span><b>Jose</b> guards every shot</span><span><b>Coach Brent</b> "FREEZE!"</span>
   </div>
-  <button class="btn" id="bPlay">Play</button><button class="btn alt" id="bHow">How to play</button>
+  <div class="career" id="career"></div>
+  <button class="btn" id="bPlay">Play</button><button class="btn" id="bDaily">Daily run</button><button class="btn alt" id="bHow">How to play</button>
 </div></div>
 
 <div class="screen" id="sHow" hidden><div class="card">
-  <h2>How to survive</h2>
+  <h2>How to play</h2>
   <div class="keys">
-    <kbd>WASD / Arrows</kbd><span>Move David</span>
-    <kbd>Shift</kbd><span>Run (you will need it)</span>
-    <kbd>Space</kbd><span>Jump</span>
-    <kbd>E</kbd><span>Talk / interact / shoot / clap back</span>
-    <kbd>Mouse</kbd><span>Dialogue choices, click to shoot</span>
+    <kbd>WASD / Arrows</kbd><span>Move (hold Shift to run)</span>
+    <kbd>Run over a ball</kbd><span>Pick it up</span>
+    <kbd>Hold E, release</kbd><span>Shoot. Let go when the marker is in the green. Behind the arc = 3.</span>
+    <kbd>Space</kbd><span>Jump over bananas and sarcasm</span>
+    <kbd>Q</kbd><span>Clap Back: stun everyone near you (earned every 3 makes in a row)</span>
+    <kbd>1 / 2 / 3</kbd><span>Pick a perk between quarters (or click)</span>
     <kbd>Esc / P</kbd><span>Pause</span>
-    <kbd>Phone</kbd><span>Drag to walk, buttons for E and Jump</span>
+    <kbd>Phone</kbd><span>Drag to move, hold SHOOT, tap JUMP / CLAP BACK</span>
   </div>
-  <p><b style="color:var(--bad)">Frustration</b> goes up every time someone trolls David. At 100 he rage-quits. The <b style="color:var(--hi)">Troll meter</b> shows how unhinged everyone is getting: the higher it goes, the more pranks. Finish the checklist, then beat the final boss: the whole team.</p>
+  <p>Getting trolled raises <b style="color:var(--bad)">Frustration</b>. Making shots lowers it. At 100 David rage-quits. Streaks build your combo multiplier. Gold balls are worth triple. Watch out: James's fake balls look gold too.</p>
   <button class="btn" id="bHowBack">Got it</button>
 </div></div>
 
 <div class="screen" id="sPause" hidden><div class="card">
-  <h2>Paused</h2><p>Ethan is going through David's bag right now.</p>
-  <button class="btn" id="bResume">Resume</button><button class="btn alt" id="bRestart">Restart</button><button class="btn alt" id="bHow2">Controls</button>
+  <h2>Timeout</h2><p>Ethan is going through David's bag right now.</p>
+  <button class="btn" id="bResume">Resume</button><button class="btn alt" id="bRestart">Restart</button><button class="btn alt" id="bQuit">Main menu</button>
 </div></div>
 
 <div class="screen" id="sEnd" hidden><div class="card">
-  <h2 id="endTitle">Survived Hoops</h2>
+  <h2 id="endTitle">David rage-quit</h2>
   <p id="endMsg"></p>
   <div class="stats" id="endStats"></div>
   <h3>Who trolled David the most</h3><div class="bars" id="endBars"></div>
-  <h3>Coach Brent's final judgment</h3><p id="endJudge" style="color:var(--ink)"></p>
-  <h3>Achievements</h3><div class="ach" id="endAch"></div>
+  <h3>Coach Brent's judgment</h3><p id="endJudge" style="color:var(--ink)"></p>
   <div class="lb" id="endLb"><input id="lbName" maxlength="16" placeholder="Name for the team leaderboard"><button class="btn" id="bPost" style="margin:0">Post</button></div>
   <p id="lbMsg" style="font-size:13px"></p>
-  <button class="btn" id="bAgain">Play again</button><a class="btn alt" href="./#play">Back to site</a>
+  <button class="btn" id="bAgain">Run it back</button><button class="btn alt" id="bMenu">Menu</button>
 </div></div>
 
 <script>
 (() => {
 // =================== setup ===================
 const cv = document.getElementById('game'), c = cv.getContext('2d');
-const VW = 960, VH = 540, MAPW = 1800, MAPH = 1250;
+const VW = 960, VH = 540, MAPW = 1800, MAPH = 900;
 let scale = 1, dpr = 1;
 function resize() { dpr = Math.min(window.devicePixelRatio || 1, 2); scale = Math.min(innerWidth / VW, innerHeight / VH); cv.width = Math.round(innerWidth * dpr); cv.height = Math.round(innerHeight * dpr); }
 addEventListener('resize', resize); resize();
 const $ = (id) => document.getElementById(id);
 const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
-const rand = (a, b) => a + Math.random() * (b - a), pick = (a) => a[Math.floor(Math.random() * a.length)];
+let RNG = Math.random;
+const rand = (a, b) => a + RNG() * (b - a), pick = (a) => a[Math.floor(RNG() * a.length)];
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v)), dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const esc = (s) => String(s).replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+function seeded(str) { let h = 1779033703 ^ str.length; for (let i = 0; i < str.length; i++) { h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); } return () => { h = Math.imul(h ^ (h >>> 16), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296; }; }
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 
-// =================== sound (synthesized) ===================
+// =================== sound ===================
 let ac = null;
 function audio() { if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} } if (ac && ac.state === 'suspended') ac.resume(); return ac; }
 function tone(f, d = 0.12, type = 'square', vol = 0.07, slide = 0, delay = 0) {
@@ -117,727 +121,517 @@ function noise(d = 0.4, vol = 0.05, hp = 800) {
   s.buffer = b; s.connect(f); f.connect(g); g.connect(a.destination); s.start();
 }
 const SFX = {
-  talk: () => tone(pick([420, 480, 540]), 0.05, 'square', 0.035),
-  tiny: () => tone(pick([900, 1000, 1150]), 0.05, 'square', 0.035),
-  trolled: () => { tone(392, 0.28, 'sawtooth', 0.05, -20); tone(370, 0.28, 'sawtooth', 0.05, -20, 0.3); tone(349, 0.28, 'sawtooth', 0.05, -20, 0.6); tone(330, 0.7, 'sawtooth', 0.05, -60, 0.9); },
-  laugh: () => { for (let i = 0; i < 6; i++) tone(520 + (i % 2) * 90, 0.07, 'square', 0.04, 0, i * 0.09); },
-  ethanLaugh: () => { for (let i = 0; i < 7; i++) tone(1000 + (i % 2) * 180, 0.05, 'square', 0.04, 0, i * 0.07); },
+  talk: () => tone(pick([420, 480, 540]), 0.05, 'square', 0.03),
+  trolled: () => { tone(392, 0.22, 'sawtooth', 0.045, -20); tone(370, 0.22, 'sawtooth', 0.045, -20, 0.24); tone(330, 0.5, 'sawtooth', 0.045, -60, 0.48); },
+  laugh: () => { for (let i = 0; i < 5; i++) tone(520 + (i % 2) * 90, 0.07, 'square', 0.035, 0, i * 0.09); },
+  ethan: () => { for (let i = 0; i < 6; i++) tone(1000 + (i % 2) * 180, 0.05, 'square', 0.035, 0, i * 0.07); },
   whistle: () => { tone(2200, 0.12, 'sine', 0.06); tone(2400, 0.35, 'sine', 0.06, 0, 0.12); },
-  slip: () => tone(900, 0.6, 'sine', 0.07, -750),
+  slip: () => tone(900, 0.55, 'sine', 0.07, -750),
   swish: () => { noise(0.25, 0.06, 2500); tone(880, 0.15, 'sine', 0.05, 400); },
-  clank: () => { tone(160, 0.2, 'square', 0.08, -60); tone(240, 0.12, 'triangle', 0.05); },
-  cheer: () => { noise(1.2, 0.07, 600); },
-  bonk: () => { tone(300, 0.08, 'square', 0.09, -200); tone(120, 0.18, 'sine', 0.08); },
+  make: () => { noise(0.15, 0.04, 2000); tone(660, 0.1, 'sine', 0.05, 200); },
+  clank: () => { tone(160, 0.2, 'square', 0.07, -60); tone(240, 0.12, 'triangle', 0.05); },
+  pick: () => tone(520, 0.07, 'square', 0.04, 200),
   coin: () => { tone(988, 0.08, 'square', 0.05); tone(1318, 0.14, 'square', 0.05, 0, 0.07); },
-  jump: () => tone(300, 0.15, 'sine', 0.05, 300),
-  horn: () => { tone(392, 0.25, 'sawtooth', 0.05); tone(523, 0.4, 'sawtooth', 0.05, 0, 0.2); },
-  boss: () => [196, 185, 175, 165, 131].forEach((f, i) => tone(f, 0.35, 'sawtooth', 0.06, 0, i * 0.25)),
-  win: () => [523, 659, 784, 1046, 1318].forEach((f, i) => tone(f, 0.28, 'square', 0.05, 0, i * 0.14)),
+  combo: (n) => tone(500 + Math.min(n, 12) * 70, 0.12, 'square', 0.05),
+  jump: () => tone(300, 0.14, 'sine', 0.045, 300),
+  clap: () => { noise(0.15, 0.1, 1500); noise(0.15, 0.1, 1500); tone(200, 0.3, 'square', 0.06, 400); },
+  buzzer: () => tone(140, 0.7, 'sawtooth', 0.07),
+  perk: () => [660, 880, 1100].forEach((f, i) => tone(f, 0.12, 'square', 0.05, 0, i * 0.08)),
   sad: () => [392, 349, 311, 262].forEach((f, i) => tone(f, 0.3, 'triangle', 0.06, 0, i * 0.22)),
+  pop: () => { noise(0.2, 0.08, 400); tone(220, 0.2, 'square', 0.06, -150); },
 };
 
-// =================== world ===================
-const WALLS = [
-  [0, 0, MAPW, 60], [0, 0, 40, MAPH], [MAPW - 40, 0, 40, MAPH], [0, MAPH - 40, MAPW, 40],
-  [40, 60, MAPW - 80, 120], [40, 880, 820, 30], [940, 880, 820, 30],
-  [780, 700, 240, 90], [60, 720, 180, 40], [1560, 720, 180, 40],
-];
-const COURTS = [{ x: 120, y: 220, w: 640, h: 440 }, { x: 1040, y: 220, w: 640, h: 440 }];
-const HOOPS = [{ x: 140, y: 440 }, { x: 740, y: 440 }, { x: 1060, y: 440 }, { x: 1660, y: 440 }];
-const SHOT_SPOT = { x: 330, y: 440, r: 34 };
-const BOSS_START = { x: 900, y: 840 }, BOSS_GOAL = { x: 900, y: 240, r: 50 };
-const WRISTBAND_SPOTS = [{ x: 260, y: 1060 }, { x: 1520, y: 1130 }, { x: 1180, y: 990 }];
-const FAKE_SPOTS = [{ x: 1700, y: 1180, label: 'JAMES SAID THE SHOT SPOT IS HERE' }, { x: 120, y: 1150, label: 'SECRET DOUBLE POINTS (TRUST)' }, { x: 1710, y: 240, label: 'VIP SHORTCUT →' }];
+// =================== arena ===================
+const WALLS = [[0, 0, MAPW, 190], [0, 0, 40, MAPH], [MAPW - 40, 0, 40, MAPH], [0, MAPH - 30, MAPW, 30]];
+const COURTS = [{ x: 120, y: 230, w: 640, h: 440 }, { x: 1040, y: 230, w: 640, h: 440 }];
+const HOOPS = [{ x: 150, y: 450, dir: 1 }, { x: 730, y: 450, dir: -1 }, { x: 1070, y: 450, dir: 1 }, { x: 1650, y: 450, dir: -1 }];
+const ARC = 220, SHOOT_RANGE = 330;
 
 // =================== cast ===================
-// each character: look (skin, shirt, jersey number, hair) + lines for calm and "unhinged" troll levels
 const CAST = {
-  james: { name: 'James', role: 'Teammate · "trust me bro"', skin: '#b07a52', shirt: '#1f5fbf', num: '34', hair: 'fade', x: 450, y: 700,
-    lines: [['David, trust me bro. I got you.', 'Bro, I would never set you up. Probably.', 'Coach told me to tell you something. I forgot. Trust me though.'],
-            ['TRUST ME BRO. Have I ever lied to you? Don\'t answer that.', 'David I\'m being 100% serious right now. (He is not.)', 'Bro just trust me one more time. ONE more.']] },
-  jose: { name: 'Jose', role: 'Teammate · head instigator', skin: '#c68863', shirt: '#1f5fbf', num: '5', hair: 'curly', x: 600, y: 300,
-    lines: [['David\'s jumper looks like a shopping cart with one bad wheel.', 'Bro really walked in like he\'s the main character.', 'I\'m not trolling, I\'m coaching. There\'s a difference. (There isn\'t.)'],
-            ['Everybody look, David is about to do something terrible.', 'I\'ve seen better footwork from a folding chair.', 'David, I\'m helping. Stop running from my help.']] },
-  aleksei: { name: 'Aleksei', role: 'Teammate · sarcastic', skin: '#efcfae', shirt: '#1f5fbf', num: '0', hair: 'swoop', x: 1250, y: 300,
-    lines: [['Oh good, David\'s here. Now we can lose.', 'Wow. Incredible. Truly. I am being sarcastic.', 'Love that for you. No I don\'t.'],
-            ['Every time David touches the ball, a scout retires.', 'I\'d roast you but Jose already did. Twice.', 'That was the worst thing I\'ve ever seen. Do it again.']] },
-  caleb: { name: 'Caleb', role: 'Teammate · distraction specialist', skin: '#e0b48a', shirt: '#1f5fbf', num: '10', hair: 'buzz', x: 1450, y: 560,
-    lines: [['DAVID LOOK BEHIND YOU. ...no wait it\'s nothing.', 'Me and Ethan have a secret handshake. It\'s four minutes long.', 'Is that your mom? No. Made you look though.'],
-            ['DAVID. DAVID. DAVID. ...I forgot what I was gonna say.', 'There\'s a dog on the court. There isn\'t. But imagine.', 'I\'m not distracting you. Look over there though.']] },
-  frank: { name: 'Frank', role: 'Friend · expert troll', skin: '#8d5a3b', shirt: '#2f6f3a', num: null, hair: 'cap', x: 300, y: 790,
-    lines: [['I would never prank you, David. (There is a bucket behind his back.)', 'Kalel, phase two. ...What? I didn\'t say anything.', 'Hey David, your shoe\'s untied. Made you look. It was also untied.'],
-            ['Kalel. Initiate the thing.', 'I spent three weeks planning this night. For you.', 'You\'re walking right into it and you don\'t even know.']] },
-  kalel: { name: 'Kalel', role: 'Friend · Frank\'s partner in crime', skin: '#a06a48', shirt: '#7a3cff', num: null, hair: 'twists', x: 360, y: 820,
-    lines: [['Frank told me to tell you nothing is going on.', 'Don\'t look at the floor. No reason.', 'We\'re just standing here. Normally. Like normal people.'],
-            ['Copy that, Frank. Target acquired.', 'Phase three. Wait, that\'s the one with the bananas.', 'David, everything is fine. *walkie-talkie noises*']] },
-  daniel: { name: 'Lil Daniel', role: 'Friend · chaotic energy', skin: '#d9a87e', shirt: '#ff5a3c', num: null, hair: 'messy', x: 1300, y: 760,
-    lines: [['David, what if basketballs were square?', 'I just ate a hot dog I found in my hoodie.', 'I unplugged something important. I don\'t know what.'],
-            ['I CAN SEE SOUNDS.', 'David you ever think about how the floor is just a big ceiling for the basement?', 'I traded my shoes for this lemonade. Worth it.']] },
-  ethan: { name: 'Ethan', role: 'The Little Troll', skin: '#a8724c', shirt: '#1f5fbf', num: '4', hair: 'spiky', x: 1100, y: 620, small: true,
-    lines: [['David is actually cooked.', 'HAHAHAHA.', 'You fell for it.', 'David, look behind you!', 'I\'m telling Coach.'],
-            ['David is SO cooked.', 'HAHAHAHAHAHA.', 'You fell for it AGAIN.', 'I\'m telling Coach. I already told Coach.', 'Bye David!!']] },
-  brent: { name: 'Coach Brent', role: 'Coach · the law', skin: '#e8c19a', shirt: '#2b3447', num: null, hair: 'coach', x: 980, y: 930, coach: true,
-    lines: [['David, what are you doing?', 'That\'s not how we practiced it.', 'Everyone back on the court!', 'David, we need to talk.'],
-            ['David. My office. It\'s the bench. Go sit on it.', 'I\'ve coached for 15 years. I\'ve never seen anything like you.', 'Everyone stop trolling David. ...Okay, one more.']] },
+  ethan: { name: 'Ethan', skin: '#a8724c', shirt: '#1f5fbf', num: '4', hair: 'spiky', small: true, quips: ['David is actually cooked.', 'HAHAHAHA.', 'You fell for it.', 'David, look behind you!', 'I\'m telling Coach.', 'MY BALL NOW.'] },
+  aleksei: { name: 'Aleksei', skin: '#efcfae', shirt: '#1f5fbf', num: '0', hair: 'swoop', quips: ['Wow. Incredible. (Sarcasm.)', 'Oh good, David\'s here.', 'Love that for you. No I don\'t.', 'Every time you shoot, a scout retires.'] },
+  james: { name: 'James', skin: '#b07a52', shirt: '#1f5fbf', num: '34', hair: 'fade', quips: ['That\'s a real gold ball. Trust me bro.', 'Bro, would I lie to you?', 'Trust me bro.', 'Go grab that one. Trust.'] },
+  caleb: { name: 'Caleb', skin: '#e0b48a', shirt: '#1f5fbf', num: '10', hair: 'buzz', quips: ['DAVID LOOK!', 'DAVID! A DOG! ...no.', 'LOOK BEHIND YOU!', 'Made you look.'] },
+  frank: { name: 'Frank', skin: '#8d5a3b', shirt: '#2f6f3a', num: null, hair: 'cap', quips: ['Kalel, phase two.', 'Don\'t mind us.', 'Initiate the bananas.'] },
+  kalel: { name: 'Kalel', skin: '#a06a48', shirt: '#7a3cff', num: null, hair: 'twists', quips: ['Copy that, Frank.', 'Don\'t look at the floor.', 'Target acquired.'] },
+  daniel: { name: 'Lil Daniel', skin: '#d9a87e', shirt: '#ff5a3c', num: null, hair: 'messy', quips: ['I CAN SEE SOUNDS.', 'What if basketballs were square?', 'I unplugged something.', 'THE FLOOR IS LAVA.'] },
+  jose: { name: 'Jose', skin: '#c68863', shirt: '#1f5fbf', num: '5', hair: 'curly', quips: ['Not in my house.', 'He\'s gonna miss. Watch.', 'Your jumper needs an update.', 'Too small, David.'] },
+  brent: { name: 'Coach Brent', skin: '#e8c19a', shirt: '#2b3447', num: null, hair: 'coach', coach: true, quips: ['FREEZE!', 'David, we need to talk.', 'That\'s not how we practiced it.', 'Everyone back on the court!'] },
 };
-const TROLLERS = ['james', 'jose', 'aleksei', 'caleb', 'frank', 'kalel', 'daniel', 'ethan', 'brent'];
-const REP_LEVELS = [[85, 'Hoops Legend', '#ffd34d'], [65, 'Respectable', '#3fcf7a'], [40, 'Getting Cooked', '#ffb547'], [20, 'Professional Victim', '#ff8a5c'], [-1, 'Absolute Fraud', '#ff6363']];
-const repLevel = () => REP_LEVELS.find(([n]) => S.rep >= n);
-const RAGE_MSGS = [
-  'David rage-quit. He\'s in the parking lot telling a pigeon what happened.',
-  'Frustration 100. David said "I\'m good, I\'m good" and walked straight into the wall.',
-  'David has left Hoops. Ethan is wearing his headband and doing his walk.',
-  'David rage-quit. James says "trust me bro, he\'ll be back."',
+// who shows up in which quarter (index = quarter number, 1-based)
+const ROSTER = [[], ['ethan', 'aleksei'], ['james', 'caleb'], ['frank', 'kalel'], ['daniel', 'jose'], ['brent']];
+const TROLLERS = ['ethan', 'aleksei', 'james', 'caleb', 'frank', 'kalel', 'daniel', 'jose', 'brent'];
+
+// =================== perks ===================
+const PERKS = [
+  { id: 'skin', name: 'Thick Skin', icon: '🛡️', desc: 'Trolls hurt 25% less', stack: 3 },
+  { id: 'legs', name: 'Fresh Legs', icon: '👟', desc: '+12% move speed', stack: 3 },
+  { id: 'range', name: 'Deep Range', icon: '🎯', desc: 'Bigger green on every shot', stack: 3 },
+  { id: 'swag', name: 'Swagger', icon: '😎', desc: '+25% points', stack: 4 },
+  { id: 'magnet', name: 'Ball Magnet', icon: '🧲', desc: 'Balls fly to you', stack: 1 },
+  { id: 'hands', name: 'Double Dribble', icon: '🏀', desc: 'Carry 2 balls at once', stack: 1 },
+  { id: 'clap', name: 'Loud Mouth', icon: '📣', desc: 'Clap Back is bigger and lasts longer', stack: 2 },
+  { id: 'pet', name: 'Coach\'s Pet', icon: '📋', desc: 'Coach catches trolls way more often', stack: 2 },
+  { id: 'ice', name: 'Ice Veins', icon: '🧊', desc: 'Immune to FREEZE, LOOK and reversed controls', stack: 1 },
+  { id: 'heal', name: 'Deep Breath', icon: '😮‍💨', desc: '-40 frustration right now', stack: 99 },
+  { id: 'gold', name: 'Gold Rush', icon: '⭐', desc: 'Gold balls show up way more', stack: 2 },
+  { id: 'eye', name: 'Trust Issues', icon: '🕵️', desc: 'James\'s fake balls are marked', stack: 1 },
 ];
-const PRANK_NAMES = { trustme: 'Fell for "Trust Me Bro"', wristband: 'Ethan Took My Wristband', bucket: 'Bucketed', banana: 'Banana Peel Victim', reverse: 'Lil Daniel Broke My Controls', roast: 'Roasted by the Group', ball: 'Ethan Stole My Ball', distract: 'Made You Look', heckle: 'Heckled Mid-Shot', shoelace: 'Shoelaces Tied Together', coachjoin: 'Even Coach Joined In', shootout: 'Lost to Jose' };
+const MISSIONS = [
+  { id: 'threes', text: 'Make 3 threes', goal: 3, reward: 400 },
+  { id: 'swish', text: 'Hit 2 swishes', goal: 2, reward: 350 },
+  { id: 'streak', text: 'Make 5 in a row', goal: 5, reward: 500 },
+  { id: 'clean', text: 'Go 12 seconds without getting trolled', goal: 12, reward: 400 },
+  { id: 'ethan', text: 'Tag Ethan to get your ball back', goal: 1, reward: 300 },
+  { id: 'clapn', text: 'Clap Back on 3 trolls at once', goal: 3, reward: 450 },
+  { id: 'gold', text: 'Make a gold ball', goal: 1, reward: 350 },
+];
 
 // =================== state ===================
-let S;
-function newState() {
-  const band = pick(WRISTBAND_SPOTS);
+let S = null;
+const career = () => store.get('dah-career', { runs: 0, best: 0, bestQ: 0, makes: 0, trolled: 0 });
+function newRun(daily) {
+  RNG = daily ? seeded('david-' + today()) : Math.random;
   return {
-    mode: 'menu', t: 0, score: 0, frus: 0, troll: 10, rep: 55,
-    d: { x: 900, y: 1150, face: 1, z: 0, vz: 0, walk: 0, react: null, reactT: 0, hasBall: false, moving: false },
-    npcs: Object.entries(CAST).map(([id, n]) => ({ id, ...n, hx: n.x, hy: n.y, tx: n.x, ty: n.y, walk: 0, met: false, cool: rand(0, 2), face: 1, mode: null, celebrate: 0, laugh: 0, hidden: id !== 'brent' })),
-    band: { ...band, got: false, stolen: false }, fake: null,
-    obj: { enter: false, met: new Set(), shots: false, coach: 0, survive: 0, boss: false },
-    trolledBy: {}, trolledTotal: 0, pranks: new Set(), ach: new Map(),
-    shots: { made: 0, taken: 0 }, dialog: null, event: null, nextEvent: 26, shoot: null,
-    hazards: [], confetti: [], floaters: [], bubble: null, caption: null, zoom: 0,
-    fx: { reverse: 0, slow: 0 }, coachTask: null, judges: [], boss: null, jumps: 0, bumped: 0, lastEvent: null,
-    crowd: Array.from({ length: 70 }, (_, i) => ({ x: 70 + i * 24.5 + rand(-4, 4), y: rand(80, 165), c: pick(['#e04f5f', '#3d7bff', '#ffb547', '#3fcf7a', '#ff7ab8', '#ddd', '#7a3cff']), s: pick(['#8d5a3b', '#e0b48a', '#c68863', '#6f4430', '#f0c8a0']), p: Math.random() * 6 })),
+    mode: 'play', daily, t: 0, q: 1, qT: 0, qLen: 40, score: 0, frus: 0, combo: 0, bestCombo: 0, claps: 0,
+    d: { x: 900, y: 600, face: 1, z: 0, vz: 0, walk: 0, react: null, reactT: 0, moving: false, balls: 0, gold: 0, charge: null },
+    enemies: [], balls: [], hazards: [], shots: [], projectiles: [], floaters: [], confetti: [],
+    fx: { reverse: 0, slow: 0, freeze: 0, look: 0, lookAt: null, inv: 0 }, perks: {}, offers: null, mission: null,
+    makes: 0, threes: 0, swishes: 0, attempts: 0, trolledTotal: 0, trolledBy: {}, caption: null, zoom: 0, shake: 0, bubble: null, ballT: 1, lava: null, lavaT: 30, cleanT: 0, coachTalk: 0,
   };
 }
-S = newState();
-const npc = (id) => S.npcs.find((n) => n.id === id);
-const tier = () => (S.troll >= 60 ? 1 : 0);
-const lineFor = (id) => pick(CAST[id].lines[tier()]);
+const P = (id) => S.perks[id] || 0;
 
 // =================== input ===================
 const keys = {};
 addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT') return;
-  keys[e.code] = true; audio();
+  audio(); keys[e.code] = true;
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault();
-  if (S.mode === 'play' && (e.code === 'Escape' || e.code === 'KeyP')) return pause(true);
-  if (S.mode === 'paused' && (e.code === 'Escape' || e.code === 'KeyP')) return pause(false);
+  if (!S) return;
+  if ((e.code === 'Escape' || e.code === 'KeyP') && (S.mode === 'play' || S.mode === 'paused')) return pause(S.mode === 'play');
+  if (S.mode === 'perk' && /^Digit[1-3]$/.test(e.code)) return choosePerk(+e.code.slice(5) - 1);
   if (S.mode !== 'play' || e.repeat) return;
-  if (S.dialog) { if (/^Digit[1-3]$/.test(e.code)) choose(+e.code.slice(5) - 1); else if (['KeyE', 'Space', 'Enter'].includes(e.code)) advance(); return; }
-  if (S.shoot) { if (e.code === 'KeyE' || e.code === 'Space') shootRelease(); return; }
-  if (S.event && S.event.mash != null && (e.code === 'KeyE' || e.code === 'Space')) { S.event.mash++; SFX.talk(); return; }
+  if (e.code === 'KeyE' || e.code === 'Enter') startCharge();
   if (e.code === 'Space') jump();
-  if (e.code === 'KeyE') interact();
+  if (e.code === 'KeyQ' || e.code === 'KeyC') clapBack();
 });
-addEventListener('keyup', (e) => { keys[e.code] = false; });
-let touchTarget = null, optionRects = [];
+addEventListener('keyup', (e) => { keys[e.code] = false; if (S && S.mode === 'play' && (e.code === 'KeyE' || e.code === 'Enter')) releaseShot(); });
 const cam = { x: 0, y: 0, z: 1 };
+let touchTarget = null, perkRects = [];
 const toView = (cx, cy) => { const r = cv.getBoundingClientRect(); const ox = (r.width - VW * scale) / 2, oy = (r.height - VH * scale) / 2; const vx = (cx - r.left - ox) / scale, vy = (cy - r.top - oy) / scale; return { vx, vy, x: vx / cam.z + cam.x, y: vy / cam.z + cam.y }; };
 cv.addEventListener('pointerdown', (e) => {
-  audio(); if (S.mode !== 'play') return; const p = toView(e.clientX, e.clientY);
-  if (S.dialog) { const k = optionRects.findIndex((r) => p.vx > r.x && p.vx < r.x + r.w && p.vy > r.y && p.vy < r.y + r.h); if (k >= 0) choose(k); else advance(); return; }
-  if (S.shoot) { shootRelease(); return; }
-  if (S.event && S.event.mash != null) { S.event.mash++; return; }
+  audio(); if (!S) return; const p = toView(e.clientX, e.clientY);
+  if (S.mode === 'perk') { const k = perkRects.findIndex((r) => p.vx > r.x && p.vx < r.x + r.w && p.vy > r.y && p.vy < r.y + r.h); if (k >= 0) choosePerk(k); return; }
+  if (S.mode !== 'play') return;
   touchTarget = p; cv.setPointerCapture(e.pointerId);
 });
 cv.addEventListener('pointermove', (e) => { if (touchTarget && e.buttons) touchTarget = toView(e.clientX, e.clientY); });
 cv.addEventListener('pointerup', () => { touchTarget = null; });
-$('tAct').addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); if (S.mode !== 'play') return; if (S.dialog) advance(); else if (S.shoot) shootRelease(); else if (S.event && S.event.mash != null) S.event.mash++; else interact(); });
-$('tJump').addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); if (S.mode === 'play' && !S.dialog) jump(); });
+const tb = (id, down, up) => { const b = $(id); b.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); audio(); if (S && S.mode === 'play') down(); }); if (up) { b.addEventListener('pointerup', (e) => { e.preventDefault(); if (S && S.mode === 'play') up(); }); b.addEventListener('pointerleave', () => { if (S && S.mode === 'play' && S.d.charge) up(); }); } };
+tb('tShoot', () => startCharge(), () => releaseShot()); tb('tJump', () => jump()); tb('tClap', () => clapBack());
 
-// =================== core helpers ===================
-function float(text, x, y, color = '#ffb547') { S.floaters.push({ text, x, y, t: 0, color }); }
-function addScore(n, x, y) { S.score += n; if (x != null) float((n > 0 ? '+' : '') + n, x, y - 40); }
-function caption(text, big = false) { S.caption = { text, t: big ? 2.4 : 1.8, big }; }
-function zoomIn() { S.zoom = 1.4; }
-function achieve(id, label) { if (!S.ach.has(id)) { S.ach.set(id, label); float('🏆 ' + label, S.d.x, S.d.y - 100, '#ffd34d'); SFX.coin(); } }
-function say(who, text, ttl = 3) { S.bubble = { who, text, t: ttl }; who === 'Ethan' ? SFX.tiny() : SFX.talk(); }
-function frustrate(n) { S.frus = clamp(S.frus + n, 0, 100); if (S.frus >= 100 && S.mode === 'play') rageQuit(); }
-function repChange(n) { S.rep = clamp(S.rep + n, 0, 100); }
-// the main "David got trolled" hook: counts it, raises the meters, pops a caption, maybe Coach catches it
-function trolled(by, what, amt = 10, prank = null, big = false) {
-  S.trolledTotal++; S.trolledBy[by] = (S.trolledBy[by] || 0) + 1;
-  frustrate(amt); S.troll = clamp(S.troll + 8, 0, 100); repChange(-4);
-  S.d.react = pick(['oof', 'shock']); S.d.reactT = 1.2; SFX.trolled();
-  caption(`🤡 TROLLED BY ${CAST[by].name.toUpperCase()}${what ? ' · ' + what : ''}`, big); if (big) zoomIn();
-  const n = npc(by); if (n) { n.celebrate = 1.6; if (by === 'ethan') SFX.ethanLaugh(); }
-  if (prank && !S.pranks.has(prank)) { S.pranks.add(prank); achieve('prank-' + prank, PRANK_NAMES[prank] || prank); if (S.pranks.size >= 8) achieve('allpranks', 'Seen Every Prank'); }
-  if (S.trolledTotal === 25) achieve('victim', 'Professional Victim Certified');
-  if (by !== 'brent' && S.obj.enter && Math.random() < 0.22 && S.mode === 'play') setTimeout(() => { if (S.mode !== 'play') return; SFX.whistle(); say('Coach Brent', `${CAST[by].name.toUpperCase()}! That's laps. David, take a breath.`, 2.8); frustrate(-12); repChange(3); achieve('justice', 'Coach Saw That'); }, 1300);
+// =================== helpers ===================
+function float(text, x, y, color = '#ffb547', size = 18) { S.floaters.push({ text, x, y, t: 0, color, size }); }
+function caption(text, big) { S.caption = { text, t: big ? 2 : 1.4, big }; }
+function say(who, text) { S.bubble = { who, text, t: 2.2 }; SFX.talk(); }
+function solid(x, y, r = 14) { for (const [wx, wy, ww, wh] of WALLS) if (x + r > wx && x - r < wx + ww && y + r > wy && y - r < wy + wh) return true; return false; }
+function burst(x, y, n, colors) { for (let i = 0; i < n; i++) S.confetti.push({ x, y, vx: rand(-200, 200), vy: rand(-320, -80), r: rand(0, 6), c: pick(colors || ['#ffb547', '#3d7bff', '#ff7ab8', '#3fcf7a', '#fff']), life: 1.6 }); }
+const otLabel = (q) => (q <= 4 ? `Q${q}` : `OT${q - 4}`);
+// David got trolled: frustration up, combo gone, caption, maybe Coach saves you
+function trolled(by, what, amt) {
+  if (S.fx.inv > 0 || S.mode !== 'play') return false;
+  const dmg = amt * Math.pow(0.75, P('skin')) * (S.q <= 2 ? 0.7 : 1) * (1 + Math.max(0, S.q - 3) * 0.07); // gentle start, nasty overtime
+  S.frus = clamp(S.frus + dmg, 0, 100); S.trolledTotal++; S.trolledBy[by] = (S.trolledBy[by] || 0) + 1;
+  if (S.combo >= 3) float(`COMBO LOST (${S.combo})`, S.d.x, S.d.y - 70, '#ff6363');
+  S.combo = 0; S.cleanT = 0; S.fx.inv = 0.9; S.d.react = 'oof'; S.d.reactT = 0.9; S.zoom = 0.6;
+  SFX.trolled(); caption(`🤡 ${CAST[by].name.toUpperCase()}: ${what}`);
+  const e = S.enemies.find((x) => x.id === by); if (e) { e.celebrate = 1.5; if (by === 'ethan') SFX.ethan(); }
+  if (S.frus >= 100) { rageQuit(); return true; }
+  if (by !== 'brent' && S.coachTalk <= 0 && RNG() < 0.12 + P('pet') * 0.15) { // Coach Brent catches it
+    S.coachTalk = 3; setTimeout(() => { if (!S || S.mode !== 'play') return; const t = S.enemies.find((x) => x.id === by); if (t) { t.stun = 4; } SFX.whistle(); say('Coach Brent', `${CAST[by].name.toUpperCase()}! LAPS!`); S.frus = Math.max(0, S.frus - 8); }, 600);
+  }
+  return true;
 }
-function solid(x, y, r = 14) {
-  for (const [wx, wy, ww, wh] of WALLS) if (x + r > wx && x - r < wx + ww && y + r > wy && y - r < wy + wh) return true;
-  if (!S.obj.enter && y > 851 && y < 925 && x > 855 && x < 945) return true; // closed gate
-  return false;
-}
-function nearestNpc(r = 70) { let best = null, bd = r; for (const n of S.npcs) { if (n.hidden) continue; const dd = dist(n, S.d); if (dd < bd) { bd = dd; best = n; } } return best; }
-function jump() { if (S.d.z <= 0) { S.d.vz = 330; SFX.jump(); S.jumps++; if (S.coachTask && S.coachTask.type === 'jumps') S.coachTask.count++; } }
+function missionProgress(id, n = 1, set = false) { const m = S.mission; if (!m || m.done || m.id !== id) return; m.p = set ? Math.max(m.p, n) : m.p + n; if (m.p >= m.goal) { m.done = true; addPoints(m.reward, S.d.x, S.d.y - 90, '🎯 MISSION '); S.frus = Math.max(0, S.frus - 15); SFX.perk(); caption('🎯 MISSION COMPLETE', true); } }
+function addPoints(n, x, y, prefix = '+') { n = Math.round(n); S.score += n; float(prefix + n, x, y, '#ffd34d', 22); }
 
-// =================== objectives ===================
-function objectives() {
-  const o = S.obj, m = o.met.size;
-  const list = [
-    { done: o.enter, text: S.band.stolen ? 'CATCH ETHAN, he took your wristband!' : S.band.got ? 'Show Coach Brent your wristband (E)' : 'Find your wristband and get into Hoops' },
-    { done: m >= 8, text: `Talk to everyone (${m}/8)` },
-    { done: o.shots, text: `Basketball: make 5 of 10 (${S.shots.made}/5)` },
-    { done: o.coach >= 2, text: `Coach Brent's challenges (${o.coach}/2)` },
-    { done: o.survive >= 3, text: `Survive group trolling (${o.survive}/3)` },
-  ];
-  const ready = list.every((x) => x.done);
-  list.push({ done: o.boss, text: ready ? 'FINAL BOSS: center court. THE WHOLE TEAM.' : 'Final boss: ???', hot: ready });
-  return list;
+// =================== spawning ===================
+function spawnEnemy(id) {
+  const side = RNG() < 0.5 ? 60 : MAPW - 60;
+  const e = { id, ...CAST[id], x: side, y: rand(260, 820), vx: 0, vy: 0, walk: 0, face: 1, cd: rand(1, 3), stun: 0, celebrate: 0, carry: 0, tx: 900, ty: 500 };
+  if (id === 'kalel') { const f = S.enemies.find((x) => x.id === 'frank'); if (f) { e.x = f.x; e.y = f.y + 40; } }
+  S.enemies.push(e); float(`${e.name} joined the trolling`, e.x, e.y - 60, '#ff8a5c');
 }
-const readyForBoss = () => objectives().slice(0, 5).every((x) => x.done);
-
-// =================== dialog ===================
-function openDialog(n, pages, options = null, onChoose = null) { S.dialog = { n, pages, page: 0, options, onChoose }; n.id === 'ethan' ? SFX.tiny() : SFX.talk(); }
-function advance() { const dl = S.dialog; if (!dl) return; if (dl.options && dl.page === dl.pages.length - 1) return; dl.page++; SFX.talk(); if (dl.page >= dl.pages.length) { const f = dl.after; S.dialog = null; if (f) f(); } }
-function choose(k) { const dl = S.dialog; if (!dl || !dl.options || dl.page !== dl.pages.length - 1 || !dl.options[k]) return; const f = dl.onChoose; S.dialog = null; f(k); }
-function dialogThen(n, pages, after) { openDialog(n, pages); S.dialog.after = after; }
-
-// =================== interactions ===================
-function interact() {
-  const d = S.d;
-  if (!S.band.got && !S.band.stolen && dist(d, S.band) < 50) return grabWristband();
-  if (S.fake && dist(d, S.fake) < 60) return fakeSpotReached();
-  if (S.obj.enter && !S.boss && !S.obj.shots && dist(d, SHOT_SPOT) < SHOT_SPOT.r + 10) return startShooting('main');
-  if (readyForBoss() && !S.boss && dist(d, { x: 900, y: 470 }) < 70) return startBoss();
-  if (S.coachTask && S.coachTask.type === 'lap' && S.coachTask.stage === 1 && dist(d, npc('brent')) < 80) return finishCoachTask(true);
-  const n = nearestNpc(); if (n) talkTo(n);
+function spawnBall() {
+  if (S.balls.length >= 3 + Math.floor(S.q / 3)) return;
+  let x, y; do { x = rand(140, MAPW - 140); y = rand(250, 820); } while (dist({ x, y }, S.d) < 160);
+  const gold = RNG() < 0.1 + P('gold') * 0.1;
+  S.balls.push({ x, y, gold, t: 0 });
 }
-function metOnce(n) { if (!n.met && n.id !== 'brent') { n.met = true; S.obj.met.add(n.id); addScore(50, n.x, n.y); if (S.obj.met.size === 8) { SFX.horn(); caption('✔ TALKED TO EVERYONE (everyone has now trolled David)'); } } }
-function talkTo(n) {
-  const id = n.id;
-  if (id === 'brent') return coachTalk(n);
-  if (S.boss) return;
-  const first = !n.met; metOnce(n);
-  if (id === 'james') {
-    if (first || Math.random() < 0.5) {
-      const spot = pick(FAKE_SPOTS);
-      const tip = spot.label.includes('SHOT') ? 'Coach moved the shot spot to the far corner of the parking lot.' : spot.label.includes('DOUBLE') ? 'There\'s a secret double points spot in the parking lot. Go stand on it.' : 'There\'s a VIP shortcut in the top right corner.';
-      return openDialog(n, [lineFor('james'), `Real talk. ${tip} Trust me bro.`], ['Okay I trust you', 'James, absolutely not'], (k) => {
-        if (k === 0) { S.fake = { ...spot }; say('James', 'Go go go. I\'m so serious right now.'); }
-        else { repChange(6); addScore(150, n.x, n.y); say('James', 'Wow. You don\'t trust me? After everything?'); achieve('notrust', 'Did Not Trust James'); }
-      });
+function startQuarter() {
+  const q = S.q; S.qT = 0;
+  (ROSTER[q] || []).forEach(spawnEnemy);
+  if (q > 5) { // overtime: everyone gets faster, and sometimes a second Ethan shows up (don't ask)
+    if (q % 3 === 0 && S.enemies.filter((e) => e.id === 'ethan').length < 3) spawnEnemy('ethan');
+  }
+  const m = pick(MISSIONS); S.mission = { ...m, p: 0, done: false };
+  caption(`${otLabel(q)} · ${q > 4 ? 'OVERTIME. IT NEVER ENDS.' : ['', 'TIP-OFF', 'IT GETS WORSE', 'THE DUO ARRIVES', 'EVERYONE IS HERE'][q]}`, true);
+  SFX.whistle();
+}
+function endQuarter() {
+  SFX.buzzer(); S.frus = Math.max(0, S.frus - 12); addPoints(150 * S.q, S.d.x, S.d.y - 60, `${otLabel(S.q)} SURVIVED +`);
+  S.mode = 'perk';
+  const avail = PERKS.filter((p) => P(p.id) < p.stack);
+  const offers = []; while (offers.length < 3 && avail.length) offers.push(avail.splice(Math.floor(RNG() * avail.length), 1)[0]);
+  S.offers = offers;
+}
+function choosePerk(k) {
+  const p = S.offers && S.offers[k]; if (!p) return;
+  S.perks[p.id] = P(p.id) + 1; if (p.id === 'heal') S.frus = Math.max(0, S.frus - 40);
+  SFX.perk(); S.offers = null; S.mode = 'play'; S.q++; startQuarter();
+}
+
+// =================== actions ===================
+function jump() { if (S.d.z <= 0 && !(S.fx.freeze > 0 && !P('ice'))) { S.d.vz = 340; SFX.jump(); } }
+function nearestHoop() { let best = null, bd = 1e9; for (const h of HOOPS) { const dd = dist(h, S.d); if (dd < bd) { bd = dd; best = h; } } return { h: best, d: bd }; }
+function startCharge() { if (S.d.balls <= 0 || S.d.charge) return; const { d } = nearestHoop(); if (d > SHOOT_RANGE) { float('Too far! Get closer to a hoop', S.d.x, S.d.y - 60, '#ff8a5c', 15); return; } S.d.charge = { t: 0 }; }
+function shotZone() { // green zone size depends on distance, Jose's defense and Deep Range
+  const { d } = nearestHoop(); const jose = S.enemies.find((e) => e.id === 'jose' && !e.stun && dist(e, S.d) < 110);
+  let z = 0.26 - Math.max(0, d - 120) / 900 + P('range') * 0.04; if (jose) z *= 0.55; return { z: clamp(z, 0.07, 0.4), jose: !!jose };
+}
+function meterValue(t) { const k = (t * 1.25) % 2; return k < 1 ? k : 2 - k; } // 0 -> 1 -> 0 ping-pong
+function releaseShot() {
+  const ch = S.d.charge; if (!ch) return; S.d.charge = null;
+  const { h, d } = nearestHoop(); const { z } = shotZone(); const target = 0.82, v = meterValue(ch.t), off = Math.abs(v - target);
+  const kind = off < z / 4 ? 'swish' : off < z / 2 ? 'make' : 'miss';
+  const gold = S.d.gold > 0; if (gold) S.d.gold--; S.d.balls--; S.attempts++;
+  S.shots.push({ sx: S.d.x, sy: S.d.y - 30, h, k: 0, kind, dir: v - target, three: d > ARC, gold });
+}
+function resolveShot(s) {
+  if (s.kind === 'miss') {
+    SFX.clank(); S.combo = 0; float(pick(['BRICK', 'CLANK', 'AIRBALL', 'off the rim']), s.h.x, s.h.y - 30, '#ff6363');
+    const laugh = S.enemies.filter((e) => dist(e, S.d) < 400); if (laugh.length) { SFX.laugh(); laugh.forEach((e) => (e.celebrate = 1)); }
+    S.balls.push({ x: clamp(s.h.x + s.h.dir * rand(40, 140), 80, MAPW - 80), y: s.h.y + rand(-120, 120), gold: false, t: 0 }); // rebound
+    return;
+  }
+  S.combo++; S.bestCombo = Math.max(S.bestCombo, S.combo); S.makes++;
+  const mult = 1 + Math.min(S.combo - 1, 16) * 0.25;
+  let pts = (s.three ? 3 : 2) * 20 * mult * (1 + P('swag') * 0.25) * (s.gold ? 3 : 1) * (s.kind === 'swish' ? 1.5 : 1);
+  addPoints(pts, s.h.x, s.h.y - 40);
+  s.kind === 'swish' ? SFX.swish() : SFX.make(); if (S.combo >= 3) SFX.combo(S.combo);
+  S.frus = Math.max(0, S.frus - (s.kind === 'swish' ? 11 : 7));
+  if (s.three) { S.threes++; missionProgress('threes'); }
+  if (s.kind === 'swish') { S.swishes++; missionProgress('swish'); }
+  if (s.gold) { missionProgress('gold'); burst(s.h.x, s.h.y, 30, ['#ffd34d', '#fff2b0']); }
+  missionProgress('streak', S.combo, true);
+  if (S.combo % 3 === 0) { S.claps = Math.min(3, S.claps + 1); float('📣 CLAP BACK READY (Q)', S.d.x, S.d.y - 90, '#3fcf7a', 16); }
+  const label = s.kind === 'swish' ? (s.three ? 'SPLASH!' : 'SWISH!') : s.three ? 'THREE!' : 'BUCKET';
+  if (S.combo >= 5) caption(`${label}  ×${mult.toFixed(2)} COMBO`); else float(label, s.h.x, s.h.y - 70, '#3fcf7a', 22);
+}
+function clapBack() {
+  if (S.claps <= 0) return; S.claps--; SFX.clap(); S.zoom = 0.8;
+  const r = 230 + P('clap') * 80, dur = 3.5 + P('clap') * 1.5; let n = 0;
+  for (const e of S.enemies) if (dist(e, S.d) < r) { e.stun = dur; n++; e.celebrate = 0; if (e.carry) { e.carry = 0; S.d.balls = Math.min(S.d.balls + 1, 1 + P('hands')); } }
+  burst(S.d.x, S.d.y - 20, 30); caption(n ? `📣 DAVID CLAPPED BACK · ${n} TROLL${n > 1 ? 'S' : ''} STUNNED` : '📣 DAVID CLAPPED BACK AT NOBODY', true);
+  missionProgress('clapn', n, true); addPoints(n * 60, S.d.x, S.d.y - 60, 'CLAP BACK +');
+  S.projectiles = S.projectiles.filter((p) => dist(p, S.d) > r);
+}
+function rageQuit() { S.mode = 'over'; SFX.sad(); caption('💢 DAVID RAGE-QUIT', true); S.zoom = 1.4; setTimeout(endScreen, 1500); }
+
+// =================== enemy AI (each one trolls differently) ===================
+function moveToward(e, tx, ty, sp, dt) { const dx = tx - e.x, dy = ty - e.y, d = Math.hypot(dx, dy); if (d < 2) return d; const nx = e.x + dx / d * sp * dt, ny = e.y + dy / d * sp * dt; if (!solid(nx, e.y, 10)) e.x = nx; if (!solid(e.x, ny, 10)) e.y = ny; e.walk += dt * sp / 18; if (Math.abs(dx) > 1) e.face = dx > 0 ? 1 : -1; return d; }
+function updateEnemies(dt) {
+  const d = S.d, haste = 1 + (S.q - 1) * 0.07;
+  for (const e of S.enemies) {
+    e.celebrate = Math.max(0, e.celebrate - dt);
+    if (e.stun > 0) { e.stun -= dt; continue; }
+    e.cd -= dt; const dd = dist(e, d);
+    if (e.id === 'ethan') {
+      if (e.carry) { // running away with your ball, laughing
+        const ang = Math.atan2(e.y - d.y, e.x - d.x) + Math.sin(S.t * 3 + e.x) * 0.7;
+        moveToward(e, clamp(e.x + Math.cos(ang) * 100, 70, MAPW - 70), clamp(e.y + Math.sin(ang) * 100, 220, 850), 200 * haste, dt);
+        if (dd < 28) { e.carry = 0; e.stun = 2.5; d.balls = Math.min(d.balls + 1, 1 + P('hands')); addPoints(80, e.x, e.y - 40, 'GOT IT BACK +'); missionProgress('ethan'); say('Ethan', pick(['NOOO.', 'I\'m telling Coach!', 'That was a test.'])); }
+        e.dropT = (e.dropT || 0) + dt; if (e.dropT > 8) { e.carry = 0; S.balls.push({ x: e.x, y: e.y, gold: false, t: 0 }); }
+      } else if (d.balls > 0) { if (moveToward(e, d.x, d.y, 205 * haste, dt) < 24 && S.fx.inv <= 0) { d.balls--; if (d.gold > d.balls) d.gold = d.balls; e.carry = 1; e.dropT = 0; d.charge = null; trolled('ethan', pick(['STOLE YOUR BALL', 'BALL? GONE.', 'HAHAHAHA']), 9); } }
+      else { if (e.cd <= 0) { e.tx = d.x + rand(-200, 200); e.ty = d.y + rand(-150, 150); e.cd = rand(1, 2.5); } moveToward(e, clamp(e.tx, 70, MAPW - 70), clamp(e.ty, 220, 850), 150 * haste, dt); if (dd < 22 && S.fx.inv <= 0) trolled('ethan', 'BOOP. GOT YOU.', 5); }
+    } else if (e.id === 'aleksei') { // keeps his distance and fires sarcasm
+      const want = 260, ang = Math.atan2(e.y - d.y, e.x - d.x); moveToward(e, clamp(d.x + Math.cos(ang) * want, 70, MAPW - 70), clamp(d.y + Math.sin(ang) * want, 220, 850), 110 * haste, dt);
+      if (e.cd <= 0) { const a = Math.atan2(d.y - e.y, d.x - e.x), sp = 230 * haste; S.projectiles.push({ x: e.x, y: e.y - 20, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, by: 'aleksei', t: 4, text: pick(['WOW', 'INCREDIBLE', 'GREAT JOB', 'SO GOOD', '👏']) }); e.cd = rand(2.6, 3.6) / haste; }
+    } else if (e.id === 'james') { // plants fake gold balls near your path
+      if (e.cd <= 0) { S.balls.push({ x: clamp(d.x + rand(-260, 260), 120, MAPW - 120), y: clamp(d.y + rand(-200, 200), 250, 820), gold: true, fake: true, t: 0 }); e.cd = rand(6, 9) / haste; if (RNG() < 0.5) say('James', pick(CAST.james.quips)); }
+      if (e.cd2 === undefined || (e.cd2 -= dt) <= 0) { e.tx = d.x + rand(-300, 300); e.ty = d.y + rand(-200, 200); e.cd2 = rand(2, 4); } moveToward(e, clamp(e.tx, 70, MAPW - 70), clamp(e.ty, 220, 850), 90 * haste, dt);
+    } else if (e.id === 'caleb') { // runs up and yells LOOK, yanking David toward him
+      moveToward(e, d.x, d.y, 115 * haste, dt);
+      if (dd < 170 && e.cd <= 0) { e.cd = rand(8, 11) / haste; if (!P('ice')) { S.fx.look = 1.4; S.fx.lookAt = e; } say('Caleb', pick(CAST.caleb.quips)); if (!P('ice')) trolled('caleb', 'MADE YOU LOOK', 4); }
+    } else if (e.id === 'frank' || e.id === 'kalel') { // patrol lines and drop bananas behind them
+      if (e.cd2 === undefined || (e.cd2 -= dt) <= 0) { e.tx = rand(100, MAPW - 100); e.ty = rand(240, 840); e.cd2 = rand(3, 5); }
+      const partner = S.enemies.find((x) => x.id === (e.id === 'frank' ? 'kalel' : 'frank'));
+      if (e.id === 'kalel' && partner && !partner.stun) { e.tx = partner.x - 30; e.ty = partner.y + 40; }
+      moveToward(e, e.tx, e.ty, 120 * haste, dt);
+      if (e.cd <= 0) { S.hazards.push({ type: 'banana', x: e.x, y: e.y + 10, t: 14, by: e.id }); e.cd = rand(1.1, 1.8) / haste; }
+    } else if (e.id === 'daniel') { // chaos: erratic sprints, reverses controls on contact
+      if (e.cd <= 0) { e.tx = rand(100, MAPW - 100); e.ty = rand(240, 840); if (RNG() < 0.5) { e.tx = d.x; e.ty = d.y; } e.cd = rand(0.6, 1.4); }
+      moveToward(e, e.tx, e.ty, 190 * haste, dt);
+      if (dd < 26 && S.fx.inv <= 0) { if (!P('ice')) S.fx.reverse = 4; trolled('daniel', P('ice') ? 'TRIED TO CURSE YOU (NOPE)' : 'REVERSED YOUR CONTROLS', 7); }
+    } else if (e.id === 'jose') { // guards you when you have the ball, pokes it loose
+      if (d.balls > 0) { const h = nearestHoop().h, gx = d.x + (h.x - d.x) * 0.25, gy = d.y + (h.y - d.y) * 0.25; moveToward(e, gx, gy, 165 * haste, dt); }
+      else moveToward(e, d.x + 120, d.y, 90 * haste, dt);
+      if (dd < 24 && d.balls > 0 && e.cd <= 0 && S.fx.inv <= 0) { d.balls--; d.charge = null; S.balls.push({ x: clamp(d.x + rand(-120, 120), 80, MAPW - 80), y: clamp(d.y + rand(-90, 90), 240, 840), gold: false, t: 0 }); e.cd = 3; trolled('jose', pick(['POKED IT LOOSE', 'NOT IN MY HOUSE', 'TOO SMALL']), 8); }
+      if (d.charge && dd < 110 && RNG() < dt * 0.6) say('Jose', pick(CAST.jose.quips));
+    } else if (e.id === 'brent') { // walks the sideline; FREEZE whistles
+      e.tx = d.x; e.ty = 230; moveToward(e, e.tx, e.ty, 80, dt);
+      if (e.cd <= 0) { e.cd = rand(9, 13) / haste; if (!P('ice')) { S.fx.freeze = 1.8; SFX.whistle(); caption('🛑 COACH BRENT: "FREEZE!"', true); } }
     }
-    return openDialog(n, [lineFor('james')]);
   }
-  if (id === 'jose') {
-    if (!first && Math.random() < 0.3) return dialogThen(n, ['Let me help you with your shoes real quick.', '*Jose ties David\'s shoelaces together*'], () => { S.fx.slow = 7; trolled('jose', 'SHOELACES TIED TOGETHER', 12, 'shoelace', true); });
-    if (first || Math.random() < 0.5) return openDialog(n, [lineFor('jose'), 'Shootout. Me vs you. Five shots each. Loser carries everybody\'s bags.'], ['You\'re on', 'I\'m good actually'], (k) => {
-      if (k === 0) startShooting('jose'); else { trolled('jose', 'SCARED OF A SHOOTOUT', 6); say('Jose', 'EVERYBODY. David is scared of a shootout.'); }
-    });
-    return openDialog(n, [lineFor('jose')]);
-  }
-  if (id === 'aleksei') return openDialog(n, [lineFor('aleksei')], ['That\'s crazy', 'Aleksei, you peaked in fifth grade', '*stare silently*'], (k) => {
-    if (k === 1) { repChange(8); addScore(200, n.x, n.y); say('Aleksei', '...Okay. That one actually hurt. Respect.'); achieve('clapback', 'Clapped Back at Aleksei'); }
-    else if (k === 2) say('Aleksei', 'The silent treatment. Bold. Wrong, but bold.');
-    else trolled('aleksei', 'SARCASM DAMAGE', 8);
-  });
-  if (id === 'caleb') return dialogThen(n, [lineFor('caleb')], () => { if (Math.random() < 0.6) { S.d.face *= -1; trolled('caleb', 'MADE YOU LOOK', 7, 'distract'); } });
-  if (id === 'frank' || id === 'kalel') {
-    const other = npc(id === 'frank' ? 'kalel' : 'frank');
-    if (id === 'frank' && !S.pranks.has('bucket')) return dialogThen(n, [lineFor('frank'), '*Kalel appears behind David holding a bucket*', 'Kalel: Hey David.'], () => { burst(S.d.x, S.d.y - 30, 40); trolled('frank', 'BUCKETED (it was confetti)', 12, 'bucket', true); S.trolledBy.kalel = (S.trolledBy.kalel || 0) + 1; });
-    return dialogThen(n, [lineFor(id), `${other.name}: ${pick(id === 'frank' ? ['Copy that.', 'Phase two is ready.', 'He suspects nothing.'] : ['Kalel, don\'t blow our cover.', 'Act natural.', 'Abort. No wait, continue.'])}`], () => { if (Math.random() < 0.5) dropBananas(4); });
-  }
-  if (id === 'daniel') return dialogThen(n, [lineFor('daniel'), pick(['Also I pressed a button on your back. Good luck.', 'I put a curse on your controller. You\'re welcome.', 'Brb gonna go yell at the vending machine.'])], () => { if (Math.random() < 0.65) { S.fx.reverse = 7; trolled('daniel', 'CONTROLS REVERSED', 10, 'reverse', true); } });
-  if (id === 'ethan') {
-    if (S.d.hasBall || (!first && Math.random() < 0.4)) return ethanSteal('ball');
-    return dialogThen(n, [lineFor('ethan')], () => { n.celebrate = 1; SFX.ethanLaugh(); if (Math.random() < 0.5) trolled('ethan', 'GOT COOKED BY A CHILD', 6); });
-  }
-  openDialog(n, [lineFor(id)]);
+  if (S.fx.freeze > 0 && !P('ice')) { S.fx.freeze -= dt; if (S.fx.freeze < 1.4 && S.d.moving && S.fx.inv <= 0) { S.fx.freeze = 0; trolled('brent', 'MOVED DURING FREEZE', 10); } }
 }
-
-// ---- wristband + Ethan chase ----
-function grabWristband() {
-  S.band.got = true; SFX.coin(); addScore(100, S.d.x, S.d.y); say('David', 'My wristband! Okay. Nothing can go wrong now.');
-  setTimeout(() => { if (S.mode !== 'play' || S.obj.enter || !S.band.got) return; const e = npc('ethan'); Object.assign(e, { x: S.d.x - 60, y: S.d.y + 10, hidden: false }); ethanSteal('wristband'); }, 1600);
-}
-function ethanSteal(what) {
-  const e = npc('ethan'); e.mode = 'flee'; e.carry = what; e.fleeT = 0; e.hidden = false;
-  if (what === 'wristband') { S.band.got = false; S.band.stolen = true; } else S.d.hasBall = false;
-  say('Ethan', pick(['HAHAHAHA. You fell for it.', 'Bye David!!', 'David is actually cooked.', 'Finders keepers!']), 2.2);
-  trolled('ethan', what === 'wristband' ? 'WRISTBAND STOLEN' : 'BALL STOLEN', 10, what === 'wristband' ? 'wristband' : 'ball', true);
-}
-function ethanCaught() {
-  const e = npc('ethan'), what = e.carry; e.mode = null; e.carry = null;
-  if (what === 'wristband') { S.band.got = true; S.band.stolen = false; e.hidden = true; say('Ethan', 'NOOO. I\'m telling Coach.', 2.5); }
-  else { S.d.hasBall = true; say('Ethan', 'That was a test. You passed. Barely.', 2.5); }
-  addScore(250, S.d.x, S.d.y); repChange(6); SFX.coin(); achieve('caughtethan', 'Caught the Little Troll');
-  if (S.event && S.event.type === 'ethan') endEvent(true, 'David caught Ethan! Ethan claims he "let him."');
-}
-function fakeSpotReached() {
-  const f = S.fake; S.fake = null;
-  trolled('james', f.label.includes('SHOT') ? 'THE SHOT SPOT WAS NEVER HERE' : f.label.includes('DOUBLE') ? 'THERE ARE NO DOUBLE POINTS' : 'THERE IS NO SHORTCUT', 14, 'trustme', true);
-  setTimeout(() => say('James', 'Bro I can\'t believe you actually went. I said TRUST me, not BELIEVE me.', 3), 600);
-}
-function dropBananas(n) { for (let i = 0; i < n; i++) S.hazards.push({ type: 'banana', x: clamp(S.d.x + rand(-180, 180), 60, MAPW - 60), y: clamp(S.d.y + rand(-140, 140), 200, 860), t: 18, by: pick(['frank', 'kalel']) }); say('Kalel', 'Don\'t look at the floor.', 2); }
-function burst(x, y, n) { for (let i = 0; i < n; i++) S.confetti.push({ x: x + rand(-20, 20), y, vx: rand(-160, 160), vy: rand(-260, -60), g: 1, c: pick(['#ffb547', '#3d7bff', '#ff7ab8', '#3fcf7a', '#fff']), r: rand(0, 6), life: 2 }); }
-
-// ---- Coach Brent: entry, challenges + Coach's Judgment ----
-function coachTalk(n) {
-  if (!S.obj.enter) {
-    if (S.band.got) return openDialog(n, ['David. You\'re late.', 'Is that a wristband? Where did you... never mind. Get in there.', 'And David? Everyone\'s been waiting for you. That\'s not a good thing.'], ['Thanks Coach', 'Why is that not a good thing?'], (k) => {
-      S.obj.enter = true; Object.assign(n, { x: 980, y: 820, hx: 980, hy: 820, tx: 980, ty: 820 });
-      S.npcs.forEach((m) => { if (m.id !== 'brent') Object.assign(m, { x: m.hx, y: m.hy, tx: m.hx, ty: m.hy, mode: null, carry: null }); }); // everyone's already inside SFX.whistle(); addScore(200, n.x, n.y);
-      caption('WELCOME TO HOOPS. EVERYONE IS AGAINST YOU.', true); zoomIn();
-      if (k === 1) say('Coach Brent', 'You\'ll see.', 2);
-    });
-    if (S.band.stolen) return openDialog(n, ['David, Ethan just ran past me holding a wristband and laughing.', 'Is that yours? Go get it. And David... run faster.']);
-    return openDialog(n, ['David, what are you doing?', 'No wristband, no Hoops. That\'s the rule. I made it up just now.', 'Check the parking lot.']);
-  }
-  if (S.boss) return;
-  if (S.coachTask) return openDialog(n, ['You\'re in the middle of a challenge, David. Why are you talking to me?']);
-  if (S.obj.coach >= 2) return openDialog(n, [readyForBoss() ? 'Everyone\'s at center court, David. They\'re waiting. All of them. I\'m also going to be there. Sorry.' : lineFor('brent')]);
-  if (Math.random() < 0.25 && S.obj.coach > 0 && !S.pranks.has('coachjoin')) return dialogThen(n, ['David, look at your shoe.', '*David looks down*', '...Made you look. Sorry. Ethan dared me.'], () => trolled('brent', 'EVEN COACH JOINED IN', 10, 'coachjoin', true));
-  const tasks = [
-    { type: 'jumps', text: 'Ten jumps in six seconds. Space to jump. Don\'t ask why.', goal: 10, time: 6 },
-    { type: 'lap', text: 'Run and touch the far hoop on the right court, then come back to me. Fourteen seconds.', time: 14 },
-    { type: 'ft', text: 'Three free throws in a row. Everyone is watching. Everyone is also yelling.', time: 99 },
-  ];
-  const done = S.judges.filter((j) => j.grade !== 'F').map((j) => j.type);
-  const task = pick(tasks.filter((x) => !done.includes(x.type)));
-  openDialog(n, [lineFor('brent'), 'Coach\'s Challenge. ' + task.text], ['Let\'s go', 'Can I not?'], (k) => {
-    if (k === 1) say('Coach Brent', 'No.', 1.5);
-    S.coachTask = { ...task, t: 0, count: 0, stage: 0 };
-    caption(`📋 COACH'S CHALLENGE: ${task.type === 'jumps' ? '10 JUMPS' : task.type === 'lap' ? 'TOUCH THE FAR HOOP & COME BACK' : '3 FREE THROWS IN A ROW'}`);
-    if (task.type === 'ft') startShooting('coach');
-  });
-}
-function updateCoachTask(dt) {
-  const ct = S.coachTask; if (!ct || ct.type === 'ft') return; ct.t += dt;
-  if (ct.type === 'jumps') { if (ct.count >= ct.goal) finishCoachTask(true); else if (ct.t > ct.time) finishCoachTask(false); }
-  if (ct.type === 'lap') { if (ct.stage === 0 && dist(S.d, HOOPS[3]) < 90) { ct.stage = 1; SFX.coin(); caption('NOW RUN BACK TO COACH (press E)'); } if (ct.t > ct.time) finishCoachTask(false); }
-}
-function finishCoachTask(ok) {
-  const ct = S.coachTask; if (!ct) return; S.coachTask = null;
-  const grade = !ok ? 'F' : ct.type === 'jumps' ? (ct.t < 4 ? 'A' : ct.t < 5 ? 'B' : 'C') : ct.type === 'lap' ? (ct.t < 9 ? 'A' : ct.t < 11.5 ? 'B' : 'C') : (ct.grade || 'A');
-  const verdict = { A: ['Okay. That was actually good. Don\'t tell anyone I said that.', 'Hoops Legend behavior. I\'m writing that down.'], B: ['Solid. Not great. Solid.', 'I\'ve seen worse. I\'ve seen it from you, actually.'], C: ['That\'s not how we practiced it.', 'It counts. Technically. Barely.'], F: ['David, we need to talk.', 'That was... a choice. A bad one. Again.'] }[grade];
-  S.judges.push({ type: ct.type, grade }); SFX.whistle();
-  if (ok) { S.obj.coach++; addScore({ A: 600, B: 400, C: 250 }[grade], S.d.x, S.d.y); repChange({ A: 12, B: 7, C: 3 }[grade]); frustrate(-8); }
-  else { frustrate(10); repChange(-6); }
-  caption(`📋 COACH'S JUDGMENT: ${grade}`, true); if (grade === 'F' || grade === 'A') zoomIn();
-  say('Coach Brent', pick(verdict), 3.2);
-  if (grade === 'A') achieve('coachA', 'Coach Gave Me an A');
-}
-
-// =================== shooting ===================
-// modes: main (5 of 10), jose (shootout), coach (3 in a row), boss (final shot over the whole team)
-function startShooting(mode) {
-  const cfg = { main: { shots: 10, zone: 0.24 }, jose: { shots: 5, zone: 0.22 }, coach: { shots: 3, zone: 0.22 }, boss: { shots: 5, zone: 0.2 } }[mode];
-  S.shoot = { mode, t: 0, left: cfg.shots, made: 0, zone: cfg.zone, ball: null, msg: 'Click / E / Space when the marker hits green', jose: 0, shake: 0, zoneX: 0.5 };
-  if (mode === 'main') { S.shots.made = 0; S.shots.taken = 0; }
-  if (mode === 'boss') { S.shoot.msg = 'Make 3 of 5 over THE WHOLE TEAM'; Object.assign(S.d, { x: 900, y: 470 }); }
-  else Object.assign(S.d, { x: SHOT_SPOT.x, y: SHOT_SPOT.y });
-}
-function meterPos(sh) { const k = 2.2 + (5 - Math.min(5, sh.left)) * 0.3 + (sh.mode === 'boss' ? 1 : 0); return 0.5 + 0.5 * Math.sin(sh.t * k) + (sh.shake > 0 ? Math.sin(sh.t * 40) * 0.05 : 0); }
-function shootRelease() {
-  const sh = S.shoot; if (!sh || sh.ball) return;
-  const p = meterPos(sh), off = Math.abs(p - sh.zoneX), kind = off < sh.zone / 4 ? 'swish' : off < sh.zone / 2 ? 'make' : 'miss';
-  sh.ball = { k: 0, kind, dir: p - sh.zoneX }; sh.left--; if (sh.mode === 'main') S.shots.taken++;
-}
-function updateShooting(dt) {
-  const sh = S.shoot; sh.t += dt;
-  if (sh.mode === 'boss') sh.zoneX = 0.5 + Math.sin(sh.t * 0.9) * 0.25; // the green zone moves in the final
-  if (!sh.ball && !sh.distract && Math.random() < dt * (sh.mode === 'boss' ? 0.9 : 0.25)) { // heckles mid-shot
-    const who = pick(sh.mode === 'boss' ? ['caleb', 'aleksei', 'jose', 'daniel', 'ethan', 'james'] : ['caleb', 'aleksei', 'daniel', 'ethan']);
-    const lines = { caleb: 'DAVID LOOK A DOG', aleksei: 'Nice form. For a fridge.', daniel: 'WHAT IF THE HOOP WAS A DOOR', jose: 'He\'s gonna miss. Watch.', ethan: 'MISS IT MISS IT MISS IT', james: 'Trust me bro, shoot with your eyes closed' };
-    sh.distract = { who, t: 1.6 }; sh.shake = 1.6; float(`${CAST[who].name}: "${lines[who]}"`, S.d.x, S.d.y - 90, '#ff8a5c'); SFX.laugh();
-    if (!S.pranks.has('heckle')) { S.pranks.add('heckle'); achieve('prank-heckle', PRANK_NAMES.heckle); }
-  }
-  if (sh.distract) { sh.distract.t -= dt; sh.shake -= dt; if (sh.distract.t <= 0) { sh.distract = null; sh.shake = 0; } }
-  if (!sh.ball) return;
-  sh.ball.k += dt / 0.8;
-  if (sh.ball.k >= 1 && !sh.ball.done) {
-    sh.ball.done = true;
-    if (sh.ball.kind === 'miss') {
-      SFX.clank(); sh.msg = pick(['CLANK. The rim filed a complaint.', 'Brick. Jose is already laughing.', 'Airball. Ethan is doing a lap.', 'Everyone saw that. EVERYONE.']); S.d.react = 'oof'; S.d.reactT = 0.8;
-      if (Math.random() < 0.5) { SFX.laugh(); caption('😂 EVERYONE IS LAUGHING'); S.npcs.forEach((n) => (n.laugh = 1.2)); S.trolledTotal++; frustrate(4); }
-    } else { sh.made++; if (sh.mode === 'main') S.shots.made++; SFX.swish(); addScore(sh.ball.kind === 'swish' ? 150 : 100); sh.msg = sh.ball.kind === 'swish' ? pick(['SWISH! Nobody is talking now.', 'CASH. Aleksei has nothing sarcastic to say.', 'Pure. Coach nodded. Slightly.']) : pick(['Bucket.', 'Off the glass. Counts.', 'Rolled in. Lucky? Yes. Counts? Also yes.']); S.d.react = 'yay'; S.d.reactT = 0.8; }
-    if (sh.mode === 'jose') { const jm = Math.random() < 0.68; if (jm) sh.jose++; float(`Jose ${jm ? 'MAKES it' : 'misses (he says it was a "warm-up")'}`, S.d.x + 60, S.d.y - 70, jm ? '#ff8a5c' : '#3fcf7a'); }
-  }
-  if (sh.ball.k < 1.4) return;
-  const missedLast = sh.ball.kind === 'miss'; sh.ball = null;
-  if (sh.mode === 'main') {
-    if (S.shots.made >= 5 && !S.obj.shots) { S.obj.shots = true; SFX.horn(); repChange(8); caption('✔ BASKETBALL CHALLENGE DONE'); }
-    if (sh.left <= 0 || S.obj.shots) { if (sh.made === 10) achieve('perfect', 'Perfect 10/10'); if (!S.obj.shots) { frustrate(10); say('Jose', `${sh.made}/10. I've seen better from my little cousin. Try again.`); } S.shoot = null; }
-  } else if (sh.mode === 'coach') {
-    if (missedLast) { S.shoot = null; S.coachTask.grade = 'F'; finishCoachTask(false); }
-    else if (sh.left <= 0) { S.shoot = null; S.coachTask.grade = 'A'; finishCoachTask(true); }
-  } else if (sh.mode === 'jose') {
-    if (sh.left <= 0) { S.shoot = null;
-      if (sh.made > sh.jose) { addScore(500, S.d.x, S.d.y); repChange(10); frustrate(-10); caption(`🏆 DAVID BEAT JOSE ${sh.made}-${sh.jose}`, true); say('Jose', 'I let you win. I want that on the record.'); achieve('beatjose', 'Beat Jose in a Shootout'); }
-      else { trolled('jose', `LOST THE SHOOTOUT ${sh.made}-${sh.jose}`, 12, 'shootout', true); say('Jose', 'Bags. All of them. Mine first.'); } }
-  } else if (sh.mode === 'boss') {
-    if (sh.made >= 3) { S.shoot = null; victory(); }
-    else if (sh.left + sh.made < 3) { S.shoot = null; bossFail('missed the final shots'); }
-  }
-}
-
-// =================== group trolling events ===================
-function startEvent() {
-  const pool = ['roast', 'bananas', 'ethan', 'daniel', 'caleb']; if (S.troll >= 50) pool.push('roast', 'ethan');
-  const type = pick(pool.filter((e) => e !== S.lastEvent)); S.lastEvent = type; SFX.horn(); const d = S.d;
-  if (type === 'roast') { S.event = { type, t: 0, dur: 6, mash: 0, need: 18, title: '🔥 GROUP ROAST: James, Jose & Aleksei', sub: 'Mash E / tap to clap back before they finish' }; ['james', 'jose', 'aleksei'].forEach((id, i) => { const n = npc(id); n.mode = 'surround'; n.ang = i * 2.09; }); }
-  if (type === 'bananas') { S.event = { type, t: 0, dur: 8, title: '🍌 FRANK & KALEL: OPERATION BANANA', sub: 'Don\'t step on the peels. Jump over them if you have to.' }; for (let i = 0; i < 9; i++) S.hazards.push({ type: 'banana', ev: true, x: clamp(d.x + rand(-260, 260), 60, MAPW - 60), y: clamp(d.y + rand(-200, 200), 200, 860), t: 9, by: i % 2 ? 'frank' : 'kalel' }); }
-  if (type === 'ethan') { S.event = { type, t: 0, dur: 11, title: '🏃 ETHAN STOLE YOUR BALL', sub: 'Chase him down (hold Shift) and tag him' }; const e = npc('ethan'); Object.assign(e, { x: d.x + 40, y: d.y }); S.d.hasBall = true; ethanSteal('ball'); }
-  if (type === 'daniel') { S.event = { type, t: 0, dur: 8, title: '🌋 LIL DANIEL: "THE FLOOR IS LAVA"', sub: 'Get to a green safe circle and stay there' }; S.fx.reverse = 3; for (let i = 0; i < 3; i++) S.hazards.push({ type: 'safe', x: clamp(d.x + rand(-300, 300), 80, MAPW - 80), y: clamp(d.y + rand(-200, 200), 220, 850), t: 8 }); say('Lil Daniel', 'THE FLOOR IS LAVA. I made that rule just now. Also I reversed your controls for a sec.', 3); }
-  if (type === 'caleb') { S.event = { type, t: 0, dur: 6, title: '👀 CALEB: "DAVID LOOK"', sub: 'Stay inside the circle. Caleb keeps pulling you out of it.', circle: { x: d.x, y: d.y } }; }
-}
-function endEvent(ok, msg) {
-  const ev = S.event; S.event = null; S.nextEvent = Math.max(9, 26 - S.troll * 0.17) + rand(-3, 3);
-  S.npcs.forEach((n) => { if (n.mode === 'surround') n.mode = null; });
-  S.hazards = S.hazards.filter((h) => h.type !== 'safe' && !h.ev);
-  if (ok) { S.obj.survive++; addScore(250, S.d.x, S.d.y); repChange(6); SFX.cheer(); if (S.obj.survive === 3) caption('✔ SURVIVED THE GROUP TROLLING'); }
-  if (msg) say('Announcer', msg, 3);
-}
-function updateEvent(dt) {
-  const ev = S.event, d = S.d; ev.t += dt;
-  if (ev.type === 'roast') {
-    if (Math.random() < dt * 1.4) { const who = pick(['james', 'jose', 'aleksei']); const r = { james: ['David, trust me, you\'re cooked.', 'Bro dresses like a substitute teacher.'], jose: ['Your jumper needs a software update.', 'David runs like his shoes are on the wrong feet.'], aleksei: ['Wow. Inspirational. Ish.', 'If confidence was points you\'d still lose.'] }[who]; float(`${CAST[who].name}: "${pick(r)}"`, d.x + rand(-60, 60), d.y - 80, '#ff8a5c'); SFX.laugh(); }
-    if (ev.mash >= ev.need) { achieve('clapgroup', 'Clapped Back at the Group'); return endEvent(true, 'David clapped back so hard Aleksei went quiet. First time ever.'); }
-    if (ev.t >= ev.dur) { trolled(pick(['james', 'jose', 'aleksei']), 'GROUP ROAST', 14, 'roast', true); return endEvent(false, 'The group roast landed. Jose is doing a victory lap.'); }
-  }
-  if (ev.type === 'bananas' && ev.t >= ev.dur) endEvent(!ev.slipped, ev.slipped ? 'Operation Banana was a success. For Frank and Kalel.' : 'David dodged every peel. Frank and Kalel are "regrouping."');
-  if (ev.type === 'ethan' && ev.t >= ev.dur) { const e = npc('ethan'); e.mode = null; e.carry = null; S.d.hasBall = false; endEvent(false, 'Ethan got away with the ball. He\'s spinning it on his finger. Badly.'); }
-  if (ev.type === 'daniel') {
-    const safe = S.hazards.some((h) => h.type === 'safe' && dist(h, d) < 44);
-    if (ev.t > 2.5 && !safe && d.z <= 0) { ev.burn = (ev.burn || 0) + dt; if (ev.burn > 0.6 && !ev.burnt) { ev.burnt = true; trolled('daniel', 'TOUCHED THE LAVA', 10, null, true); } }
-    if (ev.t >= ev.dur) endEvent(!ev.burnt, ev.burnt ? 'David touched the lava. Lil Daniel says that\'s "permanent."' : 'David survived the lava. Lil Daniel is already on to something else.');
-  }
-  if (ev.type === 'caleb') {
-    const ang = ev.t * 2.3, nx = d.x + Math.cos(ang) * 120 * dt, ny = d.y + Math.sin(ang * 0.7) * 90 * dt; if (!solid(nx, ny)) { d.x = nx; d.y = ny; } // Caleb's pull
-    if (dist(d, ev.circle) > 70 && !ev.out) { ev.out = true; trolled('caleb', 'LOOKED. AGAIN.', 9, 'distract'); }
-    if (ev.t >= ev.dur) endEvent(!ev.out, ev.out ? 'David looked. There was no dog. There is never a dog.' : 'David didn\'t look! Caleb is genuinely impressed.');
-  }
-}
-
-// =================== FINAL BOSS: THE WHOLE TEAM ===================
-function startBoss() {
-  S.boss = { t: 0, phase: 'gauntlet', dur: 40, freeze: 0, nextFreeze: 6, nextFlip: 5, fails: S.boss ? S.boss.fails : 0, roasts: [] };
-  S.event = null; S.fake = null; S.coachTask = null; S.hazards = [];
-  Object.assign(S.d, { x: BOSS_START.x, y: BOSS_START.y, hasBall: true });
-  SFX.boss(); caption('⚠️ FINAL BOSS: THE WHOLE TEAM', true); zoomIn();
-  const spots = { james: [800, 380], jose: [1000, 380], aleksei: [820, 600], caleb: [980, 600], frank: [760, 720], kalel: [1040, 720], daniel: [900, 660], ethan: [900, 760], brent: [900, 205] };
-  S.npcs.forEach((n) => { const [x, y] = spots[n.id]; Object.assign(n, { x, y, hx: x, hy: y, tx: x, ty: y, mode: n.id === 'ethan' ? 'boss-ethan' : null, carry: null, hidden: false }); });
-  for (let i = 0; i < 10; i++) S.hazards.push({ type: 'banana', x: rand(800, 1000), y: rand(300, 780), t: 999, by: i % 2 ? 'frank' : 'kalel' });
-  say('Coach Brent', 'Get to the far end WITH the ball. Then make three over all of us. Good luck. You\'ll need it.', 4);
-}
-function bossFail(why) {
-  S.boss.fails++; trolled(pick(TROLLERS), why.toUpperCase(), 18, null, true);
-  if (S.mode !== 'play') return;
-  say('Coach Brent', pick(['Again. From the top.', 'That\'s not how we practiced it. Again.', 'Everyone back on the court! David, again.']), 2.5);
-  if (S.boss.fails >= 3) achieve('persistent', 'Never Gave Up');
-  startBoss();
-}
-function updateBoss(dt) {
-  const B = S.boss, d = S.d; if (B.phase !== 'gauntlet') return; B.t += dt;
-  B.nextFreeze -= dt; if (B.nextFreeze <= 0 && !B.freeze) { B.freeze = 1.6; B.nextFreeze = rand(5, 8); SFX.whistle(); caption('🛑 COACH: "FREEZE!"'); }
-  if (B.freeze) { B.freeze = Math.max(0, B.freeze - dt); if (B.freeze > 0 && B.freeze < 1.3 && d.moving) { B.freeze = 0; d.y = Math.min(BOSS_START.y, d.y + 140); trolled('brent', 'MOVED DURING FREEZE', 6); } }
-  B.nextFlip -= dt; if (B.nextFlip <= 0) { S.fx.reverse = 2.2; B.nextFlip = rand(5, 8); caption('🌀 LIL DANIEL REVERSED YOUR CONTROLS'); }
-  if (Math.random() < dt * 1.2) { const who = pick(['james', 'jose', 'aleksei', 'caleb']), n = npc(who); B.roasts.push({ x: n.x, y: n.y, vx: (d.x - n.x) / 2.2, vy: (d.y - n.y) / 2.2, who, t: 3, text: pick(['COOKED', 'FRAUD', 'BRICK', 'TRUST ME BRO', 'LOOK!', 'L']) }); }
-  for (const r of B.roasts) { r.x += r.vx * dt; r.y += r.vy * dt; r.t -= dt; if (!r.hit && dist(r, d) < 24 && d.z < 15) { r.hit = true; S.fx.slow = 1.5; S.trolledBy[r.who] = (S.trolledBy[r.who] || 0) + 1; S.trolledTotal++; frustrate(3); SFX.bonk(); } }
-  B.roasts = B.roasts.filter((r) => r.t > 0 && !r.hit);
-  if (d.hasBall && dist(d, BOSS_GOAL) < BOSS_GOAL.r) { B.phase = 'shot'; B.roasts = []; caption('🏀 NOW MAKE 3 OF 5 OVER THE WHOLE TEAM', true); S.npcs.forEach((n, i) => { Object.assign(n, { x: 740 + i * 40, y: 400, tx: 740 + i * 40, ty: 400, mode: null }); }); startShooting('boss'); return; }
-  if (B.t >= B.dur) bossFail('ran out of time');
-}
-
-// =================== flow ===================
-function show(id) { ['sStart', 'sHow', 'sPause', 'sEnd'].forEach((s) => ($(s).hidden = s !== id)); }
-function startGame() { S = newState(); S.mode = 'play'; show(null); SFX.horn(); say('David', 'Hoops. Tonight I just want to play basketball. Nobody is going to mess with me.', 3.5); }
-function pause(on) { S.mode = on ? 'paused' : 'play'; show(on ? 'sPause' : null); }
-function rageQuit() { S.mode = 'over'; SFX.sad(); caption('💢 DAVID RAGE-QUIT', true); zoomIn(); setTimeout(() => endScreen(false), 1400); }
-function victory() { S.obj.boss = true; S.mode = 'victory'; SFX.win(); SFX.cheer(); repChange(25); for (let i = 0; i < 180; i++) S.confetti.push({ x: S.d.x + rand(-320, 320), y: S.d.y - rand(150, 500), vx: rand(-60, 60), vy: rand(40, 160), g: 0, c: pick(['#ffb547', '#3d7bff', '#ff7ab8', '#3fcf7a', '#fff']), r: rand(0, 6), life: 9 }); caption('🏆 DAVID BEAT THE WHOLE TEAM', true); setTimeout(() => endScreen(true), 2800); }
-function finalScore(won) { return S.score + (won ? Math.max(0, Math.round(4000 - S.t * 7)) + (100 - S.frus) * 15 + S.rep * 10 : 0); }
-function endScreen(won) {
-  const fs = finalScore(won), best = store.get('david-best', 0); if (fs > best) store.set('david-best', fs);
-  const mins = Math.floor(S.t / 60), secs = String(Math.floor(S.t % 60)).padStart(2, '0'), repName = repLevel()[1];
-  $('endTitle').textContent = won ? '🏆 Survived Hoops' : '💢 Rage quit';
-  $('endMsg').textContent = won ? pick(['David beat the whole team. Ethan is "telling Coach." Coach was there.', 'David survived Hoops with his dignity mostly intact. Mostly.', 'Jose says he "let him win." Nobody believes Jose.']) : pick(RAGE_MSGS);
-  $('endStats').innerHTML = [['Final score', fs], ['Times trolled', S.trolledTotal], ['Reputation', repName], ['Frustration', S.frus + '%'], ['Time', `${mins}:${secs}`], ['Best ever', Math.max(best, fs)]].map(([a, b]) => `<div>${a}<b>${esc(b)}</b></div>`).join('');
-  const rows = TROLLERS.map((id) => [CAST[id].name, S.trolledBy[id] || 0]).sort((a, b) => b[1] - a[1]), max = Math.max(1, rows[0][1]);
-  $('endBars').innerHTML = rows.map(([n, v], i) => `<div><span>${i === 0 && v ? '👑 ' : ''}${esc(n)}</span><i style="width:${(v / max) * 100}%;opacity:${v ? 1 : 0.2}"></i><b>${v}</b></div>`).join('');
-  const grades = S.judges.map((j) => j.grade).join(', ') || 'none';
-  $('endJudge').textContent = won ? `Challenge grades: ${grades}. "${S.rep >= 85 ? 'David. That was legendary. I\'m going to deny I ever said this.' : S.rep >= 60 ? 'Not bad, David. Not bad. We\'ll work on the rest.' : 'You survived. That\'s the nicest thing I can say.'}"` : `Challenge grades: ${grades}. "David, we need to talk."`;
-  $('endAch').innerHTML = [...S.ach.values()].map((a) => `<span>🏆 ${esc(a)}</span>`).join('') || '<span>No achievements yet</span>';
-  $('lbName').value = store.get('lb-name', ''); $('lbMsg').textContent = ''; $('bPost').disabled = false; S.final = fs;
-  show('sEnd');
-}
-$('bPost').onclick = async () => {
-  const name = $('lbName').value.trim(); if (!name) return; store.set('lb-name', name); $('lbMsg').textContent = 'Posting…';
-  try { const r = await fetch('https://scenic-hills-hoops.vercel.app/api/scores', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ game: 'david', name, score: S.final }) }); const j = await r.json(); if (!r.ok) throw j.error || r.status; const rank = j.top.findIndex((x) => x.name.toLowerCase() === name.toLowerCase()) + 1; $('lbMsg').textContent = rank ? `You're #${rank} on the team leaderboard.` : 'Posted!'; $('bPost').disabled = true; }
-  catch (e) { $('lbMsg').textContent = 'Couldn\'t post: ' + e; }
-};
-$('bPlay').onclick = () => { audio(); startGame(); };
-$('bHow').onclick = () => show('sHow'); $('bHow2').onclick = () => show('sHow');
-$('bHowBack').onclick = () => show(S.mode === 'paused' ? 'sPause' : 'sStart');
-$('bResume').onclick = () => pause(false); $('bRestart').onclick = startGame; $('bAgain').onclick = startGame;
 
 // =================== update ===================
 function update(dt) {
-  for (const p of S.confetti) { p.vy += (p.g ? 500 : 0) * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.r += dt * 4; p.life -= dt; }
-  S.confetti = S.confetti.filter((p) => p.life > 0);
-  if (S.zoom > 0) S.zoom = Math.max(0, S.zoom - dt);
+  if (!S) return;
+  for (const p of S.confetti) { p.vy += 500 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.r += dt * 5; p.life -= dt; } S.confetti = S.confetti.filter((p) => p.life > 0);
+  for (const f of S.floaters) f.t += dt; S.floaters = S.floaters.filter((f) => f.t < 1.4);
   if (S.caption) { S.caption.t -= dt; if (S.caption.t <= 0) S.caption = null; }
-  if (S.mode === 'victory') { S.d.react = 'yay'; S.d.reactT = 1; S.npcs.forEach((n) => (n.celebrate = 1)); return; }
+  if (S.zoom > 0) S.zoom = Math.max(0, S.zoom - dt);
   if (S.mode !== 'play') return;
-  S.t += dt; const d = S.d;
-  S.troll = clamp(S.troll - dt * 0.6, 0, 100);
-  for (const k in S.fx) if (S.fx[k] > 0) S.fx[k] = Math.max(0, S.fx[k] - dt);
-  for (const f of S.floaters) f.t += dt; S.floaters = S.floaters.filter((f) => f.t < 1.8);
+  const d = S.d; S.t += dt; S.qT += dt; S.cleanT += dt; S.coachTalk -= dt;
   if (S.bubble) { S.bubble.t -= dt; if (S.bubble.t <= 0) S.bubble = null; }
+  for (const k of ['reverse', 'slow', 'look', 'inv']) if (S.fx[k] > 0) S.fx[k] = Math.max(0, S.fx[k] - dt);
   if (d.reactT > 0) d.reactT -= dt; else d.react = null;
-  updateNpcs(dt);
-  for (const h of S.hazards) h.t -= dt; S.hazards = S.hazards.filter((h) => h.t > 0);
-  if (S.shoot) { updateShooting(dt); return; }
-  if (S.boss) updateBoss(dt);
-  else if (S.event && !S.dialog) updateEvent(dt);
-  else if (!S.event && S.obj.enter && !S.dialog && !S.coachTask) { S.nextEvent -= dt; if (S.nextEvent <= 0) startEvent(); }
-  if (!S.boss) updateCoachTask(dt);
-  if (S.dialog || S.mode !== 'play') return;
+  missionProgress('clean', S.cleanT, true);
+  // balls
+  S.ballT -= dt; if (S.ballT <= 0) { spawnBall(); S.ballT = rand(1.2, 2.2); }
+  const cap = 1 + P('hands');
+  for (const b of S.balls) {
+    b.t += dt;
+    if (P('magnet') && !b.fake && d.balls < cap && dist(b, d) < 260) { const a = Math.atan2(d.y - b.y, d.x - b.x); b.x += Math.cos(a) * 320 * dt; b.y += Math.sin(a) * 320 * dt; }
+    if (dist(b, d) < 26 && d.z < 20 && (d.balls < cap || b.fake)) {
+      b.got = true;
+      if (b.fake) { SFX.pop(); burst(b.x, b.y, 26); trolled('james', 'FAKE GOLD BALL. TRUST ME BRO.', 10); say('James', 'Bro you really grabbed it. I said TRUST me, not BELIEVE me.'); }
+      else { d.balls++; if (b.gold) d.gold++; SFX.pick(); }
+    }
+  }
+  S.balls = S.balls.filter((b) => !b.got && b.t < 22);
+  // shots in the air
+  for (const s of S.shots) { s.k += dt / 0.75; if (s.k >= 1 && !s.done) { s.done = true; resolveShot(s); } } S.shots = S.shots.filter((s) => s.k < 1.35);
+  if (d.charge) d.charge.t += dt;
+  // projectiles (sarcasm)
+  for (const p of S.projectiles) { p.x += p.vx * dt; p.y += p.vy * dt; p.t -= dt; if (!p.hit && dist(p, d) < 22 && d.z < 16) { p.hit = true; S.fx.slow = 1.2; trolled(p.by, `"${p.text}"`, 7); } }
+  S.projectiles = S.projectiles.filter((p) => p.t > 0 && !p.hit);
+  // bananas
+  for (const h of S.hazards) { h.t -= dt; if (h.type === 'banana' && !h.used && d.z <= 0 && dist(h, d) < 18) { h.used = true; h.t = 0; d.react = 'slip'; d.reactT = 1; SFX.slip(); if (d.balls > 0) { d.balls--; d.charge = null; S.balls.push({ x: clamp(d.x + rand(-100, 100), 80, MAPW - 80), y: clamp(d.y + rand(-80, 80), 240, 840), gold: false, t: 0 }); } trolled(h.by, 'BANANA PEEL', 8); } }
+  S.hazards = S.hazards.filter((h) => h.t > 0);
+  // Lil Daniel's floor-is-lava, from Q4 on
+  if (S.enemies.some((e) => e.id === 'daniel')) {
+    S.lavaT -= dt;
+    if (!S.lava && S.lavaT <= 0) { S.lava = { t: 0, safe: Array.from({ length: 3 }, () => ({ x: clamp(d.x + rand(-320, 320), 120, MAPW - 120), y: clamp(d.y + rand(-200, 200), 260, 820) })) }; say('Lil Daniel', 'THE FLOOR IS LAVA. I just decided.'); caption('🌋 THE FLOOR IS LAVA', true); }
+    if (S.lava) { S.lava.t += dt; if (S.lava.t > 2.5 && d.z <= 0 && !S.lava.safe.some((s) => dist(s, d) < 46)) { S.lava.burn = (S.lava.burn || 0) + dt; if (S.lava.burn > 0.5) { S.lava.burn = -1.2; trolled('daniel', 'TOUCHED THE LAVA', 8); } } if (S.lava.t > 7) { S.lava = null; S.lavaT = rand(22, 30); addPoints(100, d.x, d.y - 60, 'SURVIVED THE LAVA +'); } }
+  }
+  updateEnemies(dt);
+  // movement
+  const frozen = S.fx.freeze > 0 && !P('ice') && S.fx.freeze > 1.4;
   let ix = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0), iy = (keys.KeyS || keys.ArrowDown ? 1 : 0) - (keys.KeyW || keys.ArrowUp ? 1 : 0);
-  if (touchTarget) { const tx = touchTarget.x - d.x, ty = touchTarget.y - d.y, tl = Math.hypot(tx, ty); if (tl > 10) { ix = tx / tl; iy = ty / tl; } }
+  if (touchTarget) { const tx = touchTarget.x - d.x, ty = touchTarget.y - d.y, tl = Math.hypot(tx, ty); if (tl > 12) { ix = tx / tl; iy = ty / tl; } }
   if (S.fx.reverse) { ix = -ix; iy = -iy; }
-  const len = Math.hypot(ix, iy), run = keys.ShiftLeft || keys.ShiftRight || (touchTarget && Math.hypot(touchTarget.x - d.x, touchTarget.y - d.y) > 200);
-  const sp = (run ? 275 : 170) * (S.fx.slow ? 0.45 : 1) * (d.react === 'slip' ? 0.2 : 1);
-  if (len > 0) {
+  const len = Math.hypot(ix, iy), run = keys.ShiftLeft || keys.ShiftRight || (touchTarget && Math.hypot(touchTarget.x - d.x, touchTarget.y - d.y) > 170);
+  let sp = (run ? 270 : 175) * (1 + P('legs') * 0.12) * (S.fx.slow ? 0.5 : 1) * (d.react === 'slip' ? 0.25 : 1) * (d.charge ? 0.45 : 1);
+  if (len > 0 && !frozen) {
     const vx = ix / len * sp, vy = iy / len * sp;
-    if (!solid(d.x + vx * dt, d.y)) d.x += vx * dt; else if (!S.obj.enter && d.y > 850) S.bumped += dt;
-    if (!solid(d.x, d.y + vy * dt)) d.y += vy * dt; else if (!S.obj.enter && d.y > 850) S.bumped += dt;
+    if (!solid(d.x + vx * dt, d.y)) d.x += vx * dt; if (!solid(d.x, d.y + vy * dt)) d.y += vy * dt;
     d.walk += dt * (run ? 14 : 9); if (Math.abs(ix) > 0.1) d.face = ix > 0 ? 1 : -1; d.moving = true;
   } else d.moving = false;
-  if (S.bumped > 0.6 && !S.obj.enter) { S.bumped = 0; say('Coach Brent', S.band.got ? 'Wristband? Bring it here. Press E.' : 'Wristband first, David.'); }
-  if (d.z > 0 || d.vz > 0) { d.vz -= 900 * dt; d.z = Math.max(0, d.z + d.vz * dt); if (d.z === 0) d.vz = 0; }
-  for (const h of S.hazards) if (h.type === 'banana' && !h.used && d.z <= 0 && dist(h, d) < 20) {
-    h.used = true; h.t = 0; d.react = 'slip'; d.reactT = 1.1; SFX.slip();
-    trolled(h.by, 'SLIPPED ON A BANANA', S.boss ? 5 : 9, 'banana', true);
-    if (S.event && S.event.type === 'bananas') S.event.slipped = true;
-    if (S.boss && d.hasBall && Math.random() < 0.5) { d.hasBall = false; S.hazards.push({ type: 'ball', x: clamp(d.x + rand(-60, 60), 760, 1040), y: d.y + 50, t: 999 }); caption('🏀 YOU DROPPED THE BALL'); }
-  }
-  for (const h of S.hazards) if (h.type === 'ball' && dist(h, d) < 26) { h.t = 0; d.hasBall = true; SFX.coin(); }
-  const e = npc('ethan'); if (e.mode === 'flee' && dist(e, d) < 30) ethanCaught();
-  S.hint = null;
-  if (!S.band.got && !S.band.stolen && dist(d, S.band) < 50) S.hint = 'E — pick up wristband';
-  else if (S.obj.enter && !S.boss && !S.obj.shots && dist(d, SHOT_SPOT) < SHOT_SPOT.r + 10) S.hint = 'E — basketball challenge';
-  else if (readyForBoss() && !S.boss && dist(d, { x: 900, y: 470 }) < 70) S.hint = 'E — START THE FINAL BOSS';
-  else if (S.fake && dist(d, S.fake) < 60) S.hint = 'E — claim it (trust James)';
-  else if (!S.boss) { const n = nearestNpc(); if (n) S.hint = `E — talk to ${n.name}`; }
-  if (S.trolledTotal === 0 && S.t > 120) achieve('untouched', 'Two Minutes Untrolled');
-}
-function updateNpcs(dt) {
-  const d = S.d;
-  for (const n of S.npcs) {
-    n.celebrate = Math.max(0, n.celebrate - dt); n.laugh = Math.max(0, n.laugh - dt); n.cool -= dt;
-    if (n.mode === 'flee') { // Ethan running away, a bit slower than David's run
-      n.fleeT += dt; const ang = Math.atan2(n.y - d.y, n.x - d.x) + Math.sin(n.fleeT * 3) * 0.6, sp = 225;
-      const lo = S.obj.enter ? 200 : 935, hi = S.obj.enter ? 860 : MAPH - 60;
-      let nx = n.x + Math.cos(ang) * sp * dt, ny = n.y + Math.sin(ang) * sp * dt;
-      if (solid(nx, ny, 10) || nx < 60 || nx > MAPW - 60 || ny < lo || ny > hi) { const a2 = ang + Math.PI / 2 * (Math.sin(n.fleeT * 0.7) > 0 ? 1 : -1); nx = n.x + Math.cos(a2) * sp * dt; ny = n.y + Math.sin(a2) * sp * dt; }
-      if (!solid(nx, ny, 10)) { n.x = clamp(nx, 60, MAPW - 60); n.y = clamp(ny, lo, hi); }
-      n.walk += dt * 16; n.face = Math.cos(ang) > 0 ? 1 : -1; if (Math.random() < dt * 0.6) say('Ethan', pick(['HAHAHAHA', 'Can\'t catch me!', 'David is SO slow', 'I\'m telling Coach!']), 1.4); continue;
-    }
-    if (n.mode === 'surround') { n.ang += dt * 1.6; n.x = d.x + Math.cos(n.ang) * 70; n.y = d.y + Math.sin(n.ang) * 55; n.walk += dt * 8; continue; }
-    if (n.mode === 'boss-ethan') {
-      n.x = 900 + Math.sin(S.t * 2.2) * 110; n.walk += dt * 14;
-      if (S.d.hasBall && dist(n, d) < 30 && S.boss && S.boss.phase === 'gauntlet') { d.hasBall = false; S.hazards.push({ type: 'ball', x: clamp(d.x + rand(-80, 80), 760, 1040), y: Math.min(840, d.y + 70), t: 999 }); n.celebrate = 1.5; say('Ethan', 'HAHAHAHA MY BALL NOW. ...okay it\'s over there.', 1.8); trolled('ethan', 'SWATTED THE BALL', 5, 'ball'); }
-      continue;
-    }
-    if (S.boss) continue;
-    if (!S.obj.enter) { if (n.id !== 'brent' && !n.mode) n.hidden = true; continue; } // everyone's inside waiting
-    n.hidden = false;
-    if (n.id === 'ethan' && n.cool <= 0 && Math.random() < 0.3 && dist(n, d) < 400) { n.tx = d.x + d.face * 50; n.ty = d.y; n.cool = 3; if (Math.random() < 0.5) say('Ethan', pick(['You shall not pass.', 'Toll is one dollar.', 'Nope.', 'David, look behind you!']), 1.6); } // blocks your path
-    if (n.cool <= 0) { n.tx = clamp(n.hx + rand(-130, 130), 70, MAPW - 70); n.ty = clamp(n.hy + rand(-90, 90), 200, 860); n.cool = rand(2, 5); }
-    const dx = n.tx - n.x, dy = n.ty - n.y, dd = Math.hypot(dx, dy), spd = n.small ? 95 : 55;
-    if (dd > 4 && !(S.dialog && S.dialog.n === n)) { const nx = n.x + dx / dd * spd * dt, ny = n.y + dy / dd * spd * dt; if (!solid(nx, ny)) { n.x = nx; n.y = ny; n.walk += dt * (n.small ? 14 : 8); n.face = dx > 0 ? 1 : -1; } else n.cool = 0; }
-    // drive-by trolls get more common as the troll meter climbs
-    if (!S.dialog && !S.shoot && !S.event && !S.coachTask && dist(n, d) < 90 && Math.random() < dt * (0.02 + S.troll / 2500)) {
-      const lines = { james: 'David, Coach wants you. (Coach does not want you.)', jose: 'Everybody look at David\'s shoes.', aleksei: 'Oh, it\'s you. Great.', caleb: 'DAVID LOOK. ...nothing.', frank: '*Frank sticks a "kick me" sign on David\'s back*', kalel: '*Kalel, into a walkie-talkie* Target is on the move.', daniel: 'I licked the basketball. Not that one. Maybe that one.', ethan: 'HAHAHAHA' }[n.id];
-      if (lines) { say(n.name, lines, 2.4); if (Math.random() < 0.5) trolled(n.id, 'DRIVE-BY TROLL', 5); }
-    }
-  }
+  if (S.fx.look > 0 && S.fx.lookAt) { const a = Math.atan2(S.fx.lookAt.y - d.y, S.fx.lookAt.x - d.x); const nx = d.x + Math.cos(a) * 140 * dt, ny = d.y + Math.sin(a) * 140 * dt; if (!solid(nx, ny)) { d.x = nx; d.y = ny; } d.face = Math.cos(a) > 0 ? 1 : -1; }
+  if (d.z > 0 || d.vz > 0) { d.vz -= 950 * dt; d.z = Math.max(0, d.z + d.vz * dt); if (d.z === 0) d.vz = 0; }
+  if (S.qT >= S.qLen) endQuarter();
 }
 
 // =================== drawing ===================
-function drawPerson(n) {
-  if (n.hidden) return;
-  const s = n.small ? 0.68 : 1, x = n.x, t = performance.now() / 1000;
-  const hop = n.celebrate > 0 ? Math.abs(Math.sin(t * 14)) * (n.small ? 18 : 12) : n.laugh > 0 ? Math.abs(Math.sin(t * 20)) * 3 : n.small ? Math.abs(Math.sin(t * 6)) * 2 : 0;
-  const y = n.y - hop, moving = Math.hypot(n.tx - n.x, n.ty - n.y) > 4 || n.mode, w = moving ? Math.sin(n.walk) : 0;
+function drawPerson(n, now) {
+  const s = n.small ? 0.68 : 1, x = n.x;
+  const hop = n.celebrate > 0 ? Math.abs(Math.sin(now * 14)) * (n.small ? 16 : 10) : n.small ? Math.abs(Math.sin(now * 7)) * 2 : 0;
+  const y = n.y - hop, w = Math.sin(n.walk || 0);
   c.fillStyle = 'rgba(0,0,0,.25)'; c.beginPath(); c.ellipse(x, n.y + 18 * s, 13 * s, 5 * s, 0, 0, 6.3); c.fill();
-  c.save(); c.translate(x, y); c.scale(s, s);
+  c.save(); c.translate(x, y); c.scale(s, s); if (n.stun > 0) c.rotate(Math.sin(now * 10) * 0.2);
   c.fillStyle = n.num ? '#163f80' : '#2a2f3a'; c.fillRect(-8 + w * 3, 4, 6, 14); c.fillRect(2 - w * 3, 4, 6, 14);
   c.fillStyle = '#fff'; c.fillRect(-9 + w * 3, 15, 8, 4); c.fillRect(1 - w * 3, 15, 8, 4);
   c.fillStyle = n.shirt; c.beginPath(); c.roundRect(-11, -14, 22, 22, 6); c.fill();
   if (n.num) { c.fillStyle = '#fff'; c.font = '800 10px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText(n.num, 0, 0); }
   if (n.coach) { c.fillStyle = '#ddd'; c.fillRect(6, -10, 9, 12); c.strokeStyle = '#ffd34d'; c.lineWidth = 1.5; c.beginPath(); c.moveTo(-6, -14); c.lineTo(0, -4); c.lineTo(6, -14); c.stroke(); }
-  const armsUp = n.celebrate > 0 || n.laugh > 0;
+  const up = n.celebrate > 0;
   c.strokeStyle = n.skin; c.lineWidth = 5; c.lineCap = 'round'; c.beginPath();
-  if (armsUp) { c.moveTo(-10, -10); c.lineTo(-17, -28 - Math.sin(t * 16) * 3); c.moveTo(10, -10); c.lineTo(17, -28 + Math.sin(t * 16) * 3); } else { c.moveTo(-11, -10); c.lineTo(-14 - w * 3, 4); c.moveTo(11, -10); c.lineTo(14 + w * 3, 4); }
+  if (up) { c.moveTo(-10, -10); c.lineTo(-17, -28 - Math.sin(now * 16) * 3); c.moveTo(10, -10); c.lineTo(17, -28 + Math.sin(now * 16) * 3); } else { c.moveTo(-11, -10); c.lineTo(-14 - w * 3, 4); c.moveTo(11, -10); c.lineTo(14 + w * 3, 4); }
   c.stroke();
   c.fillStyle = n.skin; c.beginPath(); c.arc(0, -23, 10, 0, 6.3); c.fill();
   c.fillStyle = '#1b1410';
-  const hs = {
-    fade: () => c.fillRect(-10, -33, 20, 6),
-    curly: () => { for (let i = -8; i <= 8; i += 4) { c.beginPath(); c.arc(i, -32, 4.2, 0, 6.3); c.fill(); } },
-    swoop: () => { c.fillStyle = '#c99a5a'; c.beginPath(); c.ellipse(2, -31, 12, 5, -0.25, 0, 6.3); c.fill(); },
-    buzz: () => { c.fillStyle = '#5a4030'; c.fillRect(-9, -32, 18, 4); },
-    cap: () => { c.fillStyle = '#e04f5f'; c.fillRect(-11, -34, 22, 7); c.fillRect((n.face || 1) > 0 ? 6 : -16, -29, 10, 3); },
-    twists: () => { for (let i = -9; i <= 9; i += 3) c.fillRect(i, -38, 2, 9); },
-    messy: () => { for (let i = 0; i < 7; i++) { c.save(); c.translate(-8 + i * 2.7, -31); c.rotate(i - 3); c.fillRect(-1, -7, 3, 8); c.restore(); } },
-    spiky: () => { for (let i = -8; i <= 8; i += 4) { c.beginPath(); c.moveTo(i - 3, -30); c.lineTo(i, -39); c.lineTo(i + 3, -30); c.fill(); } },
-    coach: () => { c.fillStyle = '#8a7a6a'; c.fillRect(-10, -33, 20, 4); },
-  };
-  (hs[n.hair] || hs.fade)();
+  ({ fade: () => c.fillRect(-10, -33, 20, 6), curly: () => { for (let i = -8; i <= 8; i += 4) { c.beginPath(); c.arc(i, -32, 4.2, 0, 6.3); c.fill(); } }, swoop: () => { c.fillStyle = '#c99a5a'; c.beginPath(); c.ellipse(2, -31, 12, 5, -0.25, 0, 6.3); c.fill(); }, buzz: () => { c.fillStyle = '#5a4030'; c.fillRect(-9, -32, 18, 4); }, cap: () => { c.fillStyle = '#e04f5f'; c.fillRect(-11, -34, 22, 7); c.fillRect((n.face || 1) > 0 ? 6 : -16, -29, 10, 3); }, twists: () => { for (let i = -9; i <= 9; i += 3) c.fillRect(i, -38, 2, 9); }, messy: () => { for (let i = 0; i < 7; i++) { c.save(); c.translate(-8 + i * 2.7, -31); c.rotate(i - 3); c.fillRect(-1, -7, 3, 8); c.restore(); } }, spiky: () => { for (let i = -8; i <= 8; i += 4) { c.beginPath(); c.moveTo(i - 3, -30); c.lineTo(i, -39); c.lineTo(i + 3, -30); c.fill(); } }, coach: () => { c.fillStyle = '#8a7a6a'; c.fillRect(-10, -33, 20, 4); } }[n.hair] || (() => {}))();
   const f = n.face || 1; c.fillStyle = '#111';
-  if (armsUp) { c.strokeStyle = '#111'; c.lineWidth = 1.5; c.beginPath(); c.arc(-3 + f * 2, -24, 2, Math.PI, 0); c.stroke(); c.beginPath(); c.arc(4 + f * 2, -24, 2, Math.PI, 0); c.stroke(); c.beginPath(); c.arc(f * 2, -19, 3.5, 0, Math.PI); c.fill(); }
+  if (n.stun > 0) { c.font = '9px sans-serif'; c.textAlign = 'center'; c.fillText('x', -3 + f * 2, -21); c.fillText('x', 4 + f * 2, -21); }
+  else if (up) { c.beginPath(); c.arc(f * 2, -19, 3.5, 0, Math.PI); c.fill(); c.fillRect(-4 + f * 2, -26, 2.2, 1.6); c.fillRect(3 + f * 2, -26, 2.2, 1.6); }
   else { c.fillRect(-4 + f * 2, -25, 2.2, 2.6); c.fillRect(3 + f * 2, -25, 2.2, 2.6); }
-  if (n.carry) { c.font = '14px sans-serif'; c.textAlign = 'center'; c.fillText(n.carry === 'wristband' ? '🎟️' : '🏀', 16, -30); }
+  if (n.carry) { c.fillStyle = '#e07a2e'; c.beginPath(); c.arc(15, 2 - Math.abs(Math.sin(now * 9)) * 6, 6, 0, 6.3); c.fill(); }
   c.restore();
-  if (n.celebrate > 0 && n.id === 'ethan') { c.font = '800 13px "Barlow Condensed", sans-serif'; c.fillStyle = '#ffd34d'; c.textAlign = 'center'; c.fillText('HAHAHA', x, y - 34); }
+  if (n.stun > 0) { c.font = '12px sans-serif'; c.textAlign = 'center'; c.fillText('💫', x + Math.cos(now * 6) * 10, y - 38 * s); }
+  if (n.celebrate > 0 && n.id === 'ethan') { c.font = '800 12px "Barlow Condensed", sans-serif'; c.fillStyle = '#ffd34d'; c.textAlign = 'center'; c.fillText('HAHAHA', x, y - 32); }
+  c.font = '600 10px Barlow'; c.textAlign = 'center'; c.fillStyle = 'rgba(255,255,255,.75)'; c.fillText(n.name, x, n.y + 30 * s);
 }
-function drawDavid() {
-  const d = S.d, x = d.x, y = d.y - d.z, t = performance.now() / 1000;
-  const w = d.moving ? Math.sin(d.walk) : 0, bob = d.moving ? Math.abs(Math.sin(d.walk)) * 2 : Math.sin(t * 2.2) * 1.2;
+function drawDavid(now) {
+  const d = S.d, x = d.x, y = d.y - d.z, w = d.moving ? Math.sin(d.walk) : 0, bob = d.moving ? Math.abs(Math.sin(d.walk)) * 2 : Math.sin(now * 2.2) * 1.2;
   c.fillStyle = 'rgba(0,0,0,.28)'; c.beginPath(); c.ellipse(d.x, d.y + 20, Math.max(6, 15 - d.z / 12), Math.max(2, 6 - d.z / 30), 0, 0, 6.3); c.fill();
+  if (S.fx.inv > 0 && Math.floor(now * 20) % 2) c.globalAlpha = 0.5;
   c.save(); c.translate(x, y - bob);
-  if (d.react === 'slip') c.rotate(Math.sin(t * 25) * 0.9);
-  if (d.react === 'shock') c.translate(Math.sin(t * 60) * 2, 0);
-  if (S.frus > 70) c.translate(Math.sin(t * 50) * 1.2, 0);
+  if (d.react === 'slip') c.rotate(Math.sin(now * 25) * 0.9);
+  if (S.frus > 75) c.translate(Math.sin(now * 50) * 1.2, 0);
   c.fillStyle = '#e8e8e8'; c.fillRect(-8 + w * 4, 4, 6, 13); c.fillRect(2 - w * 4, 4, 6, 13);
   c.fillStyle = '#ff5a3c'; c.fillRect(-10 + w * 4, 15, 9, 5); c.fillRect(1 - w * 4, 15, 9, 5);
-  if (S.fx.slow) { c.strokeStyle = '#fff'; c.lineWidth = 1.5; c.beginPath(); c.moveTo(-6 + w * 4, 18); c.quadraticCurveTo(0, 24, 6 - w * 4, 18); c.stroke(); }
-  c.fillStyle = '#163f80'; c.fillRect(-11, -2, 22, 9);
-  c.fillStyle = '#1f5fbf'; c.beginPath(); c.roundRect(-12, -18, 24, 20, 6); c.fill();
+  c.fillStyle = '#163f80'; c.fillRect(-11, -2, 22, 9); c.fillStyle = '#1f5fbf'; c.beginPath(); c.roundRect(-12, -18, 24, 20, 6); c.fill();
   c.fillStyle = '#fff'; c.font = '800 11px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText('15', 0, -4);
-  const up = d.react === 'yay' || S.mode === 'victory';
   c.strokeStyle = '#a8724c'; c.lineWidth = 5; c.lineCap = 'round'; c.beginPath();
-  if (up) { c.moveTo(-11, -14); c.lineTo(-18, -32 - Math.sin(t * 12) * 3); c.moveTo(11, -14); c.lineTo(18, -32 + Math.sin(t * 12) * 3); }
-  else if (d.react === 'shock' || d.react === 'oof') { c.moveTo(-11, -14); c.lineTo(-6, -30); c.moveTo(11, -14); c.lineTo(6, -30); }
+  if (d.charge) { c.moveTo(-10, -14); c.lineTo(-4, -34); c.moveTo(10, -14); c.lineTo(4, -34); }
+  else if (d.react === 'oof') { c.moveTo(-11, -14); c.lineTo(-6, -30); c.moveTo(11, -14); c.lineTo(6, -30); }
   else { c.moveTo(-12, -14); c.lineTo(-15 - w * 3, 2); c.moveTo(12, -14); c.lineTo(15 + w * 3, 2); }
   c.stroke();
-  if (d.hasBall) { c.fillStyle = '#e07a2e'; c.beginPath(); c.arc(16 * d.face, 6 + Math.abs(Math.sin(t * 8)) * 6, 7, 0, 6.3); c.fill(); }
-  c.fillStyle = S.frus > 70 ? '#c0603c' : '#a8724c'; c.beginPath(); c.arc(0, -28, 11, 0, 6.3); c.fill();
+  if (d.charge) { c.fillStyle = d.gold ? '#ffd34d' : '#e07a2e'; c.beginPath(); c.arc(0, -40, 7, 0, 6.3); c.fill(); }
+  else for (let i = 0; i < d.balls; i++) { c.fillStyle = i < d.gold ? '#ffd34d' : '#e07a2e'; c.beginPath(); c.arc((16 + i * 6) * d.face, 6 + Math.abs(Math.sin(now * 8 + i)) * 6, 7, 0, 6.3); c.fill(); }
+  c.fillStyle = S.frus > 75 ? '#c0603c' : '#a8724c'; c.beginPath(); c.arc(0, -28, 11, 0, 6.3); c.fill();
   c.fillStyle = '#1b1410'; for (let i = -9; i <= 9; i += 4.5) { c.beginPath(); c.arc(i, -37 + Math.abs(i) * 0.25, 4.6, 0, 6.3); c.fill(); }
   c.fillStyle = '#ff5a3c'; c.fillRect(-11.5, -35, 23, 4);
   const f = d.face; c.fillStyle = '#111';
-  if (d.react && d.react !== 'yay') { c.font = '9px sans-serif'; c.fillText(d.react === 'shock' ? 'O' : 'x', -4 + f * 2, -25); c.fillText(d.react === 'shock' ? 'O' : 'x', 4 + f * 2, -25); }
-  else { c.fillRect(-4 + f * 2, -29, 2.4, 3); c.fillRect(3 + f * 2, -29, 2.4, 3); }
-  c.strokeStyle = '#111'; c.lineWidth = 1.4; c.beginPath();
-  if (up) c.arc(f * 2, -23, 4, 0.1, Math.PI - 0.1); else if (d.react || S.frus > 60) c.arc(f * 2, -18, 3, Math.PI + 0.3, -0.3); else { c.moveTo(-2 + f * 2, -21); c.lineTo(3 + f * 2, -21); }
-  c.stroke(); c.restore();
-  if (S.frus > 70) { c.font = '14px sans-serif'; c.textAlign = 'center'; c.fillText('💢', x + 14, y - 44); }
-  if (S.fx.reverse) { c.font = '14px sans-serif'; c.textAlign = 'center'; c.fillText('🌀', x - 16, y - 46); }
+  if (d.react) { c.font = '9px sans-serif'; c.fillText('x', -4 + f * 2, -25); c.fillText('x', 4 + f * 2, -25); } else { c.fillRect(-4 + f * 2, -29, 2.4, 3); c.fillRect(3 + f * 2, -29, 2.4, 3); }
+  c.strokeStyle = '#111'; c.lineWidth = 1.4; c.beginPath(); if (S.combo >= 3 && !d.react) c.arc(f * 2, -23, 4, 0.1, Math.PI - 0.1); else if (d.react || S.frus > 60) c.arc(f * 2, -18, 3, Math.PI + 0.3, -0.3); else { c.moveTo(-2 + f * 2, -21); c.lineTo(3 + f * 2, -21); } c.stroke();
+  c.restore(); c.globalAlpha = 1;
+  if (S.frus > 75) { c.font = '14px sans-serif'; c.textAlign = 'center'; c.fillText('💢', x + 14, y - 46); }
+  if (S.fx.reverse) { c.font = '14px sans-serif'; c.textAlign = 'center'; c.fillText('🌀', x - 16, y - 48); }
+  if (S.combo >= 5) { c.font = '15px sans-serif'; c.textAlign = 'center'; c.fillText('🔥', x, y - 56 - Math.abs(Math.sin(now * 6)) * 4); }
+  // shot meter above David
+  if (d.charge) {
+    const { z, jose } = shotZone(), v = meterValue(d.charge.t), mx = x - 40, my = y - 74, mw = 80, target = 0.82;
+    c.fillStyle = 'rgba(16,20,28,.85)'; c.fillRect(mx - 3, my - 3, mw + 6, 16);
+    c.fillStyle = jose ? '#ff8a5c' : '#3fcf7a'; c.fillRect(mx + mw * (target - z / 2), my, mw * z, 10); c.fillStyle = '#3d7bff'; c.fillRect(mx + mw * (target - z / 8), my, mw * z / 4, 10);
+    c.fillStyle = '#fff'; c.fillRect(mx + mw * v - 1.5, my - 4, 3, 18);
+    if (jose) { c.fillStyle = '#ff8a5c'; c.font = '800 11px "Barlow Condensed", sans-serif'; c.fillText('CONTESTED BY JOSE', x, my - 8); }
+  }
 }
 function court(C) {
   c.fillStyle = '#c98b4e'; c.fillRect(C.x, C.y, C.w, C.h);
   c.strokeStyle = 'rgba(80,40,10,.12)'; c.lineWidth = 1; for (let i = C.x; i < C.x + C.w; i += 16) { c.beginPath(); c.moveTo(i, C.y); c.lineTo(i, C.y + C.h); c.stroke(); }
   c.strokeStyle = '#fff'; c.lineWidth = 3; c.strokeRect(C.x, C.y, C.w, C.h);
   c.beginPath(); c.moveTo(C.x + C.w / 2, C.y); c.lineTo(C.x + C.w / 2, C.y + C.h); c.stroke(); c.beginPath(); c.arc(C.x + C.w / 2, C.y + C.h / 2, 55, 0, 6.3); c.stroke();
-  c.fillStyle = 'rgba(31,95,191,.55)'; c.fillRect(C.x, C.y + C.h / 2 - 60, 150, 120); c.fillRect(C.x + C.w - 150, C.y + C.h / 2 - 60, 150, 120);
+  c.fillStyle = 'rgba(31,95,191,.5)'; c.fillRect(C.x, C.y + C.h / 2 - 60, 150, 120); c.fillRect(C.x + C.w - 150, C.y + C.h / 2 - 60, 150, 120);
   c.strokeRect(C.x, C.y + C.h / 2 - 60, 150, 120); c.strokeRect(C.x + C.w - 150, C.y + C.h / 2 - 60, 150, 120);
-  c.beginPath(); c.arc(C.x, C.y + C.h / 2, 200, -Math.PI / 2, Math.PI / 2); c.stroke(); c.beginPath(); c.arc(C.x + C.w, C.y + C.h / 2, 200, Math.PI / 2, Math.PI * 1.5); c.stroke();
-  c.fillStyle = 'rgba(255,255,255,.18)'; c.font = '800 64px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText('HOOPS', C.x + C.w / 2, C.y + C.h / 2 + 22);
+  c.beginPath(); c.arc(C.x + 30, C.y + C.h / 2, ARC, -Math.PI / 2, Math.PI / 2); c.stroke(); c.beginPath(); c.arc(C.x + C.w - 30, C.y + C.h / 2, ARC, Math.PI / 2, Math.PI * 1.5); c.stroke();
+  c.fillStyle = 'rgba(255,255,255,.16)'; c.font = '800 64px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText('HOOPS', C.x + C.w / 2, C.y + C.h / 2 + 22);
 }
+const crowd = Array.from({ length: 70 }, (_, i) => ({ x: 70 + i * 24.5 + Math.random() * 6, y: 80 + Math.random() * 90, c: ['#e04f5f', '#3d7bff', '#ffb547', '#3fcf7a', '#ff7ab8', '#ddd', '#7a3cff'][i % 7], s: ['#8d5a3b', '#e0b48a', '#c68863', '#6f4430', '#f0c8a0'][i % 5], p: Math.random() * 6 }));
 function draw() {
   const W = cv.width, H = cv.height, now = performance.now() / 1000;
   c.setTransform(1, 0, 0, 1, 0, 0); c.fillStyle = '#0c0f15'; c.fillRect(0, 0, W, H);
   const ox = (W / dpr - VW * scale) / 2, oy = (H / dpr - VH * scale) / 2;
   c.setTransform(dpr * scale, 0, 0, dpr * scale, dpr * ox, dpr * oy);
-  const z = 1 + Math.min(1, S.zoom) * 0.45; cam.z = z; // dramatic zoom on embarrassing moments
-  const vw = VW / z, vh = VH / z;
-  cam.x += (clamp(S.d.x - vw / 2, 0, MAPW - vw) - cam.x) * 0.15; cam.y += (clamp(S.d.y - vh / 2, 0, MAPH - vh) - cam.y) * 0.15;
-  let shx = 0, shy = 0; if ((S.shoot && S.shoot.shake > 0) || (S.event && S.event.type === 'caleb')) { shx = Math.sin(now * 55) * 3; shy = Math.cos(now * 47) * 3; }
-  c.save(); c.beginPath(); c.rect(0, 0, VW, VH); c.clip(); c.scale(z, z); c.translate(-Math.round(cam.x) + shx, -Math.round(cam.y) + shy);
-  c.fillStyle = '#2b3140'; c.fillRect(0, 0, MAPW, 900); c.fillStyle = '#3a3f48'; c.fillRect(0, 900, MAPW, MAPH - 900);
-  c.strokeStyle = '#d9d9d9'; c.lineWidth = 3; for (let x = 120; x < MAPW - 100; x += 160) { c.beginPath(); c.moveTo(x, 980); c.lineTo(x, 1080); c.stroke(); }
-  [[200, 1000, '#c0392b'], [520, 1110, '#2c3e50'], [1360, 1000, '#16a085'], [1680, 1110, '#8e44ad']].forEach(([x, y, col]) => { c.fillStyle = col; c.beginPath(); c.roundRect(x, y, 110, 54, 10); c.fill(); c.fillStyle = 'rgba(255,255,255,.3)'; c.fillRect(x + 20, y + 8, 70, 16); });
+  const st = S || { d: { x: 900, y: 500 }, zoom: 0 };
+  const z = 1 + Math.min(1, st.zoom || 0) * 0.3; cam.z = z; const vw = VW / z, vh = VH / z;
+  cam.x += (clamp(st.d.x - vw / 2, 0, MAPW - vw) - cam.x) * 0.15; cam.y += (clamp(st.d.y - vh / 2, 0, MAPH - vh) - cam.y) * 0.15;
+  const shake = S && (S.fx.look > 0 || S.fx.freeze > 1.4) ? 3 : 0;
+  c.save(); c.beginPath(); c.rect(0, 0, VW, VH); c.clip(); c.scale(z, z); c.translate(-Math.round(cam.x) + Math.sin(now * 55) * shake, -Math.round(cam.y) + Math.cos(now * 47) * shake);
+  c.fillStyle = '#2b3140'; c.fillRect(0, 0, MAPW, MAPH);
   COURTS.forEach(court);
-  if (S.event && S.event.type === 'daniel' && S.event.t > 1) { c.fillStyle = `rgba(255,${Math.round(80 + 40 * Math.sin(now * 6))},30,.28)`; c.fillRect(0, 180, MAPW, 700); }
-  c.fillStyle = '#4a5266'; c.fillRect(40, 60, MAPW - 80, 120); for (let r = 0; r < 4; r++) { c.fillStyle = r % 2 ? '#3d4456' : '#525b70'; c.fillRect(40, 64 + r * 29, MAPW - 80, 26); }
-  const loud = S.event || S.boss || S.mode === 'victory';
-  for (const p of S.crowd) { const j = loud ? Math.abs(Math.sin(now * 8 + p.p)) * 6 : Math.abs(Math.sin(now * 1.5 + p.p)) * 1.5; c.fillStyle = p.c; c.fillRect(p.x - 7, p.y - j, 14, 12); c.fillStyle = p.s; c.beginPath(); c.arc(p.x, p.y - 7 - j, 6, 0, 6.3); c.fill(); }
+  if (S && S.lava && S.lava.t > 1) { c.fillStyle = `rgba(255,${Math.round(90 + 40 * Math.sin(now * 6))},30,.3)`; c.fillRect(0, 190, MAPW, MAPH - 220); for (const s of S.lava.safe) { c.fillStyle = 'rgba(63,207,122,.45)'; c.beginPath(); c.arc(s.x, s.y, 46, 0, 6.3); c.fill(); c.strokeStyle = '#3fcf7a'; c.lineWidth = 3; c.stroke(); } }
+  c.fillStyle = '#4a5266'; c.fillRect(40, 60, MAPW - 80, 125); for (let r = 0; r < 4; r++) { c.fillStyle = r % 2 ? '#3d4456' : '#525b70'; c.fillRect(40, 64 + r * 29, MAPW - 80, 26); }
+  const loud = S && (S.combo >= 3 || S.mode !== 'play');
+  for (const p of crowd) { const j = loud ? Math.abs(Math.sin(now * 8 + p.p)) * 6 : Math.abs(Math.sin(now * 1.5 + p.p)) * 1.5; c.fillStyle = p.c; c.fillRect(p.x - 7, p.y - j, 14, 12); c.fillStyle = p.s; c.beginPath(); c.arc(p.x, p.y - 7 - j, 6, 0, 6.3); c.fill(); }
   [300, 900, 1500].forEach((bx, i) => { c.fillStyle = ['#ff5a3c', '#1f5fbf', '#ffb547'][i]; c.fillRect(bx - 110, 4, 220, 46); c.fillStyle = '#fff'; c.font = '800 34px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText('HOOPS', bx, 40); });
-  c.fillStyle = '#5c6372'; c.fillRect(40, 880, 820, 30); c.fillRect(940, 880, 820, 30);
-  c.fillStyle = '#ffb547'; c.fillRect(840, 860, 20, 70); c.fillRect(940, 860, 20, 70); c.font = '800 22px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText(S.obj.enter ? 'WELCOME TO HOOPS' : 'HOOPS · WRISTBANDS ONLY', 900, 850);
-  if (!S.obj.enter) { c.strokeStyle = '#e04f5f'; c.lineWidth = 4; c.setLineDash([10, 8]); c.beginPath(); c.moveTo(860, 895); c.lineTo(940, 895); c.stroke(); c.setLineDash([]); }
-  c.fillStyle = '#7a2e2e'; c.fillRect(780, 700, 240, 90); c.fillStyle = '#ffd34d'; c.fillRect(780, 700, 240, 22); c.fillStyle = '#7a2e2e'; c.font = '800 18px "Barlow Condensed", sans-serif'; c.fillText('SNACKS', 900, 717); c.font = '22px sans-serif'; c.fillText('🌭 🧀 🥨', 900, 760);
-  c.fillStyle = '#8a6a43'; c.fillRect(60, 720, 180, 40); c.fillRect(1560, 720, 180, 40);
-  [[80, 790], [1700, 790]].forEach(([x, y]) => { for (let i = 0; i < 4; i++) { c.fillStyle = '#e07a2e'; c.beginPath(); c.arc(x + i * 18, y, 8, 0, 6.3); c.fill(); } });
-  HOOPS.forEach((h, i) => { c.fillStyle = '#ddd'; c.fillRect(h.x - 4, h.y - 34, 8, 68); c.strokeStyle = '#ff5a3c'; c.lineWidth = 3; c.beginPath(); c.arc(h.x + (i % 2 ? -14 : 14), h.y, 11, 0, 6.3); c.stroke(); });
-  if (S.obj.enter && !S.boss) { c.strokeStyle = S.obj.shots ? 'rgba(63,207,122,.8)' : `rgba(255,181,71,${0.5 + 0.4 * Math.sin(now * 4)})`; c.lineWidth = 4; c.beginPath(); c.arc(SHOT_SPOT.x, SHOT_SPOT.y, SHOT_SPOT.r, 0, 6.3); c.stroke(); c.fillStyle = '#fff'; c.font = '700 14px Barlow'; c.textAlign = 'center'; c.fillText(S.obj.shots ? 'DONE ✔' : 'SHOOT HERE', SHOT_SPOT.x, SHOT_SPOT.y + 54); }
-  if (readyForBoss() && !S.boss) { c.fillStyle = `rgba(255,99,99,${0.25 + 0.2 * Math.sin(now * 4)})`; c.beginPath(); c.arc(900, 470, 70, 0, 6.3); c.fill(); c.fillStyle = '#ff6363'; c.font = '800 20px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText('⚠️ FINAL BOSS', 900, 477); }
-  if (S.boss && S.boss.phase === 'gauntlet') { c.fillStyle = `rgba(255,211,77,${0.3 + 0.2 * Math.sin(now * 5)})`; c.beginPath(); c.arc(BOSS_GOAL.x, BOSS_GOAL.y, BOSS_GOAL.r, 0, 6.3); c.fill(); c.fillStyle = '#1b1305'; c.font = '800 15px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText('GET HERE WITH THE BALL', BOSS_GOAL.x, BOSS_GOAL.y + 5); }
-  if (S.coachTask && S.coachTask.type === 'lap' && S.coachTask.stage === 0) { c.strokeStyle = `rgba(255,211,77,${0.6 + 0.3 * Math.sin(now * 8)})`; c.lineWidth = 4; c.beginPath(); c.arc(HOOPS[3].x, HOOPS[3].y, 60, 0, 6.3); c.stroke(); }
-  if (!S.band.got && !S.band.stolen) { c.fillStyle = `rgba(255,211,77,${0.4 + 0.3 * Math.sin(now * 5)})`; c.beginPath(); c.arc(S.band.x, S.band.y, 18, 0, 6.3); c.fill(); c.font = '20px sans-serif'; c.textAlign = 'center'; c.fillText('🎟️', S.band.x, S.band.y + 7); }
-  if (S.fake) { c.fillStyle = `rgba(63,207,122,${0.35 + 0.25 * Math.sin(now * 6)})`; c.beginPath(); c.arc(S.fake.x, S.fake.y, 40, 0, 6.3); c.fill(); c.fillStyle = '#fff'; c.font = '800 14px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText(S.fake.label, clamp(S.fake.x, 180, MAPW - 180), S.fake.y - 50); }
-  for (const h of S.hazards) { c.textAlign = 'center'; if (h.type === 'banana' && !h.used) { c.font = '20px sans-serif'; c.fillText('🍌', h.x, h.y + 7); } if (h.type === 'safe') { c.fillStyle = 'rgba(63,207,122,.35)'; c.beginPath(); c.arc(h.x, h.y, 44, 0, 6.3); c.fill(); c.strokeStyle = '#3fcf7a'; c.lineWidth = 3; c.stroke(); } if (h.type === 'ball') { c.fillStyle = '#e07a2e'; c.beginPath(); c.arc(h.x, h.y, 9, 0, 6.3); c.fill(); } }
-  if (S.event && S.event.type === 'caleb') { c.strokeStyle = '#3fcf7a'; c.lineWidth = 3; c.setLineDash([8, 6]); c.beginPath(); c.arc(S.event.circle.x, S.event.circle.y, 70, 0, 6.3); c.stroke(); c.setLineDash([]); }
-  const ents = S.npcs.map((n) => ({ y: n.y, f: () => { drawPerson(n); if (!n.hidden && (dist(n, S.d) < 220 || S.boss)) { c.font = '600 11px Barlow'; const tw = c.measureText(n.name).width + 10, ly = n.y - (n.small ? 40 : 54); c.fillStyle = 'rgba(0,0,0,.6)'; c.fillRect(n.x - tw / 2, ly - 11, tw, 15); c.fillStyle = n.met || n.id === 'brent' ? '#ffb547' : '#fff'; c.textAlign = 'center'; c.fillText(n.name, n.x, ly); } } }));
-  ents.push({ y: S.d.y, f: drawDavid });
-  ents.sort((a, b) => a.y - b.y).forEach((e) => e.f());
-  if (S.boss) for (const r of S.boss.roasts) { c.fillStyle = 'rgba(255,99,99,.92)'; c.font = '800 13px "Barlow Condensed", sans-serif'; const tw = c.measureText(r.text).width + 12; c.beginPath(); c.roundRect(r.x - tw / 2, r.y - 11, tw, 20, 9); c.fill(); c.fillStyle = '#fff'; c.textAlign = 'center'; c.fillText(r.text, r.x, r.y + 4); }
-  if (S.shoot && S.shoot.ball) {
-    const b = S.shoot.ball, k = Math.min(1, b.k), boss = S.shoot.mode === 'boss', hx = boss ? 900 : HOOPS[0].x + 14, hy = boss ? 240 : HOOPS[0].y;
-    const sx = S.d.x, sy = S.d.y - 30, ex = hx + (b.kind === 'miss' ? b.dir * 70 : 0);
-    let bx = sx + (ex - sx) * k, by = sy + (hy - sy) * k - Math.sin(k * Math.PI) * 110;
-    if (b.k > 1) { const k2 = b.k - 1; if (b.kind === 'miss') { bx = ex + Math.sign(b.dir || 1) * 90 * k2; by = hy - 40 * Math.sin(k2 * Math.PI * 1.5) + 80 * k2; } else by = hy + 40 * k2; }
-    c.fillStyle = '#e07a2e'; c.beginPath(); c.arc(bx, by, 10, 0, 6.3); c.fill();
+  HOOPS.forEach((h) => { c.fillStyle = '#ddd'; c.fillRect(h.x - 4 - h.dir * 6, h.y - 36, 8, 72); c.strokeStyle = '#ff5a3c'; c.lineWidth = 3; c.beginPath(); c.arc(h.x + h.dir * 10, h.y, 11, 0, 6.3); c.stroke(); });
+  if (S && S.d.balls > 0 && S.mode === 'play') { const { h, d } = nearestHoop(); c.strokeStyle = d <= SHOOT_RANGE ? 'rgba(63,207,122,.5)' : 'rgba(255,255,255,.15)'; c.lineWidth = 2; c.setLineDash([6, 8]); c.beginPath(); c.arc(h.x, h.y, SHOOT_RANGE, 0, 6.3); c.stroke(); c.setLineDash([]); }
+  if (S) {
+    for (const h of S.hazards) if (h.type === 'banana') { c.font = '20px sans-serif'; c.textAlign = 'center'; c.fillText('🍌', h.x, h.y + 7); }
+    for (const b of S.balls) { const bob = Math.abs(Math.sin(now * 4 + b.x)) * (b.fake ? 6 : 3); c.fillStyle = 'rgba(0,0,0,.25)'; c.beginPath(); c.ellipse(b.x, b.y + 10, 9, 3, 0, 0, 6.3); c.fill(); if (b.gold) { c.fillStyle = `rgba(255,211,77,${0.3 + 0.2 * Math.sin(now * 6)})`; c.beginPath(); c.arc(b.x, b.y - bob, 16, 0, 6.3); c.fill(); } c.fillStyle = b.gold ? '#ffd34d' : '#e07a2e'; c.beginPath(); c.arc(b.x, b.y - bob, 9, 0, 6.3); c.fill(); c.strokeStyle = 'rgba(0,0,0,.35)'; c.lineWidth = 1; c.beginPath(); c.moveTo(b.x - 9, b.y - bob); c.lineTo(b.x + 9, b.y - bob); c.stroke(); if (b.fake && P('eye')) { c.font = '800 11px "Barlow Condensed", sans-serif'; c.fillStyle = '#ff6363'; c.textAlign = 'center'; c.fillText('FAKE', b.x, b.y - 20); } }
+    const ents = S.enemies.map((e) => ({ y: e.y, f: () => drawPerson(e, now) })); ents.push({ y: S.d.y, f: () => drawDavid(now) }); ents.sort((a, b) => a.y - b.y).forEach((e) => e.f());
+    for (const p of S.projectiles) { c.font = '800 13px "Barlow Condensed", sans-serif'; const tw = c.measureText(p.text).width + 12; c.fillStyle = 'rgba(122,60,255,.92)'; c.beginPath(); c.roundRect(p.x - tw / 2, p.y - 11, tw, 20, 9); c.fill(); c.fillStyle = '#fff'; c.textAlign = 'center'; c.fillText(p.text, p.x, p.y + 4); }
+    for (const s of S.shots) { const k = Math.min(1, s.k), ex = s.h.x + s.h.dir * 10 + (s.kind === 'miss' ? s.dir * 60 : 0); let bx = s.sx + (ex - s.sx) * k, by = s.sy + (s.h.y - s.sy) * k - Math.sin(k * Math.PI) * 120; if (s.k > 1) { const k2 = s.k - 1; if (s.kind === 'miss') { bx = ex + s.h.dir * 80 * k2; by = s.h.y - 30 * Math.sin(k2 * 8) + 60 * k2; } else by = s.h.y + 50 * k2; } c.fillStyle = s.gold ? '#ffd34d' : '#e07a2e'; c.beginPath(); c.arc(bx, by, 9, 0, 6.3); c.fill(); }
+    for (const f of S.floaters) { c.globalAlpha = Math.max(0, 1 - f.t / 1.4); c.fillStyle = f.color; c.font = `800 ${f.size}px "Barlow Condensed", sans-serif`; c.textAlign = 'center'; c.fillText(f.text, f.x, f.y - f.t * 40); c.globalAlpha = 1; }
+    for (const p of S.confetti) { c.save(); c.translate(p.x, p.y); c.rotate(p.r); c.fillStyle = p.c; c.fillRect(-4, -2, 8, 4); c.restore(); }
   }
-  if (S.boss && S.boss.phase === 'shot') { c.fillStyle = '#ddd'; c.fillRect(870, 200, 60, 6); c.strokeStyle = '#ff5a3c'; c.lineWidth = 3; c.beginPath(); c.arc(900, 240, 12, 0, 6.3); c.stroke(); }
-  for (const fl of S.floaters) { c.globalAlpha = Math.max(0, 1 - fl.t / 1.8); c.fillStyle = fl.color; c.font = '800 17px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText(fl.text, fl.x, fl.y - fl.t * 36); c.globalAlpha = 1; }
-  for (const p of S.confetti) { c.save(); c.translate(p.x, p.y); c.rotate(p.r); c.fillStyle = p.c; c.fillRect(-4, -2, 8, 4); c.restore(); }
   c.restore();
-  if (S.mode !== 'menu') hud(now);
+  if (S) hud(now);
 }
-function wrap(text, maxW) { const words = String(text).split(' '), lines = []; let line = ''; for (const w of words) { const t = line ? line + ' ' + w : w; if (c.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; } if (line) lines.push(line); return lines; }
-function panel(x, y, w, h, a = 0.84) { c.fillStyle = `rgba(16,20,28,${a})`; c.beginPath(); c.roundRect(x, y, w, h, 10); c.fill(); c.strokeStyle = 'rgba(255,255,255,.08)'; c.lineWidth = 1; c.stroke(); }
-function meter(x, y, w, label, val, col) { c.fillStyle = '#9aa3b2'; c.font = '600 11px Barlow'; c.textAlign = 'left'; c.fillText(label, x, y); c.fillStyle = '#2b3447'; c.fillRect(x, y + 4, w, 9); c.fillStyle = col; c.fillRect(x, y + 4, w * val / 100, 9); }
+function panel(x, y, w, h, a = 0.85) { c.fillStyle = `rgba(16,20,28,${a})`; c.beginPath(); c.roundRect(x, y, w, h, 10); c.fill(); c.strokeStyle = 'rgba(255,255,255,.08)'; c.lineWidth = 1; c.stroke(); }
 function hud(now) {
-  c.textAlign = 'left';
-  const obj = objectives(); panel(10, 10, 310, 22 + obj.length * 18);
-  c.fillStyle = '#ffb547'; c.font = '800 15px "Barlow Condensed", sans-serif'; c.fillText('SURVIVE HOOPS', 20, 28);
-  obj.forEach((o, i) => { c.font = '600 12.5px Barlow'; c.fillStyle = o.done ? '#3fcf7a' : o.hot ? `hsl(0,100%,${Math.round(65 + 12 * Math.sin(now * 6))}%)` : '#e6e6e6'; c.fillText(`${o.done ? '✔' : '○'} ${o.text}`, 20, 46 + i * 18); });
-  panel(VW - 250, 10, 240, 112);
-  c.fillStyle = '#fff'; c.font = '800 22px "Barlow Condensed", sans-serif'; c.textAlign = 'left'; c.fillText(S.score, VW - 238, 34);
-  c.textAlign = 'right'; c.fillStyle = '#ff8a5c'; c.font = '800 15px "Barlow Condensed", sans-serif'; c.fillText(`🤡 TROLLED ×${S.trolledTotal}`, VW - 22, 32);
-  meter(VW - 238, 50, 216, 'FRUSTRATION', S.frus, S.frus > 70 ? '#ff6363' : '#ff8a5c');
-  meter(VW - 238, 74, 216, `TROLL METER${S.troll >= 60 ? ' · UNHINGED' : S.troll >= 30 ? ' · SPICY' : ''}`, S.troll, '#9a6cff');
-  const [, rn, rc] = repLevel(); c.fillStyle = '#9aa3b2'; c.font = '600 11px Barlow'; c.textAlign = 'left'; c.fillText('REPUTATION', VW - 238, 106); c.fillStyle = rc; c.font = '800 15px "Barlow Condensed", sans-serif'; c.textAlign = 'right'; c.fillText(rn.toUpperCase(), VW - 22, 108);
-  let banner = null;
-  if (S.event && S.event.title) banner = [S.event.title, S.event.sub, Math.max(0, Math.ceil(S.event.dur - S.event.t))];
-  else if (S.boss && S.boss.phase === 'gauntlet') banner = ['⚠️ FINAL BOSS: THE WHOLE TEAM', S.d.hasBall ? 'Reach the gold circle with the ball. FREEZE when Coach whistles!' : 'GET THE BALL BACK!', Math.max(0, Math.ceil(S.boss.dur - S.boss.t))];
-  else if (S.coachTask && S.coachTask.type !== 'ft') banner = ['📋 COACH\'S CHALLENGE', S.coachTask.type === 'jumps' ? `Jumps: ${S.coachTask.count}/10 (Space)` : S.coachTask.stage ? 'Back to Coach Brent, press E!' : 'Touch the far right hoop!', Math.max(0, Math.ceil(S.coachTask.time - S.coachTask.t))];
-  if (banner) { panel(VW / 2 - 240, 140, 480, 54, 0.92); c.textAlign = 'center'; c.fillStyle = '#ffb547'; c.font = '800 20px "Barlow Condensed", sans-serif'; c.fillText(`${banner[0]}  ${banner[2]}s`, VW / 2, 162); c.fillStyle = '#ddd'; c.font = '600 13px Barlow'; c.fillText(banner[1], VW / 2, 182); }
-  if (S.event && S.event.mash != null) { const ev = S.event; c.fillStyle = '#2b3447'; c.fillRect(VW / 2 - 170, 200, 340, 14); c.fillStyle = '#3fcf7a'; c.fillRect(VW / 2 - 170, 200, 340 * Math.min(1, ev.mash / ev.need), 14); }
-  if (S.boss && S.boss.freeze > 0) { c.fillStyle = `rgba(255,99,99,${0.25 + 0.2 * Math.sin(now * 20)})`; c.fillRect(0, 0, VW, VH); c.fillStyle = '#fff'; c.font = '800 54px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText('FREEZE!', VW / 2, VH / 2); }
-  if (S.caption) { const k = S.caption, sc = 1 + Math.max(0, k.t - (k.big ? 2.1 : 1.5)) * 2; c.save(); c.translate(VW / 2, VH * 0.36); c.scale(sc, sc); c.rotate(Math.sin(now * 9) * 0.02); c.font = `800 ${k.big ? 28 : 21}px "Barlow Condensed", sans-serif`; c.textAlign = 'center'; const tw = Math.min(VW - 40, c.measureText(k.text).width + 30); c.fillStyle = 'rgba(255,90,60,.92)'; c.beginPath(); c.roundRect(-tw / 2, -26, tw, 40, 8); c.fill(); c.fillStyle = '#fff'; c.fillText(k.text, 0, 4, VW - 60); c.restore(); }
-  if (S.shoot) {
-    const sh = S.shoot; panel(VW / 2 - 230, VH - 146, 460, 116, 0.92); c.textAlign = 'center';
-    const title = { main: `BASKETBALL CHALLENGE · ${sh.made} made · ${sh.left} left`, jose: `SHOOTOUT · David ${sh.made} – Jose ${sh.jose} · ${sh.left} left`, coach: `COACH'S FREE THROWS · ${sh.made}/3 · don't miss`, boss: `FINAL SHOT · ${sh.made}/3 needed · ${sh.left} left` }[sh.mode];
-    c.fillStyle = '#ffb547'; c.font = '800 19px "Barlow Condensed", sans-serif'; c.fillText(title, VW / 2, VH - 122);
-    const p = meterPos(sh), mx = VW / 2 - 190, mw = 380;
-    c.fillStyle = '#2b3447'; c.fillRect(mx, VH - 104, mw, 16); c.fillStyle = '#3fcf7a'; c.fillRect(mx + mw * (sh.zoneX - sh.zone / 2), VH - 104, mw * sh.zone, 16); c.fillStyle = '#3d7bff'; c.fillRect(mx + mw * (sh.zoneX - sh.zone / 8), VH - 104, mw * sh.zone / 4, 16);
-    if (!sh.ball) { c.fillStyle = '#fff'; c.fillRect(mx + mw * clamp(p, 0, 1) - 2, VH - 110, 4, 28); }
-    c.fillStyle = '#ddd'; c.font = '600 14px Barlow'; c.fillText(sh.msg, VW / 2, VH - 62);
+  // score / quarter / clock
+  panel(VW / 2 - 140, 8, 280, 56);
+  c.textAlign = 'center'; c.fillStyle = '#fff'; c.font = '800 30px "Barlow Condensed", sans-serif'; c.fillText(S.score.toLocaleString(), VW / 2, 40);
+  c.font = '700 12px Barlow'; c.fillStyle = '#9aa3b2'; const left = Math.max(0, Math.ceil(S.qLen - S.qT)); c.fillText(`${otLabel(S.q)} · 0:${String(left).padStart(2, '0')}${S.daily ? ' · DAILY RUN' : ''}`, VW / 2, 57);
+  if (S.combo >= 2) { const mult = 1 + Math.min(S.combo - 1, 16) * 0.25; c.fillStyle = S.combo >= 5 ? `hsl(${(now * 200) % 360},90%,65%)` : '#ffd34d'; c.font = '800 20px "Barlow Condensed", sans-serif'; c.fillText(`🔥 ${S.combo} STREAK · ×${mult.toFixed(2)}`, VW / 2, 86); }
+  // frustration + claps + perks
+  panel(10, 8, 250, 70); c.textAlign = 'left'; c.fillStyle = '#9aa3b2'; c.font = '700 11px Barlow'; c.fillText('FRUSTRATION', 22, 26);
+  c.fillStyle = '#2b3447'; c.fillRect(22, 32, 226, 12); c.fillStyle = S.frus > 75 ? `hsl(0,90%,${55 + 10 * Math.sin(now * 12)}%)` : S.frus > 45 ? '#ff8a5c' : '#3fcf7a'; c.fillRect(22, 32, 226 * S.frus / 100, 12);
+  c.fillStyle = '#9aa3b2'; c.fillText('CLAP BACK (Q)', 22, 63); c.font = '15px sans-serif'; c.fillText('📣'.repeat(S.claps) + '·'.repeat(3 - S.claps), 120, 65);
+  const perks = Object.entries(S.perks).map(([id, n]) => (PERKS.find((p) => p.id === id).icon) + (n > 1 ? n : '')).join(' ');
+  if (perks) { c.font = '14px sans-serif'; c.fillStyle = '#fff'; c.fillText(perks, 14, 98); }
+  // mission + trolled
+  panel(VW - 260, 8, 250, 70); c.fillStyle = '#ff8a5c'; c.font = '800 15px "Barlow Condensed", sans-serif'; c.textAlign = 'right'; c.fillText(`🤡 TROLLED ×${S.trolledTotal}`, VW - 22, 28);
+  if (S.mission) { const m = S.mission; c.textAlign = 'left'; c.fillStyle = m.done ? '#3fcf7a' : '#ffb547'; c.font = '700 12px Barlow'; c.fillText(`🎯 ${m.text}`, VW - 248, 50); c.fillStyle = '#2b3447'; c.fillRect(VW - 248, 58, 226, 8); c.fillStyle = m.done ? '#3fcf7a' : '#ffb547'; c.fillRect(VW - 248, 58, 226 * Math.min(1, m.p / m.goal), 8); }
+  // freeze overlay
+  if (S.fx.freeze > 0 && !P('ice')) { c.fillStyle = `rgba(120,180,255,${0.15 + 0.1 * Math.sin(now * 20)})`; c.fillRect(0, 0, VW, VH); c.fillStyle = '#fff'; c.font = '800 48px "Barlow Condensed", sans-serif'; c.textAlign = 'center'; c.fillText(S.fx.freeze > 1.4 ? 'FREEZE!' : "DON'T MOVE...", VW / 2, VH / 2 - 40); }
+  // caption
+  if (S.caption) { const k = S.caption, sc = 1 + Math.max(0, k.t - (k.big ? 1.7 : 1.1)) * 2.2; c.save(); c.translate(VW / 2, VH * 0.3); c.scale(sc, sc); c.font = `800 ${k.big ? 28 : 21}px "Barlow Condensed", sans-serif`; c.textAlign = 'center'; const tw = Math.min(VW - 40, c.measureText(k.text).width + 30); c.fillStyle = k.text.startsWith('🤡') || k.text.includes('RAGE') ? 'rgba(255,90,60,.92)' : 'rgba(31,95,191,.92)'; c.beginPath(); c.roundRect(-tw / 2, -26, tw, 40, 8); c.fill(); c.fillStyle = '#fff'; c.fillText(k.text, 0, 4, VW - 60); c.restore(); }
+  // speech bubble
+  if (S.bubble) { c.font = '600 14px Barlow'; const t = `${S.bubble.who}: ${S.bubble.text}`, tw = Math.min(560, c.measureText(t).width + 24); panel(VW / 2 - tw / 2, VH - 52, tw, 32, 0.9); c.fillStyle = '#eee'; c.textAlign = 'center'; c.fillText(t, VW / 2, VH - 31, 540); }
+  else if (S.d.balls > 0 && !S.d.charge && S.t < 60) { c.font = '700 13px Barlow'; c.fillStyle = 'rgba(255,255,255,.75)'; c.textAlign = 'center'; c.fillText('Get inside the green ring, then HOLD E and release in the green', VW / 2, VH - 30); }
+  else if (S.t < 8 && S.d.balls === 0 && !S.d.charge) { c.font = '700 13px Barlow'; c.fillStyle = 'rgba(255,255,255,.75)'; c.textAlign = 'center'; c.fillText('Run over a basketball to pick it up', VW / 2, VH - 30); }
+  // perk picker
+  perkRects = [];
+  if (S.mode === 'perk' && S.offers) {
+    c.fillStyle = 'rgba(10,13,20,.78)'; c.fillRect(0, 0, VW, VH);
+    c.textAlign = 'center'; c.fillStyle = '#ffb547'; c.font = '800 34px "Barlow Condensed", sans-serif'; c.fillText(`${otLabel(S.q)} SURVIVED · PICK A PERK`, VW / 2, 120);
+    c.fillStyle = '#9aa3b2'; c.font = '600 14px Barlow'; c.fillText(`Next up: ${otLabel(S.q + 1)}${ROSTER[S.q + 1] && ROSTER[S.q + 1].length ? ' · joining: ' + ROSTER[S.q + 1].map((id) => CAST[id].name).join(' & ') : ' · everyone gets faster'}`, VW / 2, 146);
+    const cw = 230, gap = 20, x0 = VW / 2 - (cw * 3 + gap * 2) / 2;
+    S.offers.forEach((p, i) => {
+      const x = x0 + i * (cw + gap), y = 180, h = 220; perkRects.push({ x, y, w: cw, h });
+      panel(x, y, cw, h, 0.96); c.strokeStyle = '#ffb547'; c.lineWidth = 2; c.beginPath(); c.roundRect(x, y, cw, h, 10); c.stroke();
+      c.font = '48px sans-serif'; c.fillText(p.icon, x + cw / 2, y + 74); c.fillStyle = '#fff'; c.font = '800 24px "Barlow Condensed", sans-serif'; c.fillText(p.name, x + cw / 2, y + 120);
+      c.fillStyle = '#9aa3b2'; c.font = '600 14px Barlow'; const words = p.desc.split(' '); let line = '', ly = y + 148; for (const w of words) { if (c.measureText(line + w).width > cw - 30) { c.fillText(line, x + cw / 2, ly); line = ''; ly += 19; } line += w + ' '; } c.fillText(line, x + cw / 2, ly);
+      c.fillStyle = '#ffb547'; c.font = '800 15px "Barlow Condensed", sans-serif'; c.fillText(`PRESS ${i + 1} OR TAP${P(p.id) ? ` · owned ×${P(p.id)}` : ''}`, x + cw / 2, y + h - 16); c.fillStyle = '#fff';
+    });
   }
-  if (S.bubble && !S.dialog) { c.font = '600 14px Barlow'; const lines = wrap(S.bubble.text, 420), h = 30 + lines.length * 18, y0 = S.shoot ? VH - h - 160 : VH - h - 20; panel(VW / 2 - 230, y0, 460, h, 0.9); c.textAlign = 'left'; c.fillStyle = '#ffb547'; c.font = '800 14px "Barlow Condensed", sans-serif'; c.fillText(S.bubble.who.toUpperCase(), VW / 2 - 216, y0 + 18); c.fillStyle = '#eee'; c.font = '600 14px Barlow'; lines.forEach((l, i) => c.fillText(l, VW / 2 - 216, y0 + 38 + i * 18)); }
-  optionRects = [];
-  if (S.dialog) {
-    const dl = S.dialog, txt = dl.pages[dl.page] || '', last = dl.page === dl.pages.length - 1 && dl.options;
-    c.font = '600 16px Barlow'; const lines = wrap(txt, 760), oh = last ? dl.options.length * 34 + 8 : 0, h = 56 + lines.length * 22 + oh;
-    panel(60, VH - h - 16, VW - 120, h, 0.95); c.textAlign = 'left';
-    c.fillStyle = '#ffb547'; c.font = '800 18px "Barlow Condensed", sans-serif'; c.fillText(`${dl.n.name.toUpperCase()}  ·  ${dl.n.role}`, 80, VH - h + 10);
-    c.fillStyle = '#f0f0f0'; c.font = '600 16px Barlow'; lines.forEach((l, i) => c.fillText(l, 80, VH - h + 36 + i * 22));
-    if (last) dl.options.forEach((o, i) => { const y = VH - oh - 22 + i * 34; optionRects.push({ x: 74, y, w: VW - 148, h: 30 }); c.fillStyle = '#2b3447'; c.beginPath(); c.roundRect(74, y, VW - 148, 30, 6); c.fill(); c.fillStyle = '#fff'; c.font = '600 15px Barlow'; c.fillText(`${i + 1}. ${o}`, 88, y + 20); });
-    else { c.fillStyle = '#9aa3b2'; c.font = '600 12px Barlow'; c.textAlign = 'right'; c.fillText('E / click to continue ▸', VW - 80, VH - 28); }
-  }
-  if (S.hint && !S.dialog && !S.shoot && !(S.event && S.event.title)) { c.font = '700 14px Barlow'; const tw = c.measureText(S.hint).width + 24; panel(VW / 2 - tw / 2, VH - 64, tw, 30, 0.9); c.fillStyle = '#ffb547'; c.textAlign = 'center'; c.fillText(S.hint, VW / 2, VH - 44); }
 }
+
+// =================== flow ===================
+function show(id) { ['sStart', 'sHow', 'sPause', 'sEnd'].forEach((s) => ($(s).hidden = s !== id)); }
+function startRun(daily) { S = newRun(daily); show(null); startQuarter(); S.ballT = 0; for (let i = 0; i < 3; i++) spawnBall(); }
+function pause(on) { S.mode = on ? 'paused' : 'play'; show(on ? 'sPause' : null); }
+function renderCareer() { const k = career(); $('career').innerHTML = [['Best score', k.best.toLocaleString()], ['Best quarter', k.bestQ ? otLabel(k.bestQ) : '—'], ['Runs', k.runs], ['Times trolled', k.trolled]].map(([a, b]) => `<div>${a}<b>${b}</b></div>`).join(''); }
+function endScreen() {
+  const k = career(), isBest = S.score > k.best;
+  k.runs++; k.best = Math.max(k.best, S.score); k.bestQ = Math.max(k.bestQ, S.q); k.makes += S.makes; k.trolled += S.trolledTotal; store.set('dah-career', k);
+  const mins = Math.floor(S.t / 60), secs = String(Math.floor(S.t % 60)).padStart(2, '0'), pct = S.attempts ? Math.round(S.makes / S.attempts * 100) : 0;
+  $('endTitle').textContent = isBest ? '🏆 New best!' : '💢 David rage-quit';
+  $('endMsg').textContent = `Made it to ${otLabel(S.q)}. ` + pick(['Ethan is wearing David\'s headband now.', 'James says "trust me bro, he\'ll be back." He will.', 'Aleksei called it "incredible." He was being sarcastic.', 'Lil Daniel says the lava is still there.', 'Jose is already telling everyone. Loudly.', 'Coach Brent: "Same time tomorrow."']);
+  $('endStats').innerHTML = [['Score', S.score.toLocaleString()], ['Reached', otLabel(S.q)], ['Time', `${mins}:${secs}`], ['Shooting', `${S.makes}/${S.attempts} (${pct}%)`], ['Best streak', S.bestCombo], ['Times trolled', S.trolledTotal]].map(([a, b]) => `<div>${a}<b>${esc(b)}</b></div>`).join('');
+  const rows = TROLLERS.map((id) => [CAST[id].name, S.trolledBy[id] || 0]).filter((r) => r[1] > 0 || S.enemies.some((e) => CAST[e.id].name === r[0])).sort((a, b) => b[1] - a[1]), max = Math.max(1, rows.length ? rows[0][1] : 1);
+  $('endBars').innerHTML = rows.map(([n, v], i) => `<div><span>${i === 0 && v ? '👑 ' : ''}${esc(n)}</span><i style="width:${(v / max) * 100}%;opacity:${v ? 1 : 0.2}"></i><b>${v}</b></div>`).join('') || '<p>Nobody got him. Suspicious.</p>';
+  const g = S.q >= 8 ? ['A+', 'David. That was legendary. I will deny I ever said this.'] : S.q >= 6 ? ['A', 'Overtime? Okay. Okay, David.'] : S.q >= 5 ? ['B', 'You made it to overtime. I\'m almost proud.'] : S.q >= 3 ? ['C', 'That\'s not how we practiced it.'] : ['F', 'David, we need to talk.'];
+  $('endJudge').textContent = `Grade: ${g[0]}. "${g[1]}"`;
+  $('lbName').value = store.get('lb-name', ''); $('lbMsg').textContent = S.daily ? `Posting goes to today's Daily Run board.` : ''; $('bPost').disabled = false;
+  show('sEnd');
+}
+$('bPost').onclick = async () => {
+  const name = $('lbName').value.trim(); if (!name) return; store.set('lb-name', name); $('lbMsg').textContent = 'Posting…';
+  try { const r = await fetch('https://scenic-hills-hoops.vercel.app/api/scores', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ game: S.daily ? 'david-daily-' + today() : 'david', name, score: S.score }) }); const j = await r.json(); if (!r.ok) throw j.error || r.status; const rank = j.top.findIndex((x) => x.name.toLowerCase() === name.toLowerCase()) + 1; $('lbMsg').textContent = rank ? `You're #${rank} on the ${S.daily ? 'Daily Run' : 'team'} leaderboard.` : 'Posted!'; $('bPost').disabled = true; }
+  catch (e) { $('lbMsg').textContent = 'Couldn\'t post: ' + e; }
+};
+$('bPlay').onclick = () => { audio(); startRun(false); };
+$('bDaily').onclick = () => { audio(); startRun(true); };
+$('bHow').onclick = () => show('sHow'); $('bHowBack').onclick = () => show(S && S.mode === 'paused' ? 'sPause' : 'sStart');
+$('bResume').onclick = () => pause(false); $('bRestart').onclick = () => startRun(S.daily); $('bQuit').onclick = () => { S = null; renderCareer(); show('sStart'); };
+$('bAgain').onclick = () => startRun(S.daily); $('bMenu').onclick = () => { S = null; renderCareer(); show('sStart'); };
+renderCareer();
 
 // =================== loop ===================
 let lastT = performance.now();
 function loop(now) { const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now; update(dt); draw(); requestAnimationFrame(loop); }
 requestAnimationFrame(loop);
-window.__david = { get S() { return S; }, startGame, interact, talkTo, startEvent, startBoss }; // for testing from the console
+window.__david = { get S() { return S; }, startRun, choosePerk, endQuarter, clapBack }; // for testing from the console
 })();
 </script>
 </body>

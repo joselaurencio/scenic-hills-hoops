@@ -4,8 +4,8 @@ const { put, head } = require('@vercel/blob');
 
 // highest believable score per game; anything above is rejected
 const CAPS = { hotstreak: 200, buzzer: 400, crossover: 200000, rebound: 2000, fastbreak: 500, higherlower: 300,
-  'trivia-classic': 3000, 'trivia-sudden': 200, 'trivia-speed': 200, 'trivia-hawks': 3000, david: 20000 };
-const DAILY = /^(daily|trivia-daily)-\d{4}-\d{2}-\d{2}$/;
+  'trivia-classic': 3000, 'trivia-sudden': 200, 'trivia-speed': 200, 'trivia-hawks': 3000, david: 5000000 };
+const DAILY = /^(daily|trivia-daily|david-daily)-\d{4}-\d{2}-\d{2}$/;
 const BAD = /(fuck|shit|bitch|nigg|fag|cunt|dick|pussy|whore|slut|rape|nazi|porn|sex)/i;
 const KEEP = 20;
 const recent = new Map(); // ip -> last post time (best effort, per instance)
@@ -16,7 +16,7 @@ const cors = (res) => {
   res.setHeader('access-control-allow-headers', 'content-type');
   res.setHeader('cache-control', 'no-store');
 };
-const capFor = (game) => CAPS[game] ?? (DAILY.test(game) ? (game.startsWith('daily') ? 20 : 3000) : null);
+const capFor = (game) => CAPS[game] ?? (DAILY.test(game) ? (game.startsWith('daily') ? 20 : game.startsWith('david') ? 5000000 : 3000) : null);
 
 async function load(game) {
   try {
