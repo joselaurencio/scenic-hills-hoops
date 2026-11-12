@@ -87,7 +87,7 @@ a.back{position:absolute;left:12px;bottom:10px;z-index:6;color:var(--mute);font:
   <p><b style="color:#ffb547">🔥 On Fire:</b> 5 makes in a row and David catches fire: huge green zone, double points, trolls bounce off him. Getting trolled puts the fire out. <b style="color:#ffb547">Hot hoop</b> = 2× points, it moves around. Every quarter after Q1 has a random <b>twist</b>.</p>
   <div class="cast">
     <span><b>Ethan</b> steals your ball</span><span><b>Aleksei</b> fires sarcasm</span>
-    <span><b>James</b> plants fake balls</span><span><b>Caleb</b> "DAVID LOOK!"</span>
+    <span><b>James</b> chases &amp; slaps you</span><span><b>Caleb</b> "DAVID LOOK!"</span>
     <span><b>Frank &amp; Kalel</b> banana lines</span><span><b>Lil Daniel</b> flips your controls</span>
     <span><b>Jose</b> guards every shot</span><span><b>Coach Brent</b> "FREEZE!"</span>
   </div>
@@ -173,7 +173,7 @@ const ARC = 220, SHOOT_RANGE = 330;
 const CAST = {
   ethan: { name: 'Ethan', skin: '#a8724c', shirt: '#1f5fbf', num: '4', hair: 'spiky', small: true, quips: ['David is actually cooked.', 'HAHAHAHA.', 'You fell for it.', 'David, look behind you!', 'I\'m telling Coach.', 'MY BALL NOW.'] },
   aleksei: { name: 'Aleksei', skin: '#efcfae', shirt: '#1f5fbf', num: '0', hair: 'swoop', quips: ['Wow. Incredible. (Sarcasm.)', 'Oh good, David\'s here.', 'Love that for you. No I don\'t.', 'Every time you shoot, a scout retires.'] },
-  james: { name: 'James', skin: '#b07a52', shirt: '#1f5fbf', num: '34', hair: 'fade', quips: ['That\'s a real gold ball. Trust me bro.', 'Bro, would I lie to you?', 'Trust me bro.', 'Go grab that one. Trust.'] },
+  james: { name: 'James', /* chases and slaps, plus the odd fake gold ball */ skin: '#b07a52', shirt: '#1f5fbf', num: '34', hair: 'fade', quips: ['That\'s a real gold ball. Trust me bro.', 'Bro, would I lie to you?', 'Trust me bro.', 'Go grab that one. Trust.'] },
   caleb: { name: 'Caleb', skin: '#e0b48a', shirt: '#1f5fbf', num: '10', hair: 'buzz', quips: ['DAVID LOOK!', 'DAVID! A DOG! ...no.', 'LOOK BEHIND YOU!', 'Made you look.'] },
   frank: { name: 'Frank', skin: '#8d5a3b', shirt: '#2f6f3a', num: null, hair: 'cap', quips: ['Kalel, phase two.', 'Don\'t mind us.', 'Initiate the bananas.'] },
   kalel: { name: 'Kalel', skin: '#a06a48', shirt: '#7a3cff', num: null, hair: 'twists', quips: ['Copy that, Frank.', 'Don\'t look at the floor.', 'Target acquired.'] },
@@ -554,11 +554,25 @@ function updateEnemies(dt) {
       const want = 260, ang = Math.atan2(e.y - d.y, e.x - d.x); moveToward(e, clamp(d.x + Math.cos(ang) * want, 70, MAPW - 70), clamp(d.y + Math.sin(ang) * want, 220, 850), 110 * haste, dt);
       if (e.cd <= 0) { const a = Math.atan2(d.y - e.y, d.x - e.x), sp = 230 * haste; S.projectiles.push({ x: e.x, y: e.y - 20, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, by: 'aleksei', t: 4, text: pick(['WOW', 'INCREDIBLE', 'GREAT JOB', 'SO GOOD', '👏']) }); e.cd = rand(2.6, 3.6) / haste; }
     } else if (e.id === 'james') { // plants fake gold balls near your path
-      if (e.cd <= 0) { S.balls.push({ x: clamp(d.x + rand(-260, 260), 120, MAPW - 120), y: clamp(d.y + rand(-200, 200), 250, 820), gold: true, fake: true, t: 0 }); e.cd = rand(6, 9) / haste; if (RNG() < 0.5) say('James', pick(CAST.james.quips)); }
-      if (e.cd2 === undefined || (e.cd2 -= dt) <= 0) { e.tx = d.x + rand(-300, 300); e.ty = d.y + rand(-200, 200); e.cd2 = rand(2, 4); } moveToward(e, clamp(e.tx, 70, MAPW - 70), clamp(e.ty, 220, 850), 90 * haste, dt);
+      if (e.cd <= 0) { S.balls.push({ x: clamp(d.x + rand(-260, 260), 120, MAPW - 120), y: clamp(d.y + rand(-200, 200), 250, 820), gold: true, fake: true, t: 0 }); e.cd = rand(10, 14) / haste; if (RNG() < 0.4) say('James', pick(CAST.james.quips)); }
+      e.slapCd = (e.slapCd ?? 2) - dt; e.slapAnim = Math.max(0, (e.slapAnim || 0) - dt);
+      if (e.slapCd > 1.6) { const a = Math.atan2(e.y - d.y, e.x - d.x); moveToward(e, clamp(d.x + Math.cos(a) * 220, 70, MAPW - 70), clamp(d.y + Math.sin(a) * 220, 220, 850), 120 * haste, dt); } // backs off after a slap, laughing
+      else { moveToward(e, d.x, d.y, 158 * haste, dt); if (dd < 160 && e.slapCd <= 0.6 && !e.warned) { e.warned = true; float('✋', e.x, e.y - 52, '#fff', 22); } } // chases David down
+      if (dd < 30 && e.slapCd <= 0 && S.fx.inv <= 0 && !d.dunk) {
+        e.slapCd = rand(3.2, 4.5) / Math.sqrt(haste); e.slapAnim = 0.35; e.warned = false; e.face = d.x > e.x ? 1 : -1;
+        const a = Math.atan2(d.y - e.y, d.x - e.x); d.kb = { vx: Math.cos(a) * 520, vy: Math.sin(a) * 520 };
+        noise(0.09, 0.2, 2500); tone(1200, 0.06, 'square', 0.05, -600); S.shake = Math.max(S.shake, 0.7); S.hitstop = 0.08;
+        float(pick(['SLAP!', '*SLAP*', 'WHAP!', 'SMACK!']), d.x, d.y - 60, '#ff7ab8', 30); float('✋', d.x + rand(-12, 12), d.y - 30, '#fff', 30);
+        if (d.balls > 0 && RNG() < 0.4) { d.balls--; d.charge = null; if (d.gold > d.balls) d.gold = d.balls; S.balls.push({ x: clamp(d.x - Math.cos(a) * 90, 80, MAPW - 80), y: clamp(d.y - Math.sin(a) * 60, 240, 840), gold: false, t: 0 }); }
+        if (RNG() < 0.6) say('James', pick(['Trust me bro, that didn\'t hurt.', 'Bro I barely touched you.', 'Mosquito. Trust me.', 'That was a high five. Trust.', 'SLAP. Trust the process.']));
+        trolled('james', pick(['SLAPPED YOU', 'WHAP. TRUST ME BRO.', 'HAND ACROSS THE FACE']), 6);
+      }
     } else if (e.id === 'caleb') { // runs up and yells LOOK, yanking David toward him
-      moveToward(e, d.x, d.y, 115 * haste, dt);
-      if (dd < 170 && e.cd <= 0) { e.cd = rand(8, 11) / haste; if (!P('ice')) { S.fx.look = 1.4; S.fx.lookAt = e; } say('Caleb', pick(CAST.caleb.quips)); if (!P('ice')) trolled('caleb', 'MADE YOU LOOK', 4); }
+      if (!e.wind) moveToward(e, d.x, d.y, 92 * haste, dt);
+      if (dd < 140 && e.cd <= 0 && !e.wind) { e.wind = 0.7; float('❗', e.x, e.y - 52, '#ffd34d', 22); tone(700, 0.08, 'square', 0.04); } // winds up first, so you can get away
+      if (e.wind) { e.wind -= dt; if (e.wind <= 0) { e.wind = 0; e.cd = rand(11, 15) / Math.sqrt(haste);
+        say('Caleb', pick(CAST.caleb.quips));
+        if (dist(e, d) < 165 && !P('ice')) { S.fx.look = 0.9; S.fx.lookAt = e; trolled('caleb', 'MADE YOU LOOK', 3); } else float('dodged the LOOK', d.x, d.y - 60, '#3fcf7a', 15); } }
     } else if (e.id === 'frank' || e.id === 'kalel') { // patrol lines and drop bananas behind them
       if (e.cd2 === undefined || (e.cd2 -= dt) <= 0) { e.tx = rand(100, MAPW - 100); e.ty = rand(240, 840); e.cd2 = rand(3, 5); }
       const partner = S.enemies.find((x) => x.id === (e.id === 'frank' ? 'kalel' : 'frank'));
@@ -642,6 +656,7 @@ function update(dt) {
     if (k.t >= 1) finishDunk();
     if (S.qT >= S.qLen) endQuarter(); return;
   }
+  if (d.kb) { const nx = d.x + d.kb.vx * dt, ny = d.y + d.kb.vy * dt; if (!solid(nx, d.y)) d.x = nx; if (!solid(d.x, ny)) d.y = ny; d.kb.vx *= Math.pow(0.004, dt); d.kb.vy *= Math.pow(0.004, dt); if (Math.hypot(d.kb.vx, d.kb.vy) < 20) d.kb = null; }
   const frozen = S.fx.freeze > 0 && !P('ice') && S.fx.freeze > 1.4;
   let ix = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0), iy = (keys.KeyS || keys.ArrowDown ? 1 : 0) - (keys.KeyW || keys.ArrowUp ? 1 : 0);
   if (touchTarget) { const tx = touchTarget.x - d.x, ty = touchTarget.y - d.y, tl = Math.hypot(tx, ty); if (tl > 12) { ix = tx / tl; iy = ty / tl; } }
@@ -653,7 +668,7 @@ function update(dt) {
     if (!solid(d.x + vx * dt, d.y)) d.x += vx * dt; if (!solid(d.x, d.y + vy * dt)) d.y += vy * dt;
     d.walk += dt * (run ? 14 : 9); if (Math.abs(ix) > 0.1) d.face = ix > 0 ? 1 : -1; d.moving = true;
   } else d.moving = false;
-  if (S.fx.look > 0 && S.fx.lookAt) { const a = Math.atan2(S.fx.lookAt.y - d.y, S.fx.lookAt.x - d.x); const nx = d.x + Math.cos(a) * 140 * dt, ny = d.y + Math.sin(a) * 140 * dt; if (!solid(nx, ny)) { d.x = nx; d.y = ny; } d.face = Math.cos(a) > 0 ? 1 : -1; }
+  if (S.fx.look > 0 && S.fx.lookAt) { const a = Math.atan2(S.fx.lookAt.y - d.y, S.fx.lookAt.x - d.x); const nx = d.x + Math.cos(a) * 105 * dt, ny = d.y + Math.sin(a) * 105 * dt; if (!solid(nx, ny)) { d.x = nx; d.y = ny; } d.face = Math.cos(a) > 0 ? 1 : -1; }
   if (d.z > 0 || d.vz > 0) { d.vz -= 950 * dt; d.z = Math.max(0, d.z + d.vz * dt); if (d.z === 0) d.vz = 0; }
   if (S.qT >= S.qLen) endQuarter();
 }
@@ -672,7 +687,8 @@ function drawPerson(n, now) {
   if (n.coach) { c.fillStyle = '#ddd'; c.fillRect(6, -10, 9, 12); c.strokeStyle = '#ffd34d'; c.lineWidth = 1.5; c.beginPath(); c.moveTo(-6, -14); c.lineTo(0, -4); c.lineTo(6, -14); c.stroke(); }
   const up = n.celebrate > 0;
   c.strokeStyle = n.skin; c.lineWidth = 5; c.lineCap = 'round'; c.beginPath();
-  if (up) { c.moveTo(-10, -10); c.lineTo(-17, -28 - Math.sin(now * 16) * 3); c.moveTo(10, -10); c.lineTo(17, -28 + Math.sin(now * 16) * 3); } else { c.moveTo(-11, -10); c.lineTo(-14 - w * 3, 4); c.moveTo(11, -10); c.lineTo(14 + w * 3, 4); }
+  if (n.slapAnim > 0) { const sw = 1 - n.slapAnim / 0.35, f0 = n.face || 1; c.moveTo(-11 * f0, -10); c.lineTo(-14 * f0, 4); c.moveTo(10 * f0, -10); c.lineTo(f0 * (10 + 22 * Math.sin(sw * Math.PI)), -22 + sw * 18); }
+  else if (up) { c.moveTo(-10, -10); c.lineTo(-17, -28 - Math.sin(now * 16) * 3); c.moveTo(10, -10); c.lineTo(17, -28 + Math.sin(now * 16) * 3); } else { c.moveTo(-11, -10); c.lineTo(-14 - w * 3, 4); c.moveTo(11, -10); c.lineTo(14 + w * 3, 4); }
   c.stroke();
   c.fillStyle = n.skin; c.beginPath(); c.arc(0, -23, 10, 0, 6.3); c.fill();
   c.fillStyle = '#1b1410';
