@@ -76,6 +76,7 @@ a.back{position:absolute;left:12px;bottom:10px;z-index:6;color:var(--mute);font:
     <kbd>WASD / Arrows</kbd><span>Move (hold Shift to run)</span>
     <kbd>Run over a ball</kbd><span>Pick it up</span>
     <kbd>Hold E, release</kbd><span>Shoot. Let go when the marker is in the green. Behind the arc = 3.</span>
+    <kbd>🧲 on the floor</kbd><span>Ball Magnet power-up: balls fly to you for 30 seconds</span>
     <kbd>Space</kbd><span>Jump over bananas and sarcasm</span>
     <kbd>E next to the rim</kbd><span>DUNK. Posterizes any troll nearby. Jose might block it.</span>
     <kbd>Q</kbd><span>Clap Back: stun everyone near you (earned every 3 makes in a row)</span>
@@ -191,7 +192,6 @@ const PERKS = [
   { id: 'legs', name: 'Fresh Legs', icon: '👟', desc: '+12% move speed', stack: 3 },
   { id: 'range', name: 'Deep Range', icon: '🎯', desc: 'Bigger green on every shot', stack: 3 },
   { id: 'swag', name: 'Swagger', icon: '😎', desc: '+25% points', stack: 4 },
-  { id: 'magnet', name: 'Ball Magnet', icon: '🧲', desc: 'Balls fly to you', stack: 1 },
   { id: 'hands', name: 'Double Dribble', icon: '🏀', desc: 'Carry 2 balls at once', stack: 1 },
   { id: 'clap', name: 'Loud Mouth', icon: '📣', desc: 'Clap Back is bigger and lasts longer', stack: 2 },
   { id: 'pet', name: 'Coach\'s Pet', icon: '📋', desc: 'Coach catches trolls way more often', stack: 2 },
@@ -205,7 +205,7 @@ const PERKS = [
   { id: 'heat', name: 'Heat Check', icon: '🌶️', desc: 'Catch fire after 4 in a row, burn 3s longer', stack: 1, rare: 2 },
   { id: 'poster', name: 'Posterizer', icon: '🖼️', desc: 'Dunks stun everyone close and pay double', stack: 1, rare: 1 },
 ];
-['magnet', 'hands', 'ice'].forEach((id) => (PERKS.find((p) => p.id === id).rare = 1));
+['hands', 'ice'].forEach((id) => (PERKS.find((p) => p.id === id).rare = 1));
 const RARITY = [['COMMON', '#9aa3b2'], ['RARE', '#3d7bff'], ['EPIC', '#c06bff']];
 // every quarter after Q1 gets a random rule change
 const TWISTS = [
@@ -279,7 +279,7 @@ function newRun(daily) {
     enemies: [], balls: [], hazards: [], shots: [], projectiles: [], floaters: [], confetti: [],
     fx: { reverse: 0, slow: 0, freeze: 0, look: 0, lookAt: null, inv: 0 }, perks: {}, offers: null, mission: null,
     makes: 0, threes: 0, swishes: 0, attempts: 0, trolledTotal: 0, trolledBy: {}, caption: null, zoom: 0, shake: 0, bubble: null, ballT: 1, lava: null, lavaT: 30, cleanT: 0, coachTalk: 0,
-    dunks: 0, posters: 0, fires: 0, golds: 0, stunned: 0, fire: 0, hot: 1, hotT: 12, hoopFlash: [0, 0, 0, 0], twist: null, rerolls: 0, revive: false, hitstop: 0, disp: 0, toast: null, chT: 0, chDone: [], trail: [], waves: [], boardShake: [0, 0, 0, 0],
+    dunks: 0, posters: 0, fires: 0, golds: 0, stunned: 0, fire: 0, hot: 1, hotT: 12, hoopFlash: [0, 0, 0, 0], twist: null, rerolls: 0, revive: false, hitstop: 0, disp: 0, toast: null, chT: 0, chDone: [], trail: [], waves: [], items: [], itemT: 18, magnetT: 0, boardShake: [0, 0, 0, 0],
   };
 }
 const P = (id) => S.perks[id] || 0;
@@ -611,6 +611,14 @@ function update(dt) {
   if (S.fire > 0) { S.fire -= dt; if (S.fire <= 0) { S.fire = 0; float('fire went out', S.d.x, S.d.y - 70, '#9aa3b2', 14); } S.trail.push({ x: S.d.x + rand(-8, 8), y: S.d.y - S.d.z + rand(-10, 20), t: 0.5 }); }
   for (const t of S.trail) t.t -= dt; S.trail = S.trail.filter((t) => t.t > 0);
   S.hotT -= dt; if (S.hotT <= 0) moveHot();
+  { const d = S.d;
+  // Ball Magnet power-up: shows up on the floor every so often, lasts 30s once grabbed
+  if (S.magnetT > 0) { S.magnetT -= dt; if (S.magnetT <= 0) { S.magnetT = 0; float('🧲 magnet wore off', d.x, d.y - 70, '#9aa3b2', 15); } if (S.magnetT > 0 && S.magnetT < 3 && Math.floor(S.magnetT * 4) !== Math.floor((S.magnetT + dt) * 4)) tone(600, 0.04, 'square', 0.03); }
+  S.itemT -= dt;
+  if (S.itemT <= 0 && !S.items.length && S.magnetT <= 0) { let x, y, n = 0; do { x = rand(160, MAPW - 160); y = rand(270, 810); } while (dist({ x, y }, d) < 250 && ++n < 20); S.items.push({ type: 'magnet', x, y, t: 0 }); float('🧲 BALL MAGNET ON THE FLOOR', x, y - 50, '#7fd0ff', 16); tone(990, 0.1, 'sine', 0.05); tone(1480, 0.15, 'sine', 0.05, 0, 0.1); }
+  for (const it of S.items) { it.t += dt; if (dist(it, d) < 32 && d.z < 30) { it.got = true; S.magnetT = 30; SFX.perk(); caption('🧲 BALL MAGNET · 30 SECONDS', true); burst(it.x, it.y, 30, ['#7fd0ff', '#ff5a3c', '#fff']); } }
+  S.items = S.items.filter((it) => { if (!it.got && it.t > 14) { S.itemT = rand(15, 25); return false; } if (it.got) S.itemT = rand(35, 50); return !it.got; });
+  }
   S.chT -= dt; if (S.chT <= 0) { S.chT = 0.5; checkChallenges(); }
   if (TW('banana') && RNG() < dt * 1.2) S.hazards.push({ type: 'banana', x: rand(140, MAPW - 140), y: rand(250, 830), t: 12, by: pick(['frank', 'kalel']) });
   const d = S.d; S.t += dt; S.qT += dt; S.cleanT += dt; S.coachTalk -= dt;
@@ -624,7 +632,7 @@ function update(dt) {
   for (const b of S.balls) {
     b.t += dt;
     if (b.air) { b.air.k += dt / 0.8; if (b.air.k >= 1) { b.air = null; tone(200, 0.05, 'triangle', 0.03); } continue; }
-    if (P('magnet') && !b.fake && d.balls < cap && dist(b, d) < 260) { const a = Math.atan2(d.y - b.y, d.x - b.x); b.x += Math.cos(a) * 320 * dt; b.y += Math.sin(a) * 320 * dt; }
+    if (S.magnetT > 0 && !b.fake && d.balls < cap && dist(b, d) < 260) { const a = Math.atan2(d.y - b.y, d.x - b.x); b.x += Math.cos(a) * 320 * dt; b.y += Math.sin(a) * 320 * dt; }
     if (dist(b, d) < 26 && d.z < 20 && (d.balls < cap || b.fake)) {
       b.got = true;
       if (b.fake) { SFX.pop(); burst(b.x, b.y, 26); trolled('james', 'FAKE GOLD BALL. TRUST ME BRO.', 10); say('James', 'Bro you really grabbed it. I said TRUST me, not BELIEVE me.'); }
@@ -777,6 +785,11 @@ function draw() {
   if (S) {
     for (const h of S.hazards) if (h.type === 'banana') { c.font = '20px sans-serif'; c.textAlign = 'center'; c.fillText('🍌', h.x, h.y + 7); }
     for (const w of S.waves) if (w.t > 0) { const a = Math.max(0, 1 - w.t / 0.6); c.strokeStyle = `rgba(63,207,122,${a})`; c.lineWidth = 10 * a + 2; c.beginPath(); c.arc(w.x, w.y, w.r, 0, 6.3); c.stroke(); c.fillStyle = `rgba(63,207,122,${a * 0.12})`; c.fill(); }
+    for (const it of S.items) { const bob = Math.sin(now * 4) * 5, pulse = 1 + Math.sin(now * 6) * 0.12, blink = it.t > 10 && Math.floor(now * 8) % 2; if (!blink) {
+      c.fillStyle = 'rgba(0,0,0,.25)'; c.beginPath(); c.ellipse(it.x, it.y + 16, 14, 5, 0, 0, 6.3); c.fill();
+      c.fillStyle = 'rgba(127,208,255,.25)'; c.beginPath(); c.arc(it.x, it.y - bob, 30 * pulse, 0, 6.3); c.fill(); c.strokeStyle = '#7fd0ff'; c.lineWidth = 2.5; c.stroke();
+      c.fillStyle = '#1a2130'; c.beginPath(); c.arc(it.x, it.y - bob, 19, 0, 6.3); c.fill(); c.font = '24px sans-serif'; c.textAlign = 'center'; c.fillText('🧲', it.x, it.y - bob + 8); } }
+    if (S.magnetT > 0) { c.strokeStyle = `rgba(127,208,255,${0.25 + 0.15 * Math.sin(now * 5)})`; c.lineWidth = 2; c.setLineDash([4, 10]); c.lineDashOffset = -now * 40; c.beginPath(); c.arc(S.d.x, S.d.y, 260, 0, 6.3); c.stroke(); c.setLineDash([]); c.lineDashOffset = 0; }
     for (const t of S.trail) { c.fillStyle = `rgba(255,${120 + Math.round(t.t * 200)},40,${t.t * 1.4})`; c.beginPath(); c.arc(t.x, t.y, 4 + t.t * 10, 0, 6.3); c.fill(); }
     for (const b of S.balls) if (b.air) { const k = b.air.k, bx = b.air.sx + (b.x - b.air.sx) * k, by = b.air.sy + (b.y - b.air.sy) * k - Math.sin(k * Math.PI) * 140; c.fillStyle = 'rgba(0,0,0,.2)'; c.beginPath(); c.ellipse(b.x, b.y + 10, 9 * k, 3 * k, 0, 0, 6.3); c.fill(); c.fillStyle = b.gold ? '#ffd34d' : '#e07a2e'; c.beginPath(); c.arc(bx, by, 9, 0, 6.3); c.fill(); }
     for (const b of S.balls) { if (b.air) continue; const bob = Math.abs(Math.sin(now * 4 + b.x)) * (b.fake ? 6 : 3); c.fillStyle = 'rgba(0,0,0,.25)'; c.beginPath(); c.ellipse(b.x, b.y + 10, 9, 3, 0, 0, 6.3); c.fill(); if (b.gold) { c.fillStyle = `rgba(255,211,77,${0.3 + 0.2 * Math.sin(now * 6)})`; c.beginPath(); c.arc(b.x, b.y - bob, 16, 0, 6.3); c.fill(); } c.fillStyle = b.gold ? '#ffd34d' : '#e07a2e'; c.beginPath(); c.arc(b.x, b.y - bob, 9, 0, 6.3); c.fill(); c.strokeStyle = 'rgba(0,0,0,.35)'; c.lineWidth = 1; c.beginPath(); c.moveTo(b.x - 9, b.y - bob); c.lineTo(b.x + 9, b.y - bob); c.stroke(); if (b.fake && P('eye')) { c.font = '800 11px "Barlow Condensed", sans-serif'; c.fillStyle = '#ff6363'; c.textAlign = 'center'; c.fillText('FAKE', b.x, b.y - 20); } }
@@ -816,6 +829,7 @@ function hud(now) {
   c.fillStyle = S.claps ? `hsl(145,70%,${55 + 12 * Math.sin(now * 8)}%)` : '#9aa3b2'; c.fillText(S.claps ? 'CLAP BACK READY (Q)' : 'CLAP BACK (Q)', 22, 63); c.font = '15px sans-serif'; c.fillText('📣'.repeat(S.claps) + '·'.repeat(3 - S.claps), 160, 65);
   const perks = Object.entries(S.perks).map(([id, n]) => (PERKS.find((p) => p.id === id).icon) + (n > 1 ? n : '')).join(' ');
   if (perks) { c.font = '14px sans-serif'; c.fillStyle = '#fff'; c.fillText(perks, 14, 98); }
+  if (S.magnetT > 0) { const yy = perks ? 108 : 86; panel(10, yy, 150, 26, 0.85); c.font = '14px sans-serif'; c.textAlign = 'left'; c.fillStyle = '#fff'; c.fillText('🧲', 16, yy + 18); c.fillStyle = '#2b3447'; c.fillRect(38, yy + 9, 82, 8); c.fillStyle = S.magnetT < 3 && Math.floor(now * 8) % 2 ? '#ff6363' : '#7fd0ff'; c.fillRect(38, yy + 9, 82 * S.magnetT / 30, 8); c.fillStyle = '#9aa3b2'; c.font = '700 11px Barlow'; c.fillText(`${Math.ceil(S.magnetT)}s`, 126, yy + 17); }
   // mission + trolled
   panel(VW - 260, 8, 250, 70); c.fillStyle = '#ff8a5c'; c.font = '800 15px "Barlow Condensed", sans-serif'; c.textAlign = 'right'; c.fillText(`🤡 TROLLED ×${S.trolledTotal}`, VW - 22, 28);
   if (S.mission) { const m = S.mission; c.textAlign = 'left'; c.fillStyle = m.done ? '#3fcf7a' : '#ffb547'; c.font = '700 12px Barlow'; c.fillText(`🎯 ${m.text}`, VW - 248, 50); c.fillStyle = '#2b3447'; c.fillRect(VW - 248, 58, 226, 8); c.fillStyle = m.done ? '#3fcf7a' : '#ffb547'; c.fillRect(VW - 248, 58, 226 * Math.min(1, m.p / m.goal), 8); }
